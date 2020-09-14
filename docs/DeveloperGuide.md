@@ -70,7 +70,11 @@ If you're at all unfamiliar with Git, I strongly recommend checking out some you
 - Avoid doing a ton of unrelated work in a single commit, try to make one commit touch only a single bug or feature at a time.
     If you touched a few different things that's okay. When staging your changes before you commit and you want to split into multiple commits, use `git add -p` instead of `git add .` or similar.
     This allows you to select which hunks of code get staged for the next commit. I do this pretty much all the time.
-- Always include commit messages, eg: `git commit -m "This is a commit message, I did xyz"`
+- Always include commit messages, eg: 
+
+    `git commit -m "This is a commit message, I did xyz"`
+    
     If you want to be more detailed with your messages, try:
+    
     `git commit -m "This is a commit message, it should be short" -m "Here are more details about this commit, this can be longer" -m "I can do this as many times as I want to add more lines to the message."`
 - If you're a git beginner, I guarantee you'll get frustrated and confused at times. There is a learning curve. Reach out in discord if you get stuck.
