@@ -6,9 +6,7 @@ Let's use this document to help, uh, document anything related to our developmen
 
 ## Local Repo Setup
 
-1. Clone the repository
-    
-    [Using the CLI (command line interface)](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository)
+1. Clone the repository [using the CLI (command line interface)](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository)
     
     ```
     git clone https://github.com/Marzionz/Garage-Guide.git
@@ -16,18 +14,18 @@ Let's use this document to help, uh, document anything related to our developmen
     
     The above command will create a folder named Garage-Guide in whatever your working directory is and download the entire source file.
 
-    **OR**
-    
-    Using IntelliJ's interface:
-    
-    ![pic](images/DXqM6AMgP6.png)
-    
-    ![pic](images/DNcDFT0XR0.png)
-    
-    If you don't have git installed, download and install it from [here](https://git-scm.com/download) first.
 2. Open IntelliJ.
 3. File -> Open, navigate to where you performed step 1 above and find the Garage-Guide folder, open that project.
 
+**OR**
+
+Using IntelliJ's interface:
+
+![pic](images/DXqM6AMgP6.png)
+
+![pic](images/DNcDFT0XR0.png)
+
+If you don't have git installed, download and install it from [here](https://git-scm.com/download) first.
 
 ## Configure IntelliJ Run/Debug
 
