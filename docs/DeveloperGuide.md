@@ -47,7 +47,7 @@ If you don't have git installed, download and install it from [here](https://git
 
     ![pic](images/gaJoBUfmU5.png)
 5. Click Ok to close the dialog.
-6. Do a test run, click the green play button in the upper right. If you didn't 
+6. Do a test run, click the green play button in the upper right. It might take a minute or two to download the node packages.
 
     Keep an eye on the "Run" output at the bottom of the screen. Eventually you'll see some text similar to the below:
     ```
