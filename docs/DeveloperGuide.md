@@ -27,6 +27,11 @@ Using IntelliJ's interface:
 
 If you don't have git installed, download and install it from [here](https://git-scm.com/download) first.
 
+## Install Node.js and NPM
+
+1. [Download](https://nodejs.org/en/) and install Node.js if you don't already have it.
+2. After installation, verify npm is properly installed by opening a command prompt and typing `npm -v`. It should print the npm version.
+
 ## Configure IntelliJ Run/Debug
 
 1. In upper-right corner you should see "Add Configuration..." near the debugger controls. Click that.
@@ -42,7 +47,7 @@ If you don't have git installed, download and install it from [here](https://git
 
     ![pic](images/gaJoBUfmU5.png)
 5. Click Ok to close the dialog.
-6. Do a test run, click the green play button in the upper right. It might take a minute or two to download the node packages.
+6. Do a test run, click the green play button in the upper right. If you didn't 
 
     Keep an eye on the "Run" output at the bottom of the screen. Eventually you'll see some text similar to the below:
     ```
