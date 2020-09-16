@@ -4,64 +4,42 @@ Here are some basic instructions on how to get started with development for Gara
 These instructions are written for IntelliJ, they will vary a bit from other IDEs.
 Let's use this document to help, uh, document anything related to our development environments and notes about working in Git.
 
-## Local Repo Setup
-
-1. Clone the repository [using the CLI (command line interface)](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository)
-    
-    ```
-    git clone https://github.com/Marzionz/Garage-Guide.git
-    ```
-    
-    The above command will create a folder named Garage-Guide in whatever your working directory is and download the entire source file.
-
-2. Open IntelliJ.
-3. File -> Open, navigate to where you performed step 1 above and find the Garage-Guide folder, open that project.
-
-**OR**
-
-Using IntelliJ's interface:
-
-![pic](images/DXqM6AMgP6.png)
-
-![pic](images/DNcDFT0XR0.png)
-
-If you don't have git installed, download and install it from [here](https://git-scm.com/download) first.
-
 ## Install Node.js and NPM
 
 1. [Download](https://nodejs.org/en/) and install Node.js if you don't already have it.
 2. After installation, verify npm is properly installed by opening a command prompt and typing `npm -v`. It should print the npm version.
 
+## Local Repo Setup
+
+If you don't have git installed, download and install it from [here](https://git-scm.com/download) first.
+
+Clone the repository using IntelliJ's interface (URL is `https://github.com/Marzionz/Garage-Guide.git`):
+
+![pic](images/DXqM6AMgP6.png)
+
+![pic](images/DNcDFT0XR0.png)
+
+Once this is complete, IntelliJ should automatically open the cloned project.
+
 ## Configure IntelliJ Run/Debug
 
-1. In upper-right corner you should see "Add Configuration..." near the debugger controls. Click that.
-    
-    ![pic](images/zxAdpJ4s1q.png)
-2. Click the add (+) in the upper-left corner of the dialog that just opened up.
-    
-    ![pic](images/Nd1Fuj5lII.png)
-3. Select "Maven".
-    
-    ![pic](images/mqpm7XTlUV.png)
-4. On the right side of the dialog, in the command line input, type "jetty:run" (without quotes).
+1. In IntelliJ, open src/main/java/com.TeamOne411/Application.java.
+2. Click the green arrow to the left of the `main()` method.
+3. You should see the project build. It will run `npm install` for you which will probably take several minutes. This command will only run the first time and any time we add npm packages, so subsequent builds should take a fraction of the time. When it's done you should see this: 
 
-    ![pic](images/gaJoBUfmU5.png)
-5. Click Ok to close the dialog.
-6. Do a test run, click the green play button in the upper right. It might take a minute or two to download the node packages.
+    > 2020-09-16 12:20:32.551  INFO 40864 --- [  restartedMain] com.TeamOne411.Application               : Started Application in 8.962 seconds (JVM running for 9.517)
 
-    Keep an eye on the "Run" output at the bottom of the screen. Eventually you'll see some text similar to the below:
-    ```
-     Vaadin is running in DEBUG MODE.
-     When deploying application for production, remember to disable debug features. See more from https://vaadin.com/docs/
-    ```
-   **Note: You might see some red text - they might not be errors so don't be immediately alarmed.**
-7. Once you see the above text, try opening a browser (anything except internet explorer...) and browse to http://localhost:8080
+4. Once you see the above text, try opening a browser (anything except internet explorer...) and browse to <http://localhost:8080>
    
-   I should've put some hello world text in there, my bad... You should see a blank screen, except for an install button at the bottom of the page.
+   You should see a "Hello World" button in the upper left corner and an install button at the bottom of the page.
    
-   If you see this, you should be all set.
+   If you see these, you should be all set.
+   
+   ![pic](images/cDk8GWjAia.png)
    
    ![pic](images/mE89xi5FVy.png)
+
+**Note:** from now on you should be able to click the green arrow in the upper right of the window or hit `Shift+F10` to rebuild and run, rather than from Application.java.
    
 ## Using Git
 
