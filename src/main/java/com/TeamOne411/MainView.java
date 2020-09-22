@@ -14,6 +14,6 @@ import com.vaadin.flow.router.Route;
 public class MainView extends VerticalLayout {
 
     public MainView() {
-        // todo: add stuff here
+        add(new Button("Hello World"));
     }
 }
