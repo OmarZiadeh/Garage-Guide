@@ -1,4 +1,4 @@
-package com.TeamOne411;
+package com.TeamOne411.ui;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.notification.Notification;
