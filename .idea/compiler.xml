@@ -7,13 +7,13 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="garage-guide" />
-        <module name="GarageGuide" />
+        <module name="Garage-Guide" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="GarageGuide" options="-parameters" />
+      <module name="Garage-Guide" options="-parameters" />
       <module name="garage-guide" options="-parameters" />
     </option>
   </component>
