@@ -1,4 +1,4 @@
-package com.TeamOne411.ui.view.sandbox.forms;
+package com.TeamOne411.ui.view.sandbox.form;
 
 import com.TeamOne411.backend.entity.Garage;
 import com.vaadin.flow.component.ComponentEvent;

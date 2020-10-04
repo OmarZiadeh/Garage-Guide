@@ -1,8 +1,8 @@
-package com.TeamOne411.ui.view.sandbox;
+package com.TeamOne411.ui.view.sandbox.childview;
 
 import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.service.GarageService;
-import com.TeamOne411.ui.view.sandbox.forms.GarageEditorForm;
+import com.TeamOne411.ui.view.sandbox.form.GarageEditorForm;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
@@ -21,7 +21,7 @@ public class GarageSandboxView extends VerticalLayout {
 
     /**
      * The constructor for the sandbox view. Does initial layout setup, grid configuration, and event listener attachment
-     * @param service
+     * @param service the GarageService to broker the repository calls
      */
     public GarageSandboxView(GarageService service) {
         // initial layout setup
