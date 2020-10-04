@@ -90,4 +90,3 @@ buildNumber.properties
 ## Added by Luke
 node_modules/*
 webpack.generated.js
-src/main/resources/dbconfig.properties
