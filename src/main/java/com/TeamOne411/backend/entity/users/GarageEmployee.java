@@ -17,11 +17,11 @@ public class GarageEmployee extends UserAccount {
     @JoinColumn(name = "garage_id")
     private Garage garage;
 
-    public boolean isAdmin() {
+    public boolean getIsAdmin() {
         return isAdmin;
     }
 
-    public void setAdmin(boolean admin) {
+    public void setIsAdmin(boolean admin) {
         isAdmin = admin;
     }
 
