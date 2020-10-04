@@ -23,6 +23,7 @@ public class GarageEmployeeEditorForm extends FormLayout {
     private TextField userName = new TextField("Username");
     private TextField firstName = new TextField("First name");
     private TextField lastName = new TextField("Last name");
+    private TextField emailAddress = new TextField("Email Address");
     private Checkbox isAdmin = new Checkbox("Garage Admin");
     private ComboBox<Garage> garage = new ComboBox<>("Employer");
 
@@ -40,6 +41,7 @@ public class GarageEmployeeEditorForm extends FormLayout {
         add(userName,
                 firstName,
                 lastName,
+                emailAddress,
                 garage,
                 isAdmin,
                 createButtonsLayout());

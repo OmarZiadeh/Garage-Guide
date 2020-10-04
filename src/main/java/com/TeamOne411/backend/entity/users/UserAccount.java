@@ -3,6 +3,7 @@ package com.TeamOne411.backend.entity.users;
 import com.TeamOne411.backend.entity.AbstractEntity;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -21,6 +22,11 @@ public abstract class UserAccount extends AbstractEntity {
     @NotNull
     @NotEmpty
     private String lastName = "";
+
+    @NotNull
+    @NotEmpty
+    @Email
+    private String emailAddress = "";
 
     public String getUserName() {
         return userName;
@@ -44,5 +50,13 @@ public abstract class UserAccount extends AbstractEntity {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
     }
 }

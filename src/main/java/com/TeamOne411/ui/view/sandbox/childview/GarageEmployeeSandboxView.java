@@ -38,7 +38,7 @@ public class GarageEmployeeSandboxView extends VerticalLayout {
         grid.addClassName("garage-employee-grid");
         grid.setHeightByRows(true);
         grid.setMaxHeight("25vh");
-        grid.setColumns("userName", "firstName", "lastName");
+        grid.setColumns("userName", "firstName", "lastName", "emailAddress");
         grid.addColumn(garageEmployee -> {
             Garage garage = garageEmployee.getGarage();
             return garage == null ? "[None]" : garage.getCompanyName();
