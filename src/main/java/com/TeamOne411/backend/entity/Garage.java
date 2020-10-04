@@ -16,16 +16,19 @@ public class Garage extends AbstractEntity {
     @NotEmpty
     private String companyName = "";
 
+//  TODO: add better validation
     @NotNull
     @NotEmpty
     private String phoneNumber = "";
 
+//  TODO: add better validation
     @NotNull
     @NotEmpty
     private String address = "";
 
-    @NotNull
-    @NotEmpty
+//  TODO: We'll probably want these at some point, but right now it'll break Garage creation
+//    @NotNull
+//    @NotEmpty
     @OneToMany(mappedBy = "garage", fetch = FetchType.EAGER)
     private List<GarageEmployee> employees = new LinkedList<>();
 
@@ -53,11 +56,11 @@ public class Garage extends AbstractEntity {
         this.address = address;
     }
 
-    public List<GarageEmployee> getEmployees() {
-        return employees;
-    }
-
-    public void setEmployees(List<GarageEmployee> employees) {
-        this.employees = employees;
-    }
+//    public List<GarageEmployee> getEmployees() {
+//        return employees;
+//    }
+//
+//    public void setEmployees(List<GarageEmployee> employees) {
+//        this.employees = employees;
+//    }
 }

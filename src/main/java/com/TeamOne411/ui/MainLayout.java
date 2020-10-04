@@ -1,12 +1,10 @@
 package com.TeamOne411.ui;
 
-import com.TeamOne411.ui.view.testing.SandboxView;
+import com.TeamOne411.ui.view.sandbox.SandboxView;
 import com.vaadin.flow.component.applayout.AppLayout;
-import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.router.RouterLink;
+import com.vaadin.flow.server.PWA;
 
 /**
  * TODO: docs

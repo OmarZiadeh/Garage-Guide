@@ -1,4 +1,4 @@
-package com.TeamOne411.ui.view.testing;
+package com.TeamOne411.ui.view.sandbox.forms;
 
 import com.TeamOne411.backend.entity.Garage;
 import com.vaadin.flow.component.ComponentEvent;
@@ -14,19 +14,19 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.shared.Registration;
 
-public class GarageForm extends FormLayout {
-    TextField companyName = new TextField("Company name");
-    TextField phoneNumber = new TextField("Phone number");
-    TextField address = new TextField("Address");
+public class GarageEditorForm extends FormLayout {
+    private TextField companyName = new TextField("Company name");
+    private TextField phoneNumber = new TextField("Phone number");
+    private TextField address = new TextField("Address");
 
-    Button save = new Button("Save");
-    Button delete = new Button("Delete");
-    Button close = new Button("Cancel");
+    private Button save = new Button("Save");
+    private Button delete = new Button("Delete");
+    private Button close = new Button("Cancel");
 
     Binder<Garage> binder = new BeanValidationBinder<>(Garage.class);
-    private Garage garage;
+    private Garage garage = new Garage();
 
-    public GarageForm() {
+    public GarageEditorForm() {
         addClassName("garage-form");
         binder.bindInstanceFields(this);
         add(companyName,
@@ -65,10 +65,10 @@ public class GarageForm extends FormLayout {
         }
     }
 
-    public static abstract class GarageFormEvent extends ComponentEvent<GarageForm> {
+    public static abstract class GarageFormEvent extends ComponentEvent<GarageEditorForm> {
         private Garage garage;
 
-        protected GarageFormEvent(GarageForm source, Garage garage) {
+        protected GarageFormEvent(GarageEditorForm source, Garage garage) {
             super(source, false);
             this.garage = garage;
         }
@@ -79,19 +79,19 @@ public class GarageForm extends FormLayout {
     }
 
     public static class SaveEvent extends GarageFormEvent {
-        SaveEvent(GarageForm source, Garage garage) {
+        SaveEvent(GarageEditorForm source, Garage garage) {
             super(source, garage);
         }
     }
 
     public static class DeleteEvent extends GarageFormEvent {
-        DeleteEvent(GarageForm source, Garage garage) {
+        DeleteEvent(GarageEditorForm source, Garage garage) {
             super(source, garage);
         }
     }
 
     public static class CloseEvent extends GarageFormEvent {
-        CloseEvent(GarageForm source) {
+        CloseEvent(GarageEditorForm source) {
             super(source, null);
         }
     }
