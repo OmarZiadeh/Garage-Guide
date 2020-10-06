@@ -18,7 +18,7 @@ import com.vaadin.flow.router.Route;
 import java.util.HashMap;
 import java.util.Map;
 
-@Route(value = "", layout = MainLayout.class)
+@Route(value = "sandbox", layout = MainLayout.class)
 @PageTitle("Garage Guide - Sandbox")
 public class SandboxView extends VerticalLayout {
     public SandboxView(GarageService garageService,
