@@ -1,5 +1,6 @@
 package com.TeamOne411.ui;
 
+import com.TeamOne411.ui.view.PlaceholderHomeView;
 import com.TeamOne411.ui.view.login.LoginView;
 import com.TeamOne411.ui.view.sandbox.SandboxView;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -18,6 +19,7 @@ public class MainLayout extends AppLayout {
 
     private void createDrawer() {
         addToDrawer(new VerticalLayout(
+                new RouterLink("Home", PlaceholderHomeView.class),
                 new RouterLink("Sandbox", SandboxView.class),
                 new RouterLink("Login", LoginView.class)
         ));

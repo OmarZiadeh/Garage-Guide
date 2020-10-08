@@ -10,7 +10,6 @@ import com.vaadin.flow.router.Route;
 
 @Route("login")
 @PageTitle("Garage Guide - Login")
-
 public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
     private LoginForm login = new LoginForm();
