@@ -1,7 +1,7 @@
 package com.TeamOne411.ui;
 
+import com.TeamOne411.security.SecurityUtils;
 import com.TeamOne411.ui.view.PlaceholderHomeView;
-import com.TeamOne411.ui.view.login.LoginView;
 import com.TeamOne411.ui.view.sandbox.SandboxView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.html.Anchor;
@@ -25,8 +25,7 @@ public class MainLayout extends AppLayout {
     private void createDrawer() {
         addToDrawer(new VerticalLayout(
                 new RouterLink("Home", PlaceholderHomeView.class),
-                new RouterLink("Sandbox", SandboxView.class),
-                new RouterLink("Login", LoginView.class)
+                new RouterLink("Sandbox", SandboxView.class)
         ));
     }
 
@@ -34,9 +33,14 @@ public class MainLayout extends AppLayout {
         H1 logo = new H1("Garage Guide");
         logo.addClassName("logo");
 
-        Anchor logout = new Anchor("logout", "Log out");
+        HorizontalLayout header = new HorizontalLayout(logo);
 
-        HorizontalLayout header = new HorizontalLayout(logo, logout);
+        if (SecurityUtils.isUserLoggedIn()) {
+            header.add(new Anchor("logout", "Log out"));
+        } else {
+            header.add(new Anchor("login", "Log In"));
+        }
+
         header.expand(logo);
         header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
         header.setWidth("100%");
