@@ -5,6 +5,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.server.ServiceInitEvent;
 import com.vaadin.flow.server.VaadinServiceInitListener;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -14,15 +15,24 @@ public class ConfigureUIServiceInitListener implements VaadinServiceInitListener
     public void serviceInit(ServiceInitEvent event) {
         event.getSource().addUIInitListener(uiEvent -> {
             final UI ui = uiEvent.getUI();
-            ui.addBeforeEnterListener(this::authenticateNavigation);
+            ui.addBeforeEnterListener(this::beforeEnter);
         });
     }
 
-    // redirects user to login if they aren't authorized
-    private void authenticateNavigation(BeforeEnterEvent event) {
-        if (!LoginView.class.equals(event.getNavigationTarget())
-                && !SecurityUtils.isUserLoggedIn()) {
-            event.rerouteTo(LoginView.class);
+    /**
+     * Reroutes the user if (s)he is not authorized to access the view.
+     *
+     * @param event
+     *            before navigation event with event details
+     */
+    private void beforeEnter(BeforeEnterEvent event) {
+        final boolean accessGranted = SecurityUtils.isAccessGranted(event.getNavigationTarget());
+        if (!accessGranted) {
+            if (SecurityUtils.isUserLoggedIn()) {
+                event.rerouteToError(AccessDeniedException.class);
+            } else {
+                event.rerouteTo(LoginView.class);
+            }
         }
     }
 }

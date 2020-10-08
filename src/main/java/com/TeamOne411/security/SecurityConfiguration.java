@@ -4,7 +4,6 @@ import com.TeamOne411.backend.service.UserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -42,11 +41,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(authenticationProvider());
-    }
-
-    @Override
     protected void configure(HttpSecurity http) throws Exception {
         // disable csrf, vaadin has proprietary implementation
         http.csrf().disable()
@@ -55,18 +49,19 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
                 // restricts access to application
                 .and().authorizeRequests()
-                // allows internal requests
-                .requestMatchers(SecurityUtils::isFrameworkInternalRequest).permitAll()
-
-                // allow all authentication users access to any request
-                // todo add rules
-                .anyRequest().authenticated()
+                    // allows internal requests
+                    .requestMatchers(SecurityUtils::isFrameworkInternalRequest).permitAll()
+                    // allow unauthorized access to front page and register
+                    .antMatchers("/", "/register").permitAll()
+                    // allow all authentication users access to any request
+                    // todo add rules
+                    .anyRequest().authenticated()
 
                 // configure login page
                 .and().formLogin()
-                .loginPage(LOGIN_URL).permitAll()
-                .loginProcessingUrl(LOGIN_PROCESSING_URL)
-                .failureUrl(LOGIN_FAILURE_URL)
+                    .loginPage(LOGIN_URL).permitAll()
+                    .loginProcessingUrl(LOGIN_PROCESSING_URL)
+                    .failureUrl(LOGIN_FAILURE_URL)
 
                 // configure logout page
                 .and().logout().logoutSuccessUrl(LOGOUT_SUCCESS_URL);
