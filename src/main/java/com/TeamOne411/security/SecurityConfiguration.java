@@ -16,6 +16,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 @Configuration
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    // url literals for redirections
     private static final String LOGIN_PROCESSING_URL = "/login";
     private static final String LOGIN_FAILURE_URL = "/login?error";
     private static final String LOGIN_URL = "/login";
@@ -23,17 +24,27 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        // disable csrf, vaadin has proprietary implementation
         http.csrf().disable()
+                // CustomRequestCache saves unauthorized login attempts for redirection to login
                 .requestCache().requestCache(new CustomRequestCache())
+
+                // restricts access to application
                 .and().authorizeRequests()
+                // allows internal requests
                 .requestMatchers(SecurityUtils::isFrameworkInternalRequest).permitAll()
 
+                // allow all authentication users access to any request
+                // todo add rules
                 .anyRequest().authenticated()
 
+                // configure login page
                 .and().formLogin()
                 .loginPage(LOGIN_URL).permitAll()
                 .loginProcessingUrl(LOGIN_PROCESSING_URL)
                 .failureUrl(LOGIN_FAILURE_URL)
+
+                // configure logout page
                 .and().logout().logoutSuccessUrl(LOGOUT_SUCCESS_URL);
     }
 
