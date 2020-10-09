@@ -1,4 +1,4 @@
-package com.TeamOne411.backend.entity.scatalog;
+package com.TeamOne411.backend.entity.servicecatalog;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -6,7 +6,7 @@ import java.util.Objects;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-public class Category implements Serializable {
+public class ServiceCategory implements Serializable {
 
     @NotNull
     private int id = -1;
@@ -43,8 +43,8 @@ public class Category implements Serializable {
         if (obj == null || id == -1) {
             return false;
         }
-        if (obj instanceof Category) {
-            return id == ((Category) obj).id;
+        if (obj instanceof ServiceCategory) {
+            return id == ((ServiceCategory) obj).id;
         }
         return false;
     }
