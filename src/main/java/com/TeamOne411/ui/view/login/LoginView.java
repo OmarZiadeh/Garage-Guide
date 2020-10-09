@@ -1,12 +1,10 @@
 package com.TeamOne411.ui.view.login;
 
+import com.TeamOne411.ui.view.registration.RegisterView;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.BeforeEnterEvent;
-import com.vaadin.flow.router.BeforeEnterObserver;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.*;
 
 @Route("login")
 @PageTitle("Garage Guide - Login")
@@ -22,7 +20,11 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
         login.setAction("login");
 
-        add(new H1("Garage Guide"), login);
+        add(
+                new H1("Garage Guide"),
+                login,
+                new RouterLink("Create an Account", RegisterView.class)
+        );
     }
 
     @Override
