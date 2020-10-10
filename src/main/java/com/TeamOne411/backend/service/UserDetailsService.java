@@ -61,7 +61,7 @@ public class UserDetailsService implements org.springframework.security.core.use
         return authorities;
     }
 
-    public User registerNewUserAccount(User user) throws EmailExistsException, UsernameExistsException {
+    public User registerNewUser(User user) throws EmailExistsException, UsernameExistsException {
         // check for unique email address
         if (emailExists(user.getEmail())) {
             throw new EmailExistsException(
