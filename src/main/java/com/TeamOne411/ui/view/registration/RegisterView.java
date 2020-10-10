@@ -112,8 +112,9 @@ public class RegisterView extends VerticalLayout {
                 garageEmployee.setGarage(garage);
 
                 try {
-                    userDetailsService.registerNewUserAccount(garageEmployee);
-
+                    userDetailsService.registerNewUser(garageEmployee);
+                    // todo autologin user
+                    getUI().ifPresent(ui -> ui.navigate("login"));
                 } catch (EmailExistsException emailEx) {
                     // todo display error
                     // todo delete garage just created
