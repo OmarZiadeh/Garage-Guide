@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Entity
-public class CarOwner extends UserAccount {
+public class CarOwner extends User {
     @NotNull
     @NotEmpty
     private String phoneNumber = "";

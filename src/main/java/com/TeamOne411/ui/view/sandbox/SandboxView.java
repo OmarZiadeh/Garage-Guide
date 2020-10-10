@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Route(value = "sandbox", layout = MainLayout.class)
-@Secured("ROLE_GG_Admin")
+@Secured("ROLE_GG_ADMIN")
 @PageTitle("Garage Guide - Sandbox")
 public class SandboxView extends VerticalLayout {
     public SandboxView(GarageService garageService,

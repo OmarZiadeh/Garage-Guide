@@ -12,7 +12,7 @@ import com.vaadin.flow.data.binder.ValidationException;
 
 // todo extend this from an abstract "UserAccountRegisterForm" for reuse by CarOwner
 public class GarageAdminRegisterForm extends VerticalLayout {
-    private TextField userName = new TextField("Desired Username");
+    private TextField username = new TextField("Desired Username");
     private PasswordField password = new PasswordField("Password");
     private PasswordField confirmPassword = new PasswordField("Confirm Password");
     private TextField firstName = new TextField("First name");
@@ -34,7 +34,7 @@ public class GarageAdminRegisterForm extends VerticalLayout {
         add(
                 new H3("Let's start with your information."),
                 new H5("We'll ask for details about your garage on the next page"),
-                userName,
+                username,
                 password,
                 confirmPassword,
                 firstName,

@@ -42,6 +42,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.authenticationProvider(authenticationProvider());
         // disable csrf, vaadin has proprietary implementation
         http.csrf().disable()
                 // CustomRequestCache saves unauthorized login attempts for redirection to login

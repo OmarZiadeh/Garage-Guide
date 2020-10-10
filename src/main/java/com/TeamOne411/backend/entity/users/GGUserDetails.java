@@ -4,30 +4,36 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 public class GGUserDetails implements UserDetails {
-    private UserAccount userAccount;
+    private User user;
 
-    public GGUserDetails(UserAccount userAccount) {
-        this.userAccount = userAccount;
+    public GGUserDetails(User user) {
+        this.user = user;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(userAccount.getRole());
-        return Arrays.asList(authority);
+        List<SimpleGrantedAuthority> authorities = new LinkedList<>();
+
+        for (Role role : user.getRoles()) {
+            authorities.add(new SimpleGrantedAuthority(role.getName()));
+        }
+
+        return authorities;
     }
 
     @Override
     public String getPassword() {
-        return userAccount.getPassword();
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return userAccount.getUserName();
+        return user.getUsername();
     }
 
     @Override
@@ -47,6 +53,6 @@ public class GGUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return userAccount.getIsEnabled();
+        return user.getIsEnabled();
     }
 }

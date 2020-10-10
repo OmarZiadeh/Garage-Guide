@@ -15,7 +15,7 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.shared.Registration;
 
 public class CarOwnerEditorForm extends FormLayout {
-    private TextField userName = new TextField("Username");
+    private TextField username = new TextField("Username");
     private TextField firstName = new TextField("First name");
     private TextField lastName = new TextField("Last name");
     private TextField emailAddress = new TextField("Email Address");
@@ -33,7 +33,7 @@ public class CarOwnerEditorForm extends FormLayout {
         addClassName("garage-employee-form");
         binder.bindInstanceFields(this);
 
-        add(userName,
+        add(username,
                 firstName,
                 lastName,
                 emailAddress,

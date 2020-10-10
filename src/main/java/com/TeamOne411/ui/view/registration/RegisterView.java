@@ -2,10 +2,7 @@ package com.TeamOne411.ui.view.registration;
 
 import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.users.GarageEmployee;
-import com.TeamOne411.backend.service.CarOwnerService;
-import com.TeamOne411.backend.service.GarageEmployeeService;
-import com.TeamOne411.backend.service.GarageService;
-import com.TeamOne411.backend.service.UserDetailsService;
+import com.TeamOne411.backend.service.*;
 import com.TeamOne411.ui.view.registration.subform.GarageAdminRegisterForm;
 import com.TeamOne411.ui.view.registration.subform.GarageCreateForm;
 import com.TeamOne411.ui.view.registration.subform.GarageEmployeeConfirmationView;
@@ -38,14 +35,10 @@ public class RegisterView extends VerticalLayout {
     private UserDetailsService userDetailsService;
 
     public RegisterView(
-            CarOwnerService carOwnerService,
-            GarageEmployeeService garageEmployeeService,
             GarageService garageService,
             UserDetailsService userDetailsService
     ) {
         // field assignments
-        this.carOwnerService = carOwnerService;
-        this.garageEmployeeService = garageEmployeeService;
         this.garageService = garageService;
         this.userDetailsService = userDetailsService;
 
@@ -102,7 +95,7 @@ public class RegisterView extends VerticalLayout {
 
     private void onComplete() {
         if (path == RegistrationPath.CAR_OWNER) {
-            // todo once car owner form is done
+            // todo once car owner form is done:
             // get carOwner
             // pass to carOwnerService for saving
             // redirect to car owner's home screen
@@ -117,8 +110,17 @@ public class RegisterView extends VerticalLayout {
                 garageService.save(garage);
 
                 garageEmployee.setGarage(garage);
-                garageEmployeeService.save(garageEmployee);
-                // todo if employee save fails, delete garage
+
+                try {
+                    userDetailsService.registerNewUserAccount(garageEmployee);
+
+                } catch (EmailExistsException emailEx) {
+                    // todo display error
+                    // todo delete garage just created
+                } catch (UsernameExistsException usernameEx) {
+                    // todo display error
+                    // todo delete garage just created
+                }
             } else {
                 // todo display error
             }

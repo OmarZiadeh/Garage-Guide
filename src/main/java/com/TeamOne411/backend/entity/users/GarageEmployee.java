@@ -8,7 +8,7 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 @Entity
-public class GarageEmployee extends UserAccount {
+public class GarageEmployee extends User {
     @NotNull
     private boolean isAdmin = false;
 

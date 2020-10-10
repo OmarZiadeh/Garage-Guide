@@ -6,14 +6,15 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.Collection;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name="discriminator")
-public abstract class UserAccount extends AbstractEntity {
+public class User extends AbstractEntity {
     @NotNull
     @NotEmpty
-    private String userName = "";
+    private String username = "";
 
     @NotNull
     @NotEmpty
@@ -21,7 +22,14 @@ public abstract class UserAccount extends AbstractEntity {
 
     private boolean isEnabled;
 
-    private String role = "";
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(
+                    name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(
+                    name = "role_id", referencedColumnName = "id"))
+    private Collection<Role> roles;
 
     @NotNull
     @NotEmpty
@@ -34,14 +42,14 @@ public abstract class UserAccount extends AbstractEntity {
     @NotNull
     @NotEmpty
     @Email
-    private String emailAddress = "";
+    private String email = "";
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String userName) {
+        this.username = userName;
     }
 
     public String getFirstName() {
@@ -60,12 +68,12 @@ public abstract class UserAccount extends AbstractEntity {
         this.lastName = lastName;
     }
 
-    public String getEmailAddress() {
-        return emailAddress;
+    public String getEmail() {
+        return email;
     }
 
-    public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
@@ -84,11 +92,11 @@ public abstract class UserAccount extends AbstractEntity {
         isEnabled = enabled;
     }
 
-    public String getRole() {
-        return role;
+    public Collection<Role> getRoles() {
+        return roles;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setRoles(Collection<Role> roles) {
+        this.roles = roles;
     }
 }
