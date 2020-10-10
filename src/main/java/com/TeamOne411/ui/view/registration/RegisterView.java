@@ -1,5 +1,9 @@
 package com.TeamOne411.ui.view.registration;
 
+import com.TeamOne411.backend.service.CarOwnerService;
+import com.TeamOne411.backend.service.GarageEmployeeService;
+import com.TeamOne411.backend.service.GarageService;
+import com.TeamOne411.backend.service.UserDetailsService;
 import com.TeamOne411.ui.view.registration.subform.GarageAdminRegisterForm;
 import com.TeamOne411.ui.view.registration.subform.GarageCreateForm;
 import com.TeamOne411.ui.view.registration.subform.GarageEmployeeConfirmationView;
@@ -22,9 +26,24 @@ public class RegisterView extends VerticalLayout {
     private Button garageAdminSelectButton = new Button("Garage Owner/Manager");
     private Button backButton = new Button("Back", new Icon(VaadinIcon.ARROW_LEFT));
     private Button nextButton = new Button("Next", new Icon(VaadinIcon.ARROW_RIGHT));
+    private Button completeButton = new Button("Complete Registration");
     private RegistrationState state = RegistrationState.USER_TYPE_SELECTION;
+    private RegistrationPath path;
+    private CarOwnerService carOwnerService;
+    private GarageEmployeeService garageEmployeeService;
+    private GarageService garageService;
+    private UserDetailsService userDetailsService;
 
-    public RegisterView() {
+    public RegisterView(
+            CarOwnerService carOwnerService,
+            GarageEmployeeService garageEmployeeService,
+            GarageService garageService,
+            UserDetailsService userDetailsService
+    ) {
+        this.carOwnerService = carOwnerService;
+        this.garageEmployeeService = garageEmployeeService;
+        this.garageService = garageService;
+        this.userDetailsService = userDetailsService;
         // initial view setup
         addClassName("register-view");
         setSizeFull();
@@ -39,23 +58,25 @@ public class RegisterView extends VerticalLayout {
         // todo can we animate the sub forms as they come in and out?
         garageAdminSelectButton.addClickListener(e -> {
             state = RegistrationState.GARAGE_ADMIN_INFO;
-            setVisibilitiesForCurrentState();
-            setBackNextButtonTextFromState();
+            setComponentAttributesForState();
+            path = RegistrationPath.GARAGE_ADMIN;
         });
 
-        setVisibilitiesForCurrentState();
-
         backButton.addClickListener(e -> {
-           state = getNextState(true);
-           setVisibilitiesForCurrentState();
-           setBackNextButtonTextFromState();
+            state = getNextState(true);
+            setComponentAttributesForState();
         });
 
         nextButton.addClickListener(e -> {
-           state = getNextState(false);
-           setVisibilitiesForCurrentState();
-           setBackNextButtonTextFromState();
+            state = getNextState(false);
+            setComponentAttributesForState();
         });
+
+        completeButton.addClickListener(e -> {
+            onComplete();
+        });
+
+        setComponentAttributesForState();
 
         // todo make next button enabled only when current form is valid
 
@@ -68,23 +89,21 @@ public class RegisterView extends VerticalLayout {
                 garageAdminRegisterForm,
                 garageCreateForm,
                 garageConfirmView,
-                new HorizontalLayout(backButton, nextButton)
+                new HorizontalLayout(backButton, nextButton, completeButton)
         );
     }
 
-    private void setInitialVisibility(boolean isInitial) {
-        userTypePrompt.setVisible(isInitial);
-        carOwnerSelectButton.setVisible(isInitial);
-        garageAdminSelectButton.setVisible(isInitial);
-        backButton.setVisible(!isInitial);
-        nextButton.setVisible(!isInitial);
-    }
-
-    private void setVisibilitiesForCurrentState() {
-        setInitialVisibility(state == RegistrationState.USER_TYPE_SELECTION);
-        garageAdminRegisterForm.setVisible(state == RegistrationState.GARAGE_ADMIN_INFO);
-        garageCreateForm.setVisible(state == RegistrationState.GARAGE_INFO);
-        garageConfirmView.setVisible(state == RegistrationState.GARAGE_CONFIRMATION);
+    private void onComplete() {
+        if (path == RegistrationPath.CAR_OWNER) {
+            // get carOwner
+            // pass to carOwnerService for saving
+            // redirect to car owner's home screen
+        } else if (path == RegistrationPath.GARAGE_ADMIN) {
+            // get garageEmployee
+            // get garage
+            // save them (in which order?)
+            // redirect to garage employee's home screen
+        }
     }
 
     private RegistrationState getNextState(boolean reverse) {
@@ -104,27 +123,23 @@ public class RegisterView extends VerticalLayout {
         }
     }
 
-    private void setBackNextButtonTextFromState() {
+    private void setComponentAttributesForState() {
         if (state == null) return;
 
-        switch (state) {
-            case CAR_OWNER_INFO:
-                backButton.setText("Back");
-                nextButton.setText("Complete Registration");
-                break;
-            case GARAGE_ADMIN_INFO:
-                backButton.setText("Back");
-                nextButton.setText("Enter Garage Info");
-                break;
-            case GARAGE_INFO:
-                backButton.setText("Edit My Info");
-                nextButton.setText("Confirm Details");
-                break;
-            case GARAGE_CONFIRMATION:
-                backButton.setText("Edit Garage Info");
-                nextButton.setText("Complete Registration");
-                break;
-        }
+        // initial screen visibility
+        userTypePrompt.setVisible(state == RegistrationState.USER_TYPE_SELECTION);
+        carOwnerSelectButton.setVisible(state == RegistrationState.USER_TYPE_SELECTION);
+        garageAdminSelectButton.setVisible(state == RegistrationState.USER_TYPE_SELECTION);
+
+        // form and subview visibilities
+        garageAdminRegisterForm.setVisible(state == RegistrationState.GARAGE_ADMIN_INFO);
+        garageCreateForm.setVisible(state == RegistrationState.GARAGE_INFO);
+        garageConfirmView.setVisible(state == RegistrationState.GARAGE_CONFIRMATION);
+
+        // button visibilities
+        backButton.setVisible(state != RegistrationState.USER_TYPE_SELECTION);
+        nextButton.setVisible(state != RegistrationState.USER_TYPE_SELECTION && state != RegistrationState.GARAGE_CONFIRMATION);
+        completeButton.setVisible(state == RegistrationState.GARAGE_CONFIRMATION);
     }
 
     private enum RegistrationState {
@@ -133,5 +148,10 @@ public class RegisterView extends VerticalLayout {
         GARAGE_ADMIN_INFO,
         GARAGE_INFO,
         GARAGE_CONFIRMATION,
+    }
+
+    private enum RegistrationPath {
+        CAR_OWNER,
+        GARAGE_ADMIN
     }
 }
