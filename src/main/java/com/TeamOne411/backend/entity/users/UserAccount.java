@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name="role")
+@DiscriminatorColumn(name="discriminator")
 public abstract class UserAccount extends AbstractEntity {
     @NotNull
     @NotEmpty
@@ -76,11 +76,11 @@ public abstract class UserAccount extends AbstractEntity {
         this.password = password;
     }
 
-    public boolean isEnabled() {
+    public boolean getIsEnabled() {
         return isEnabled;
     }
 
-    public void setEnabled(boolean enabled) {
+    public void setIsEnabled(boolean enabled) {
         isEnabled = enabled;
     }
 

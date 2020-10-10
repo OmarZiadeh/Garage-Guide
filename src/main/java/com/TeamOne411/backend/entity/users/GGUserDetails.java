@@ -47,6 +47,6 @@ public class GGUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return userAccount.isEnabled();
+        return userAccount.getIsEnabled();
     }
 }

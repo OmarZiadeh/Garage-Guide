@@ -1,5 +1,7 @@
 package com.TeamOne411.ui.view.registration;
 
+import com.TeamOne411.backend.entity.Garage;
+import com.TeamOne411.backend.entity.users.GarageEmployee;
 import com.TeamOne411.backend.service.CarOwnerService;
 import com.TeamOne411.backend.service.GarageEmployeeService;
 import com.TeamOne411.backend.service.GarageService;
@@ -8,6 +10,7 @@ import com.TeamOne411.ui.view.registration.subform.GarageAdminRegisterForm;
 import com.TeamOne411.ui.view.registration.subform.GarageCreateForm;
 import com.TeamOne411.ui.view.registration.subform.GarageEmployeeConfirmationView;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.Icon;
@@ -40,16 +43,20 @@ public class RegisterView extends VerticalLayout {
             GarageService garageService,
             UserDetailsService userDetailsService
     ) {
+        // field assignments
         this.carOwnerService = carOwnerService;
         this.garageEmployeeService = garageEmployeeService;
         this.garageService = garageService;
         this.userDetailsService = userDetailsService;
+
         // initial view setup
         addClassName("register-view");
         setSizeFull();
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
         nextButton.setIconAfterText(true);
+        nextButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        completeButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         // coming soon
         carOwnerSelectButton.setEnabled(false);
@@ -95,14 +102,26 @@ public class RegisterView extends VerticalLayout {
 
     private void onComplete() {
         if (path == RegistrationPath.CAR_OWNER) {
+            // todo once car owner form is done
             // get carOwner
             // pass to carOwnerService for saving
             // redirect to car owner's home screen
         } else if (path == RegistrationPath.GARAGE_ADMIN) {
-            // get garageEmployee
-            // get garage
-            // save them (in which order?)
-            // redirect to garage employee's home screen
+            // get the employee and the garage from their forms
+            GarageEmployee garageEmployee = garageAdminRegisterForm.getValidGarageEmployee();
+            Garage garage = garageCreateForm.getValidGarage();
+
+            // they should be valid if they aren't null
+            if (garageEmployee != null && garage != null) {
+                // save the garage first because the employee has dependency
+                garageService.save(garage);
+
+                garageEmployee.setGarage(garage);
+                garageEmployeeService.save(garageEmployee);
+                // todo if employee save fails, delete garage
+            } else {
+                // todo display error
+            }
         }
     }
 
