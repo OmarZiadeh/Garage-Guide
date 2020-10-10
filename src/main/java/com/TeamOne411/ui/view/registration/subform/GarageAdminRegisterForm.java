@@ -17,7 +17,7 @@ public class GarageAdminRegisterForm extends VerticalLayout {
     private PasswordField confirmPassword = new PasswordField("Confirm Password");
     private TextField firstName = new TextField("First name");
     private TextField lastName = new TextField("Last name");
-    private TextField emailAddress = new TextField("Email Address");
+    private TextField email = new TextField("Email Address");
 
     Binder<GarageEmployee> binder = new BeanValidationBinder<>(GarageEmployee.class);
     private GarageEmployee garageEmployee = new GarageEmployee();
@@ -39,7 +39,7 @@ public class GarageAdminRegisterForm extends VerticalLayout {
                 confirmPassword,
                 firstName,
                 lastName,
-                emailAddress
+                email
         );
     }
 
