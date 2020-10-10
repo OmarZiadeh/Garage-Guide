@@ -4,7 +4,6 @@ import com.TeamOne411.backend.entity.servicecatalog.InitialList;
 import com.TeamOne411.backend.entity.servicecatalog.OfferedService;
 import com.TeamOne411.backend.entity.servicecatalog.ServiceCategory;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,7 +20,7 @@ public class InitialListService extends ServiceCatalogService{
         serviceCategories = InitialList.createCategories();
         offeredServices = InitialList.createServices(serviceCategories);
         nextServiceId = offeredServices.size() + 1;
-        nextCategoryId = serviceCategories.size()+1;
+        nextCategoryId = serviceCategories.size() + 1;
     }
 
     public synchronized static ServiceCatalogService getInstance() {
@@ -32,42 +31,70 @@ public class InitialListService extends ServiceCatalogService{
     }
 
     @Override
-    public Collection<OfferedService> getAllOfferedServices() {
+    public synchronized List<OfferedService> getAllOfferedServices() {
         return Collections.unmodifiableList(offeredServices);
     }
 
     @Override
-    public Collection<ServiceCategory> getAllCategories() {
+    public synchronized List<ServiceCategory> getAllCategories() {
         return Collections.unmodifiableList(serviceCategories);
     }
 
-    /*
-    TODO -- MUST FINISH COPYING AND MODIFYING FROM BOOKSTORE - MockDataService class
-     */
-
-
     @Override
-    public void updateOfferedService(OfferedService offeredService) {
+    public synchronized void updateOfferedService(OfferedService offeredService) {
+
+        if (offeredService.getId() < 0) {
+            // New product
+            offeredService.setId(nextServiceId++);
+            offeredServices.add(offeredService);
+            return;
+        }
+        for (int i = 0; i < offeredServices.size(); i++) {
+            if (offeredServices.get(i).getId() == offeredService.getId()) {
+                offeredServices.set(i, offeredService);
+                return;
+            }
+        }
+
+        throw new IllegalArgumentException("No service with id " + offeredService.getId()
+                + " found");
 
     }
 
     @Override
-    public void deleteOfferedService(int offeredServiceId) {
-
+    public synchronized void deleteOfferedService(int offeredServiceId) {
+        OfferedService offeredService = getOfferedServiceById(offeredServiceId);
+        if (offeredService == null) {
+            throw new IllegalArgumentException("Service with id " + offeredServiceId
+                    + " not found");
+        }
+        offeredServices.remove(offeredService);
     }
 
     @Override
-    public OfferedService getOfferedServiceById(int offeredServiceId) {
+    public synchronized OfferedService getOfferedServiceById(int offeredServiceId) {
+        for (int i = 0; i < offeredServices.size(); i++) {
+            if (offeredServices.get(i).getId() == offeredServiceId) {
+                return offeredServices.get(i);
+            }
+        }
         return null;
     }
 
     @Override
     public void updateServiceCategory(ServiceCategory serviceCategory) {
-
+        if (serviceCategory.getId() < 0) {
+            serviceCategory.setId(nextCategoryId++);
+            serviceCategories.add(serviceCategory);
+        }
     }
 
     @Override
     public void deleteServiceCategory(int categoryId) {
-
+        if (serviceCategories.removeIf(category -> category.getId() == categoryId)) {
+            getAllOfferedServices().forEach(offeredService -> {
+                offeredService.getServiceCategory().removeIf(category -> category.getId() == categoryId);
+            });
+        }
     }
 }
