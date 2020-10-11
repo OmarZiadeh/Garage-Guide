@@ -1,6 +1,6 @@
 package com.TeamOne411.backend.service;
 
-import com.TeamOne411.backend.entity.servicecatalog.InitialList;
+import com.TeamOne411.backend.entity.servicecatalog.DefaultCatalog;
 import com.TeamOne411.backend.entity.servicecatalog.OfferedService;
 import com.TeamOne411.backend.entity.servicecatalog.ServiceCategory;
 
@@ -17,15 +17,15 @@ public class InitialListService extends ServiceCatalogService{
     private int nextCategoryId = 0;
 
     public InitialListService() {
-       /* Commented out until method can be rewritten
 
-        serviceCategories = InitialList.createCategories();
-        offeredServices = InitialList.createServices(serviceCategories);
+
+        serviceCategories = DefaultCatalog.createCategories();
+        //offeredServices = InitialList.createServices(serviceCategories);
         nextServiceId = offeredServices.size() + 1;
         nextCategoryId = serviceCategories.size() + 1;
 
 
-        */
+
     }
 
     public synchronized static ServiceCatalogService getInstance() {

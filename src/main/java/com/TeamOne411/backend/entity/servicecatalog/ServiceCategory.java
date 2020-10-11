@@ -13,6 +13,7 @@ public class ServiceCategory implements Serializable {
     @Size(min = 2, message = "Category name must be at least two characters")
     private String name;
 
+
     public int getId() {
         return id;
     }
@@ -32,7 +33,7 @@ public class ServiceCategory implements Serializable {
 
     /*
     TODO: Need to determine if this method is needed or not.
-     Why do we need this method 'toString' when there is already a getName method up above?
+     Why do we need this method 'toString' when there is already the getName() method up above?
      */
     @Override
     public String toString() {

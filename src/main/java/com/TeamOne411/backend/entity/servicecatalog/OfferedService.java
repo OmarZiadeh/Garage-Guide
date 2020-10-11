@@ -24,14 +24,12 @@ public class OfferedService implements Serializable {
 
     /*
     TODO: This may not be the appropriate data type for duration.
-     Need to access what would work best with the schedule and appointment booking functionality.
+     Need to assess what would work best with the schedule and appointment booking functionality.
      */
     @Min(0)
     private BigDecimal duration = BigDecimal.ZERO;
     @NotNull
     private ServiceCategory serviceCategory;
-
-
 
 
     public int getId() {
@@ -68,6 +66,7 @@ public class OfferedService implements Serializable {
     public BigDecimal getDuration() {
         return duration;
     }
+
 
     public BigDecimal getPrice() {
         return price;
