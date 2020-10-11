@@ -1,6 +1,7 @@
 package com.TeamOne411.ui.view.registration.subform;
 
 import com.TeamOne411.backend.entity.users.GarageEmployee;
+import com.TeamOne411.backend.service.UserDetailsService;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Key;
@@ -32,11 +33,15 @@ public class GarageAdminRegisterForm extends VerticalLayout {
     private Button backButton = new Button("Back To User Selection", new Icon(VaadinIcon.ARROW_LEFT));
     private Button nextButton = new Button("Enter Garage Info", new Icon(VaadinIcon.ARROW_RIGHT));
     private ShortcutRegistration enterKeyRegistration;
+    private UserDetailsService userDetailsService;
 
     Binder<GarageEmployee> binder = new BeanValidationBinder<>(GarageEmployee.class);
     private GarageEmployee garageEmployee = new GarageEmployee();
 
-    public GarageAdminRegisterForm() {
+    public GarageAdminRegisterForm(UserDetailsService userDetailsService) {
+
+        this.userDetailsService = userDetailsService;
+
         // initial view setup
         addClassName("garage-admin-view");
         setSizeFull();
@@ -50,6 +55,9 @@ public class GarageAdminRegisterForm extends VerticalLayout {
         // set button click listeners
         backButton.addClickListener(e -> fireEvent(new BackEvent(this)));
         nextButton.addClickListener(e -> validateAndFireNext());
+
+        // hook up username fields to validator
+        username.addValueChangeListener(e -> validateUsername());
 
         // hook up password fields to validator
         password.addValueChangeListener(e -> validatePasswordFields());
@@ -70,16 +78,33 @@ public class GarageAdminRegisterForm extends VerticalLayout {
     }
 
     private boolean validateUsername() {
-        // todo check for uniqueness
-        // todo add minimum length and character restrictions
-        return !username.isEmpty();
+        String user = username.getValue();
+        if (userDetailsService.isUserExisting(user)){
+            username.setErrorMessage("Username already taken!");
+            username.setInvalid(true);
+            return false;
+        }
+        // todo add character restrictions
+        if(user.length() < 3 || user.length() > 15){
+            username.setErrorMessage("Username must be within 3 to 15 characters!");
+            username.setInvalid(true);
+            return false;
+        }
+        if (username.isEmpty()){
+            username.setErrorMessage("Username can't be blank!");
+            username.setInvalid(true);
+            return false;
+        }
+
+        username.setInvalid(false);
+        return true;
     }
 
     private boolean validatePasswordFields() {
-        // todo add restrictions on password length etc.
 
+        String pass = password.getValue();
         // make sure the passwords match
-        if (!password.getValue().equals(confirmPassword.getValue())) {
+        if (!pass.equals(confirmPassword.getValue())) {
             // only set error message if confirm password field isn't empty
             if (!confirmPassword.isEmpty()) {
                 confirmPassword.setErrorMessage("Passwords don't match!");
@@ -89,6 +114,14 @@ public class GarageAdminRegisterForm extends VerticalLayout {
             return false;
         }
 
+        //make sure password length is valid
+        if(pass.length() < 8 || pass.length() > 150){
+            password.setErrorMessage("Password must be at least 8 characters!");
+            password.setInvalid(true);
+            return false;
+        }
+
+        password.setInvalid(false);
         confirmPassword.setInvalid(false);
         return true;
     }

@@ -34,6 +34,11 @@ public class UserDetailsService implements org.springframework.security.core.use
         return new GGUserDetails(user);
     }
 
+    public boolean isUserExisting(String username){
+        //if user does not exist, return false
+        return  userRepository.findByUsername(username) != null;
+    }
+
     private Collection<? extends GrantedAuthority> getAuthorities(
             Collection<Role> roles) {
 

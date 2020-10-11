@@ -19,13 +19,12 @@ import com.vaadin.flow.router.Route;
 
 @Route(value = "register")
 public class RegisterView extends VerticalLayout {
-    private GarageAdminRegisterForm garageAdminRegisterForm = new GarageAdminRegisterForm();
+    private GarageAdminRegisterForm garageAdminRegisterForm;
     private GarageCreateForm garageCreateForm = new GarageCreateForm();
     private GarageEmployeeConfirmationView garageConfirmView = new GarageEmployeeConfirmationView();
     private H3 userTypePrompt = new H3("I am a...");
     private Button carOwnerSelectButton = new Button("Car Owner (coming soon)");
     private Button garageAdminSelectButton = new Button("Garage Owner/Manager");
-    private Button completeButton = new Button("Complete Registration");
     private RegistrationState state = RegistrationState.USER_TYPE_SELECTION;
     private RegistrationPath path;
     private GarageService garageService;
@@ -38,13 +37,13 @@ public class RegisterView extends VerticalLayout {
         // field assignments
         this.garageService = garageService;
         this.userDetailsService = userDetailsService;
+        this.garageAdminRegisterForm= new GarageAdminRegisterForm(userDetailsService);
 
         // initial view setup
         addClassName("register-view");
         setSizeFull();
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
-        completeButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         setComponentAttributesForState();
 
         // coming soon
