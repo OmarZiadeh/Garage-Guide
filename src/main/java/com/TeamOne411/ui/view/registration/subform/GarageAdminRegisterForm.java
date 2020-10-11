@@ -101,6 +101,7 @@ public class GarageAdminRegisterForm extends VerticalLayout {
     }
 
     private boolean validatePasswordFields() {
+        boolean validFlag = true;
 
         String pass = password.getValue();
         // make sure the passwords match
@@ -108,22 +109,20 @@ public class GarageAdminRegisterForm extends VerticalLayout {
             // only set error message if confirm password field isn't empty
             if (!confirmPassword.isEmpty()) {
                 confirmPassword.setErrorMessage("Passwords don't match!");
-                confirmPassword.setInvalid(true);
             }
 
-            return false;
+            validFlag = false;
         }
 
         //make sure password length is valid
         if(pass.length() < 8 || pass.length() > 150){
             password.setErrorMessage("Password must be at least 8 characters!");
-            password.setInvalid(true);
-            return false;
+            validFlag = false;
         }
 
-        password.setInvalid(false);
-        confirmPassword.setInvalid(false);
-        return true;
+        password.setInvalid(!validFlag);
+        confirmPassword.setInvalid(!validFlag);
+        return validFlag;
     }
 
     private boolean validateFirstName() {
