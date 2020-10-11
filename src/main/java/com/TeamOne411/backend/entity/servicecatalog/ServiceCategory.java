@@ -29,6 +29,11 @@ public class ServiceCategory implements Serializable {
         this.name = name;
     }
 
+
+    /*
+    TODO: Need to determine if this method is needed or not.
+     Why do we need this method 'toString' when there is already a getName method up above?
+     */
     @Override
     public String toString() {
         return getName();

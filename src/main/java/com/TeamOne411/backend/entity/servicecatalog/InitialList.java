@@ -11,10 +11,12 @@ public class InitialList {
 
     private static int nextCategoryId = 1;
     private static int nextServiceId = 1;
-    private static final Random random = new Random(1);
+
     /*
     TODO Rewrite class to create an OfferedService with a specific ServiceCategory - get rid of the bookstore demo randomizer
      */
+
+
 
     private static final String[] categoryNames = new String[] {
             "Children's books", "Best sellers", "Romance", "Mystery",
@@ -38,6 +40,9 @@ public class InitialList {
             "speaking to a big audience", "creating software", "giant needles",
             "elephants", "keeping your wife happy" };
 
+    /*  Commented out temporarily until these methods can be revised as part of the class rewrite
+
+
     public static List<ServiceCategory> createCategories() {
         List<ServiceCategory> serviceCategories = new ArrayList<ServiceCategory>();
         for (String name : categoryNames) {
@@ -48,30 +53,31 @@ public class InitialList {
 
     }
 
-    public static List<OfferedService> createServices(List<ServiceCategory> serviceCategories) {
-        List<OfferedService> offeredServices = new ArrayList<OfferedService>();
-        for (int i = 0; i < 100; i++) {
-            OfferedService offeredService = createOfferedService(serviceCategories);
-            offeredServices.add(offeredService);
+        public static List<OfferedService> createServices(List<ServiceCategory> serviceCategories) {
+            List<OfferedService> offeredServices = new ArrayList<OfferedService>();
+            for (int i = 0; i < 100; i++) {
+                OfferedService offeredService = createOfferedService(serviceCategories);
+                offeredServices.add(offeredService);
+            }
+            return offeredServices;
         }
-        return offeredServices;
-    }
 
-    private static ServiceCategory createCategory(String name) {
-        ServiceCategory c = new ServiceCategory();
-        c.setId(nextCategoryId++);
-        c.setName(name);
-        return c;
-    }
+        private static ServiceCategory createCategory(String name) {
+            ServiceCategory c = new ServiceCategory();
+            c.setId(nextCategoryId++);
+            c.setName(name);
+            return c;
+        }
 
-    private static OfferedService createOfferedService(List<ServiceCategory> categories) {
-        OfferedService offeredService = new OfferedService();
-        offeredService.setId(nextServiceId++);
-        offeredService.setServiceName(generateName());
-        offeredService.setPrice(new BigDecimal((random.nextInt(250) + 50) / 10.0));
-        offeredService.setCategory(getCategory(categories, 1, 2));
-        return offeredService;
-    }
+
+        private static OfferedService createOfferedService(List<ServiceCategory> categories) {
+            OfferedService offeredService = new OfferedService();
+            offeredService.setId(nextServiceId++);
+            offeredService.setServiceName(generateName());
+            offeredService.setPrice(new BigDecimal((random.nextInt(250) + 50) / 10.0));
+            offeredService.setCategory(getCategory(categories, 1, 2));
+            return offeredService;
+        }
 
     private static Set<ServiceCategory> getCategory(List<ServiceCategory> categories,
                                              int min, int max) {
@@ -89,5 +95,5 @@ public class InitialList {
         return word1[random.nextInt(word1.length)] + " "
                 + word2[random.nextInt(word2.length)];
     }
-
+ */
 }

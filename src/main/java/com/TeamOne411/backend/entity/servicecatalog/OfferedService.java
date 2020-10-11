@@ -16,9 +16,23 @@ public class OfferedService implements Serializable {
     @NotNull
     @Size(min = 2, message = "Service name must have at least two characters")
     private String serviceName = "";
+    @NotNull
+    @Size(min = 2, message = "Service description must have at least two characters")
+    private String serviceDescription = "";
     @Min(0)
     private BigDecimal price = BigDecimal.ZERO;
-    private Set<ServiceCategory> serviceCategory;
+
+    /*
+    TODO: This may not be the appropriate data type for duration.
+     Need to access what would work best with the schedule and appointment booking functionality.
+     */
+    @Min(0)
+    private BigDecimal duration = BigDecimal.ZERO;
+    @NotNull
+    private ServiceCategory serviceCategory;
+
+
+
 
     public int getId() {
         return id;
@@ -36,6 +50,25 @@ public class OfferedService implements Serializable {
         this.serviceName = serviceName;
     }
 
+    /*
+    TODO: Add set and get functions to the calling function which creates the Offered Service.
+     */
+    public String getServiceDescription(){ return serviceDescription; }
+
+
+    public void setServiceDescription(String serviceDescription) {
+        this.serviceDescription = serviceDescription;
+    }
+
+    /*
+    TODO: Add set and get functions to calling function which creates the Offered Service.
+     */
+    public void setDuration(BigDecimal duration) { this.duration = duration; }
+
+    public BigDecimal getDuration() {
+        return duration;
+    }
+
     public BigDecimal getPrice() {
         return price;
     }
@@ -44,11 +77,11 @@ public class OfferedService implements Serializable {
         this.price = price;
     }
 
-    public Set<ServiceCategory> getServiceCategory() {
+    public ServiceCategory getServiceCategory() {
         return serviceCategory;
     }
 
-    public void setCategory(Set<ServiceCategory> serviceCategory) {
+    public void setServiceCategory(ServiceCategory serviceCategory) {
         this.serviceCategory = serviceCategory;
     }
     

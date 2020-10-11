@@ -17,10 +17,15 @@ public class InitialListService extends ServiceCatalogService{
     private int nextCategoryId = 0;
 
     public InitialListService() {
+       /* Commented out until method can be rewritten
+
         serviceCategories = InitialList.createCategories();
         offeredServices = InitialList.createServices(serviceCategories);
         nextServiceId = offeredServices.size() + 1;
         nextCategoryId = serviceCategories.size() + 1;
+
+
+        */
     }
 
     public synchronized static ServiceCatalogService getInstance() {
@@ -91,10 +96,16 @@ public class InitialListService extends ServiceCatalogService{
 
     @Override
     public void deleteServiceCategory(int categoryId) {
+        /*  Commented out until method can be rewritten
+
         if (serviceCategories.removeIf(category -> category.getId() == categoryId)) {
             getAllOfferedServices().forEach(offeredService -> {
                 offeredService.getServiceCategory().removeIf(category -> category.getId() == categoryId);
             });
+
+
         }
+         */
+
     }
 }
