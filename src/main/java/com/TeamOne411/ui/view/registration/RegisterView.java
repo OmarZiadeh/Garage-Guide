@@ -20,7 +20,7 @@ import com.vaadin.flow.router.Route;
 public class RegisterView extends VerticalLayout {
     private GarageAdminRegisterForm garageAdminRegisterForm;
     private GarageCreateForm garageCreateForm = new GarageCreateForm();
-    private GarageEmployeeConfirmationView garageConfirmView = new GarageEmployeeConfirmationView();
+    private GarageEmployeeConfirmationView garageConfirmView;
     private H3 userTypePrompt = new H3("I am a...");
     private Button carOwnerSelectButton = new Button("Car Owner (coming soon)");
     private Button garageAdminSelectButton = new Button("Garage Owner/Manager");
@@ -36,7 +36,8 @@ public class RegisterView extends VerticalLayout {
         // field assignments
         this.garageService = garageService;
         this.userDetailsService = userDetailsService;
-        this.garageAdminRegisterForm= new GarageAdminRegisterForm(userDetailsService);
+        this.garageAdminRegisterForm = new GarageAdminRegisterForm(userDetailsService);
+        this.garageConfirmView = new GarageEmployeeConfirmationView();
 
         // initial view setup
         addClassName("register-view");
@@ -63,7 +64,6 @@ public class RegisterView extends VerticalLayout {
         garageCreateForm.addListener(GarageCreateForm.NextEvent.class, this::nextClick);
         garageConfirmView.addListener(GarageEmployeeConfirmationView.BackEvent.class, this::backClick);
         garageConfirmView.addListener(GarageEmployeeConfirmationView.NextEvent.class, this::onComplete);
-
 
         // todo make next button enabled only when current form is valid
 
@@ -117,6 +117,10 @@ public class RegisterView extends VerticalLayout {
         garageAdminRegisterForm.setEnterShortcutRegistration(state == RegistrationState.GARAGE_ADMIN_INFO);
         garageCreateForm.setEnterShortcutRegistration(state == RegistrationState.GARAGE_INFO);
         garageConfirmView.setEnterShortcutRegistration(state == RegistrationState.GARAGE_CONFIRMATION);
+
+        if (state == RegistrationState.GARAGE_CONFIRMATION) {
+            garageConfirmView.setEntitiesForConfirmation(garageAdminRegisterForm.getValidGarageEmployee(), garageCreateForm.getValidGarage());
+        }
     }
 
     private void backClick(ComponentEvent event) {
