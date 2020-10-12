@@ -1,11 +1,7 @@
 package com.TeamOne411.backend.entity.servicecatalog;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 /**
  * This class generates a default service catalog for the garage
@@ -32,7 +28,8 @@ public class DefaultCatalog {
 
 
     //TODO finish list of services....but need to figure out how the defaulting will work first.
-    private static String[] defaultServices = new String[] {"Oil Change", "Vehicle Health Check"};
+    private static String[] defaultServices = new String[] { "test"};
+
 
 
     /**

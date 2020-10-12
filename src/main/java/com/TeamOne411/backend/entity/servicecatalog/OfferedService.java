@@ -16,8 +16,6 @@ public class OfferedService implements Serializable {
     @NotNull
     @Size(min = 2, message = "Service name must have at least two characters")
     private String serviceName = "";
-    @NotNull
-    @Size(min = 2, message = "Service description must have at least two characters")
     private String serviceDescription = "";
     @Min(0)
     private BigDecimal price = BigDecimal.ZERO;
