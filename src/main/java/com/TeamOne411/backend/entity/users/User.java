@@ -1,6 +1,7 @@
 package com.TeamOne411.backend.entity.users;
 
 import com.TeamOne411.backend.entity.AbstractEntity;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -14,10 +15,12 @@ import java.util.Collection;
 public class User extends AbstractEntity {
     @NotNull
     @NotEmpty
+    @Length(min = 3, max = 15, message = "Username must be between 3 and 15 characters.")
     private String username = "";
 
     @NotNull
-    @NotEmpty
+    @NotEmpty(message = "Password can't be empty.")
+    @Length(min = 8, max = 150, message = "Password must be at least 8 characters.")
     private String password = "";
 
     private boolean isEnabled;
@@ -32,16 +35,16 @@ public class User extends AbstractEntity {
     private Collection<Role> roles;
 
     @NotNull
-    @NotEmpty
+    @NotEmpty(message = "First name can't be empty.")
     private String firstName = "";
 
     @NotNull
-    @NotEmpty
+    @NotEmpty(message = "Last name can't be empty.")
     private String lastName = "";
 
     @NotNull
-    @NotEmpty
-    @Email
+    @NotEmpty(message = "Email address can't be empty.")
+    @Email(message = "Email address must be valid format.")
     private String email = "";
 
     public String getUsername() {

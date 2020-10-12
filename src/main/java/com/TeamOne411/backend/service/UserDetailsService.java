@@ -34,9 +34,14 @@ public class UserDetailsService implements org.springframework.security.core.use
         return new GGUserDetails(user);
     }
 
-    public boolean isUserExisting(String username){
+    public boolean isUsernameExisting(String username){
         //if user does not exist, return false
         return  userRepository.findByUsername(username) != null;
+    }
+
+    public boolean isEmailExisting(String email){
+        //if email does not exist, return false
+        return  userRepository.findByEmail(email) != null;
     }
 
     private Collection<? extends GrantedAuthority> getAuthorities(
@@ -68,13 +73,13 @@ public class UserDetailsService implements org.springframework.security.core.use
 
     public User registerNewUser(User user) throws EmailExistsException, UsernameExistsException {
         // check for unique email address
-        if (emailExists(user.getEmail())) {
+        if (isEmailExisting(user.getEmail())) {
             throw new EmailExistsException(
                     "There is already an account with that email address:" + user.getEmail());
         }
 
         // check for unique username
-        if (usernameExists(user.getUsername())) {
+        if (isUsernameExisting(user.getUsername())) {
             throw new UsernameExistsException(
                     "There is already an account with that username:" + user.getUsername());
         }
@@ -100,13 +105,4 @@ public class UserDetailsService implements org.springframework.security.core.use
 
         return userRepository.save(user);
     }
-
-    private boolean emailExists(String emailAddress) {
-        return userRepository.findByEmail(emailAddress) != null;
-    }
-
-    private boolean usernameExists(String username) {
-        return userRepository.findByUsername(username) != null;
-    }
-
 }

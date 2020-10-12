@@ -22,16 +22,21 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.shared.Registration;
 
+import javax.validation.constraints.NotEmpty;
+
 // todo extend this from an abstract "UserAccountRegisterForm" for reuse by CarOwner
 public class GarageAdminRegisterForm extends VerticalLayout {
     private TextField username = new TextField("Desired Username");
     private PasswordField password = new PasswordField("Password");
-    private PasswordField confirmPassword = new PasswordField("Confirm Password");
     private TextField firstName = new TextField("First name");
     private TextField lastName = new TextField("Last name");
     private TextField email = new TextField("Email Address");
     private Button backButton = new Button("Back To User Selection", new Icon(VaadinIcon.ARROW_LEFT));
     private Button nextButton = new Button("Enter Garage Info", new Icon(VaadinIcon.ARROW_RIGHT));
+
+    @NotEmpty(message = "Please enter your password again to confirm.")
+    private PasswordField confirmPassword = new PasswordField("Confirm Password");
+
     private ShortcutRegistration enterKeyRegistration;
     private UserDetailsService userDetailsService;
 
@@ -56,13 +61,21 @@ public class GarageAdminRegisterForm extends VerticalLayout {
         backButton.addClickListener(e -> fireEvent(new BackEvent(this)));
         nextButton.addClickListener(e -> validateAndFireNext());
 
-        // hook up username fields to validator
+        // hook up username field to validator
+        username.setValueChangeMode(ValueChangeMode.LAZY);
         username.addValueChangeListener(e -> validateUsername());
+
+        // hook up email field to validator
+        email.setValueChangeMode(ValueChangeMode.LAZY);
+        email.addValueChangeListener(e -> validateEmailField());
 
         // hook up password fields to validator
         password.addValueChangeListener(e -> validatePasswordFields());
         confirmPassword.setValueChangeMode(ValueChangeMode.LAZY);
         confirmPassword.addValueChangeListener(e -> validatePasswordFields());
+
+        firstName.setValueChangeMode(ValueChangeMode.LAZY);
+        lastName.setValueChangeMode(ValueChangeMode.LAZY);
 
         add(
                 new H3("Let's start with your information."),
@@ -78,74 +91,47 @@ public class GarageAdminRegisterForm extends VerticalLayout {
     }
 
     private boolean validateUsername() {
-        String user = username.getValue();
-        if (userDetailsService.isUserExisting(user)){
+        if (userDetailsService.isUsernameExisting(username.getValue())){
             username.setErrorMessage("Username already taken!");
             username.setInvalid(true);
             return false;
         }
-        // todo add character restrictions
-        if(user.length() < 3 || user.length() > 15){
-            username.setErrorMessage("Username must be within 3 to 15 characters!");
-            username.setInvalid(true);
-            return false;
-        }
-        if (username.isEmpty()){
-            username.setErrorMessage("Username can't be blank!");
-            username.setInvalid(true);
-            return false;
-        }
 
-        username.setInvalid(false);
-        return true;
+        return !username.isInvalid();
     }
 
     private boolean validatePasswordFields() {
-        boolean validFlag = true;
-
-        String pass = password.getValue();
         // make sure the passwords match
-        if (!pass.equals(confirmPassword.getValue())) {
+        if (!password.getValue().equals(confirmPassword.getValue())) {
             // only set error message if confirm password field isn't empty
             if (!confirmPassword.isEmpty()) {
                 confirmPassword.setErrorMessage("Passwords don't match!");
+                confirmPassword.setInvalid(true);
             }
-
-            validFlag = false;
+            return false;
         }
 
-        //make sure password length is valid
-        if(pass.length() < 8 || pass.length() > 150){
-            password.setErrorMessage("Password must be at least 8 characters!");
-            validFlag = false;
-        }
-
-        password.setInvalid(!validFlag);
-        confirmPassword.setInvalid(!validFlag);
-        return validFlag;
-    }
-
-    private boolean validateFirstName() {
-        // todo add minimum length and character restrictions
-        return !firstName.isEmpty();
-    }
-
-    private boolean validateLastName() {
-        // todo add minimum length and character restrictions
-        return !lastName.isEmpty();
+        confirmPassword.setInvalid(false);
+        return !password.isInvalid();
     }
 
     private boolean validateEmailField() {
-        // todo check for uniqueness
+        // check to make sure the email doesn't already exist
+        if (userDetailsService.isEmailExisting(email.getValue())){
+            email.setErrorMessage("An account with this email address already exists!");
+            email.setInvalid(true);
+            return false;
+        }
+
         return !email.isInvalid();
     }
 
     private void validateAndFireNext() {
+        binder.validate();
         if (!validateUsername()) return;
         if (!validatePasswordFields()) return;
-        if (!validateFirstName()) return;
-        if (!validateLastName()) return;
         if (!validateEmailField()) return;
+        if (!binder.isValid()) return;
         fireEvent(new NextEvent(this));
     }
 

@@ -48,7 +48,6 @@ public class GarageCreateForm extends VerticalLayout {
 
         phoneNumber.setValueChangeMode(ValueChangeMode.LAZY);
         phoneNumber.setPlaceholder("555-555-5555");
-        phoneNumber.addValueChangeListener(e -> validatePhoneNumber());
 
         add(
                 new H3("Tell us about your garage"),
@@ -60,32 +59,9 @@ public class GarageCreateForm extends VerticalLayout {
         );
     }
 
-    private boolean validateCompanyName() {
-        return !companyName.isEmpty();
-    }
-
-    private boolean validatePhoneNumber() {
-        if (!phoneNumber.isEmpty()) {
-            if (!phoneNumber.getValue().matches("^\\d{3}-\\d{3}-\\d{4}$")) {
-                phoneNumber.setErrorMessage("Phone number must be in the format: 555-555-5555");
-                phoneNumber.setInvalid(true);
-            } else {
-                phoneNumber.setInvalid(false);
-            }
-        }
-
-        return true;
-    }
-
-    private boolean validateAddress() {
-        // todo come up with a good address validation method (external api?)
-        return !companyName.isEmpty();
-    }
-
     private void validateAndFireNext() {
-        if (!validateCompanyName()) return;
-        if (!validatePhoneNumber()) return;
-        if (!validateAddress()) return;
+        binder.validate();
+        if (!binder.isValid()) return;
         fireEvent(new GarageCreateForm.NextEvent(this));
     }
 
