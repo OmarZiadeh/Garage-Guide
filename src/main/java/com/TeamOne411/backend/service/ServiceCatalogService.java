@@ -9,6 +9,7 @@ import java.util.Collection;
 /**
  * Back-end service interface for retrieving and updating service catalog data.
  */
+//TODO combine this with the SRS class and eliminate an unnecessary abstract class
 public abstract class ServiceCatalogService implements Serializable {
 
     public abstract Collection<OfferedService> getAllOfferedServices();
@@ -26,7 +27,7 @@ public abstract class ServiceCatalogService implements Serializable {
     public abstract void deleteServiceCategory(int categoryId);
 
     public static ServiceCatalogService get() {
-        return InitialListService.getInstance();
+        return SCS.getInstance();
     }
 
 }

@@ -7,30 +7,28 @@ import com.TeamOne411.backend.entity.servicecatalog.ServiceCategory;
 import java.util.Collections;
 import java.util.List;
 
-public class InitialListService extends ServiceCatalogService{
 
-    private static InitialListService INSTANCE;
+//TODO combine this with the ServiceCatalogService to eliminate the unnecessary abstract class.
+public class SCS extends ServiceCatalogService{
+
+    private static SCS INSTANCE;
 
     private List<OfferedService> offeredServices;
     private List<ServiceCategory> serviceCategories;
     private int nextServiceId = 0;
     private int nextCategoryId = 0;
 
-    public InitialListService() {
-
+    public SCS() {
 
         serviceCategories = DefaultCatalog.createCategories();
-        //offeredServices = InitialList.createServices(serviceCategories);
+        offeredServices = DefaultCatalog.createServices();
         nextServiceId = offeredServices.size() + 1;
         nextCategoryId = serviceCategories.size() + 1;
-
-
-
     }
 
     public synchronized static ServiceCatalogService getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new InitialListService();
+            INSTANCE = new SCS();
         }
         return INSTANCE;
     }

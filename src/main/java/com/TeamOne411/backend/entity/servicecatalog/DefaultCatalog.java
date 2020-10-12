@@ -1,12 +1,14 @@
 package com.TeamOne411.backend.entity.servicecatalog;
 
-import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * This class generates a default service catalog for the garage
  */
-
 public class DefaultCatalog {
 
     private static int nextCategoryId = 1;
@@ -17,26 +19,17 @@ public class DefaultCatalog {
     //The offeredServices ArrayList is needed by the InitialListService
     private static List<OfferedService> offeredServices = new ArrayList<>();
 
-    /*
-    TODO Rewrite class to create an OfferedService with a specific ServiceCategory - get rid of the bookstore demo randomizer
-     */
-
 
     //TODO fill in rest of the default categories
-    private static String[] defaultCategories = new String[] {
-            "Routine Maintenance", "Tires", "Brakes" };
-
-
-    //TODO finish list of services....but need to figure out how the defaulting will work first.
-    private static String[] defaultServices = new String[] { "test"};
-
+    private static String[] defaultCategories = { "Routine Maintenance", "Tires", "Brakes" };
 
 
     /**
-     * This method creates the default categories from the defaultCategories array list
+     * This method creates the default categories from the defaultCategories array
      * @return the default List of categories for a garage
      */
     public static List<ServiceCategory> createCategories() {
+
         for (String name : defaultCategories) {
             ServiceCategory serviceCategory = new ServiceCategory();
             serviceCategory.setName(name);
@@ -45,27 +38,48 @@ public class DefaultCatalog {
         }
         return serviceCategories;
     }
-    /*
 
+    /**
+     * This method returns the service category for use in the createServices() method
+     * @param category A String representing the service category that should be returned
+     * @return The service category found
+     */
+    private static ServiceCategory getDefaultCategory(String category){
+        int index = serviceCategories.indexOf(category);
+        return serviceCategories.get(index);
+    }
+
+    private static HashMap<String, String> defaultServices = new HashMap<>();
+
+    /**
+     * This method adds the default services to the HashMap.
+     * Update this method when default services should be changed.
+     * The first value is the service, the second value is the category.
+     */
+    /*
+    TODO finish rest of default services. The first value is the service, the second value is the category.
+     */
+    private static void createDefaultServices(){
+        defaultServices.put("Oil Change", "Routine Maintenance");
+    }
+
+    /**
+     * This method creates the default services from the defaultCategories array
+     * @return the default List of offered services for a garage
+     */
     public static List<OfferedService> createServices() {
 
-            OfferedService offeredService =
-                    new OfferedService("Oil Change", "When you buy a premium oil change, you’ll also get a free tire rotation!",ServiceCategory.get, nextServiceId++);
-            offeredServices.add(offeredService);
-        return offeredServices;
-    }
-/
-    /*  Commented out temporarily until these methods can be revised as part of the class rewrite
+        createDefaultServices();
+        Set<Map.Entry<String,String>> set = defaultServices.entrySet();
 
-        private static OfferedService createOfferedService(List<ServiceCategory> categories) {
+        for(Map.Entry<String,String> me : set) {
+
             OfferedService offeredService = new OfferedService();
             offeredService.setId(nextServiceId++);
-            offeredService.setServiceName(generateName());
-            offeredService.setPrice(new BigDecimal((random.nextInt(250) + 50) / 10.0));
-            offeredService.setCategory(getCategory(categories, 1, 2));
-            return offeredService;
+            offeredService.setServiceName(me.getKey());
+            offeredService.setServiceCategory(getDefaultCategory(me.getValue()));
+            offeredServices.add(offeredService);
         }
-
+        return offeredServices;
     }
- */
 }
