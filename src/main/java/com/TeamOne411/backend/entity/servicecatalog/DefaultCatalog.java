@@ -19,12 +19,7 @@ public class DefaultCatalog {
     //The offeredServices ArrayList is needed by the InitialListService
     private static List<OfferedService> offeredServices = new ArrayList<>();
 
-
-    /*
-    TODO fill in rest of the default categories
-     -- done! 10/13 - Hope
-     */
-
+    //These are the default Categories that are enabled for a garage
     private static String[] defaultCategories = { "Routine Maintenance", "Tires", "Batteries", "Shocks & Struts", "Other/Not Sure"};
 
 
@@ -53,20 +48,15 @@ public class DefaultCatalog {
         return serviceCategories.get(index);
     }
 
+    /*The HashMap stores the default services that are enabled for a garage
+    See method createDefaultServices() for list of services and corresponding category
+     */
     private static HashMap<String, String> defaultServices = new HashMap<>();
 
     /**
      * This method adds the default services to the HashMap.
      * Update this method when default services should be changed.
      * The first value is the service, the second value is the category.
-     */
-    /*
-    TODO finish rest of default services. The first value is the service, the second value is the category.
-     -- done! 10/13 - Hope
-     */
-    /*
-    followed format from available. Finished services as outlined in GoogleDoc. See commit notes.
-    -Hope
      */
     private static void createDefaultServices(){
         //Routine Maintenance
@@ -102,7 +92,7 @@ public class DefaultCatalog {
         defaultServices.put("Check: Struts & Suspension", "Shocks & Struts");
 
         //Other/Not Sure - no services to include, but does need to a descriptor for car owner clarity
-
+        defaultServices.put("Other/Not Sure", "Other/Not Sure");
     }
 
     /**
