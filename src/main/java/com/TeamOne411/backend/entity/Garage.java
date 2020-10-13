@@ -7,23 +7,24 @@ import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.LinkedList;
 import java.util.List;
 
 @Entity
 public class Garage extends AbstractEntity {
     @NotNull
-    @NotEmpty
+    @NotEmpty(message = "Company name can't be empty.")
     private String companyName = "";
 
-//  TODO: add better validation
     @NotNull
-    @NotEmpty
+    @NotEmpty(message = "Phone number can't be empty.")
+    @Pattern(regexp = "^\\d{3}-\\d{3}-\\d{4}$", message = "Phone number must be in the format: 555-555-5555")
     private String phoneNumber = "";
 
 //  TODO: add better validation
     @NotNull
-    @NotEmpty
+    @NotEmpty(message = "Address can't be empty.")
     private String address = "";
 
 //  TODO: We'll probably want these at some point, but right now it'll break Garage creation

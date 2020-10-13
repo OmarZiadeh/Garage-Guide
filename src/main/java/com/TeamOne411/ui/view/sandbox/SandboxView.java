@@ -14,11 +14,13 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import org.springframework.security.access.annotation.Secured;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Route(value = "", layout = MainLayout.class)
+@Route(value = "sandbox", layout = MainLayout.class)
+@Secured("ROLE_GG_ADMIN")
 @PageTitle("Garage Guide - Sandbox")
 public class SandboxView extends VerticalLayout {
     public SandboxView(GarageService garageService,

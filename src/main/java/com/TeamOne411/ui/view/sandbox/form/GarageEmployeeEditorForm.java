@@ -20,7 +20,7 @@ import com.vaadin.flow.shared.Registration;
 import java.util.List;
 
 public class GarageEmployeeEditorForm extends FormLayout {
-    private TextField userName = new TextField("Username");
+    private TextField username = new TextField("Username");
     private TextField firstName = new TextField("First name");
     private TextField lastName = new TextField("Last name");
     private TextField emailAddress = new TextField("Email Address");
@@ -38,7 +38,7 @@ public class GarageEmployeeEditorForm extends FormLayout {
         addClassName("garage-employee-form");
         binder.bindInstanceFields(this);
         garage.setItemLabelGenerator(Garage::getCompanyName);
-        add(userName,
+        add(username,
                 firstName,
                 lastName,
                 emailAddress,
