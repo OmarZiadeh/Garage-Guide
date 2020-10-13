@@ -21,7 +21,7 @@ public class DefaultCatalog {
 
 
     //TODO fill in rest of the default categories
-    private static String[] defaultCategories = { "Routine Maintenance", "Tires", "Brakes" };
+    private static String[] defaultCategories = { "Routine Maintenance", "Tires", "Batteries", "Shocks & Struts", "Other/Not Sure"};
 
 
     /**
