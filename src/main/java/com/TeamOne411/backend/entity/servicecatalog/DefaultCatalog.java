@@ -20,7 +20,11 @@ public class DefaultCatalog {
     private static List<OfferedService> offeredServices = new ArrayList<>();
 
 
-    //TODO fill in rest of the default categories
+    /*
+    TODO fill in rest of the default categories
+     -- done! 10/13 - Hope
+     */
+
     private static String[] defaultCategories = { "Routine Maintenance", "Tires", "Batteries", "Shocks & Struts", "Other/Not Sure"};
 
 
@@ -58,9 +62,47 @@ public class DefaultCatalog {
      */
     /*
     TODO finish rest of default services. The first value is the service, the second value is the category.
+     -- done! 10/13 - Hope
+     */
+    /*
+    followed format from available. Finished services as outlined in GoogleDoc. See commit notes.
+    -Hope
      */
     private static void createDefaultServices(){
+        //Routine Maintenance
         defaultServices.put("Oil Change", "Routine Maintenance");
+        defaultServices.put("Brake Replacement", "Routine Maintenance");
+        defaultServices.put("Headlight Replacement", "Routine Maintenance");
+        defaultServices.put("Wiper Blade Replacement", "Routine Maintenance");
+        defaultServices.put("Power Steering and Suspension", "Routine Maintenance");
+        defaultServices.put("Check: Fluids", "Routine Maintenance");
+        defaultServices.put("Check: Brakes", "Routine Maintenance");
+        defaultServices.put("Check: Belts & Hoses", "Routine Maintenance");
+        defaultServices.put("Check: Vehicle Health", "Routine Maintenance");
+        defaultServices.put("Check: Air & Cabin Filters", "Routine Maintenance");
+        defaultServices.put("Check: Alternators & Starters", "Routine Maintenance");
+
+        //Tires
+        defaultServices.put("New Tires", "Tires");
+        defaultServices.put("Alignment", "Tires");
+        defaultServices.put("Flat Repair", "Tires");
+        defaultServices.put("TPMS Service", "Tires");
+        defaultServices.put("Wheel Balance", "Tires");
+        defaultServices.put("Tire Rotation", "Tires");
+        defaultServices.put("Seasonal Changeover", "Tires");
+        defaultServices.put("Check: Pre-Trip Safety", "Tires");
+
+        //Batteries
+        defaultServices.put("Battery Check", "Batteries");
+        defaultServices.put("Battery Installation", "Batteries");
+
+        //Shocks & Struts
+        defaultServices.put("Struts & Shocks Consultation", "Shocks & Struts");
+            //consultation differs from check in restoration/upgrade preference vs current safety status - Hope
+        defaultServices.put("Check: Struts & Suspension", "Shocks & Struts");
+
+        //Other/Not Sure - no services to include, but does need to a descriptor for car owner clarity
+
     }
 
     /**

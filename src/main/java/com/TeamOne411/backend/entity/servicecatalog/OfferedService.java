@@ -23,6 +23,7 @@ public class OfferedService implements Serializable {
     /*
     TODO: This may not be the appropriate data type for duration.
      Need to assess what would work best with the schedule and appointment booking functionality.
+     -- javax.xml.datatype.Duration? -Hope
      */
     @Min(0)
     private BigDecimal duration = BigDecimal.ZERO;
