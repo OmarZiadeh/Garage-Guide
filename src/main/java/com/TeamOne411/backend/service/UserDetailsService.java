@@ -99,7 +99,9 @@ public class UserDetailsService implements org.springframework.security.core.use
             user.setRoles(new LinkedList<Role>(Arrays.asList(roleRepository.findByName("ROLE_GARAGE_EMPLOYEE"))));
 
             if (ge.getIsAdmin()) {
-                user.setRoles(new LinkedList<Role>(Arrays.asList(roleRepository.findByName("ROLE_GARAGE_ADMIN"))));
+                Collection<Role> roles = user.getRoles();
+                roles.addAll(user.getRoles());
+                user.setRoles(roles);
             }
         }
 
