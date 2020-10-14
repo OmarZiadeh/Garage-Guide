@@ -14,13 +14,13 @@ public class DefaultCatalog {
     private static int nextCategoryId = 1;
     private static int nextServiceId = 1;
 
-    //The serviceCategories ArrayList is needed by the InitialListService
-    private static List<ServiceCategory> serviceCategories = new ArrayList<>();
-    //The offeredServices ArrayList is needed by the InitialListService
-    private static List<OfferedService> offeredServices = new ArrayList<>();
+    //The serviceCategories ArrayList is needed by the ServiceCatalogService
+    private static final List<ServiceCategory> serviceCategories = new ArrayList<>();
+    //The offeredServices ArrayList is needed by the ServiceCatalogService
+    private static final List<OfferedService> offeredServices = new ArrayList<>();
 
     //These are the default Categories that are enabled for a garage
-    private static String[] defaultCategories = { "Routine Maintenance", "Tires", "Batteries", "Shocks & Struts", "Other/Not Sure"};
+    private static final String[] defaultCategories = { "Routine Maintenance", "Tires", "Batteries", "Shocks & Struts", "Other/Not Sure"};
 
 
     /**
@@ -40,18 +40,22 @@ public class DefaultCatalog {
 
     /**
      * This method returns the service category for use in the createServices() method
-     * @param category A String representing the service category that should be returned
+     * @param categoryName A String representing the service category that should be returned
      * @return The service category found
      */
-    private static ServiceCategory getDefaultCategory(String category){
-        int index = serviceCategories.indexOf(category);
-        return serviceCategories.get(index);
+    private static ServiceCategory getDefaultCategory(String categoryName){
+
+        for(ServiceCategory sc : serviceCategories){
+            if(sc.getName().equals(categoryName))
+                return serviceCategories.get(serviceCategories.indexOf(sc));
+        }
+        return null;
     }
 
     /*The HashMap stores the default services that are enabled for a garage
     See method createDefaultServices() for list of services and corresponding category
      */
-    private static HashMap<String, String> defaultServices = new HashMap<>();
+    private static final HashMap<String, String> defaultServices = new HashMap<>();
 
     /**
      * This method adds the default services to the HashMap.
