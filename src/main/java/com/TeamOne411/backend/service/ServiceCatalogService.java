@@ -30,7 +30,7 @@ public class ServiceCatalogService implements Serializable {
 
     /**
      * This checks if the service catalog already exists for the garage or not. (EAK - I think?)
-     * If it doesn't then a new service catalog is created.
+     * If the service catalog doesn't exists, then a new service catalog is created.
      * @return Instance
      */
     public synchronized static ServiceCatalogService getInstance() {
