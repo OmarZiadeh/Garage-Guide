@@ -2,6 +2,7 @@ package com.TeamOne411.backend.entity.servicecatalog;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.util.Objects;
 import java.util.Set;
 
@@ -19,14 +20,8 @@ public class OfferedService implements Serializable {
     private String serviceDescription = "";
     @Min(0)
     private BigDecimal price = BigDecimal.ZERO;
-
-    /*
-    TODO: This may not be the appropriate data type for duration.
-     Need to assess what would work best with the schedule and appointment booking functionality.
-     -- javax.xml.datatype.Duration? -Hope
-     */
     @Min(0)
-    private BigDecimal duration = BigDecimal.ZERO;
+    private Duration duration = Duration.ZERO;
     @NotNull
     private ServiceCategory serviceCategory;
 
@@ -60,9 +55,9 @@ public class OfferedService implements Serializable {
     /*
     TODO: Add set and get functions to calling function which creates the Offered Service.
      */
-    public void setDuration(BigDecimal duration) { this.duration = duration; }
+    public void setDuration(Duration duration) { this.duration = duration; }
 
-    public BigDecimal getDuration() {
+    public Duration getDuration() {
         return duration;
     }
 
