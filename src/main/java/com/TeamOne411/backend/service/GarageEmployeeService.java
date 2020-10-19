@@ -1,5 +1,6 @@
 package com.TeamOne411.backend.service;
 
+import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.users.GarageEmployee;
 import com.TeamOne411.backend.repository.GarageEmployeeRepository;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,10 @@ public class GarageEmployeeService {
 
     public List<GarageEmployee> findAll() {
         return garageEmployeeRepository.findAll();
+    }
+
+    public List<GarageEmployee> findByGarage(Garage employer) {
+        return garageEmployeeRepository.findByGarage(employer);
     }
 
     public long count() {

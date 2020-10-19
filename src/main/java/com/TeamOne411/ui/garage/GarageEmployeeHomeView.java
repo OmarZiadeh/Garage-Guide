@@ -3,6 +3,7 @@ package com.TeamOne411.ui.garage;
 import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.users.GGUserDetails;
 import com.TeamOne411.backend.entity.users.GarageEmployee;
+import com.TeamOne411.backend.service.GarageEmployeeService;
 import com.TeamOne411.backend.service.UserDetailsService;
 import com.TeamOne411.ui.MainLayout;
 import com.TeamOne411.ui.garage.childview.GarageAppointmentsView;
@@ -31,7 +32,7 @@ public class GarageEmployeeHomeView extends VerticalLayout {
     private GarageEmployee loggedInEmployee;
     private Garage myGarage;
 
-    public GarageEmployeeHomeView(UserDetailsService userDetailsService) {
+    public GarageEmployeeHomeView(UserDetailsService userDetailsService, GarageEmployeeService garageEmployeeService) {
         userDetails = userDetailsService.getLoggedInUserDetails();
         loggedInEmployee = (GarageEmployee) userDetails.getUser();
         myGarage = loggedInEmployee.getGarage();
@@ -57,7 +58,7 @@ public class GarageEmployeeHomeView extends VerticalLayout {
          */
         // todo make this only visible to admins
         Tab employeesTab = new Tab("Employee Management");
-        GarageEmployeesView employeesView = new GarageEmployeesView();
+        GarageEmployeesView employeesView = new GarageEmployeesView(garageEmployeeService, myGarage);
         Div employeesPage = new Div(employeesView);
         employeesTab.add(employeesPage);
         tabs.add(employeesTab);
