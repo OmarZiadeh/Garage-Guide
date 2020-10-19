@@ -18,7 +18,7 @@ public class CarOwnerEditorForm extends FormLayout {
     private TextField username = new TextField("Username");
     private TextField firstName = new TextField("First name");
     private TextField lastName = new TextField("Last name");
-    private TextField emailAddress = new TextField("Email Address");
+    private TextField email = new TextField("Email Address");
     private TextField phoneNumber = new TextField("Phone Number");
     private TextField address = new TextField("Address");
 
@@ -36,7 +36,7 @@ public class CarOwnerEditorForm extends FormLayout {
         add(username,
                 firstName,
                 lastName,
-                emailAddress,
+                email,
                 phoneNumber,
                 address,
                 createButtonsLayout());

@@ -33,7 +33,7 @@ public class CarOwnerSandboxView extends VerticalLayout {
         grid.addClassName("car-owner-grid");
         grid.setHeightByRows(true);
         grid.setMaxHeight("25vh");
-        grid.setColumns("userName", "firstName", "lastName", "emailAddress", "phoneNumber", "address");
+        grid.setColumns("username", "firstName", "lastName", "email", "phoneNumber", "address");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
 
         // attach event listener on grid item select
