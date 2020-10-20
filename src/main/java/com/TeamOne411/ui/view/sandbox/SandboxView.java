@@ -36,6 +36,7 @@ public class SandboxView extends VerticalLayout {
         Tab garagesTab = new Tab("Garages");
         GarageSandboxView garageSandboxView = new GarageSandboxView(garageService);
         Div garagesPage = new Div(garageSandboxView);
+        garagesPage.setSizeFull();
         garagesTab.add(garagesPage);
         tabs.add(garagesTab);
         pages.add(garagesPage);
@@ -47,6 +48,7 @@ public class SandboxView extends VerticalLayout {
         Tab employeesTab = new Tab("Garage Employees");
         GarageEmployeeSandboxView employeeSandboxView = new GarageEmployeeSandboxView(garageEmployeeService, garageService);
         Div employeesPage = new Div(employeeSandboxView);
+        employeesPage.setSizeFull();
         employeesTab.add(employeesPage);
         tabs.add(employeesTab);
         pages.add(employeesPage);
@@ -59,6 +61,7 @@ public class SandboxView extends VerticalLayout {
         Tab carOwnersTab = new Tab("Car Owners");
         CarOwnerSandboxView carOwnerSandboxView = new CarOwnerSandboxView(carOwnerService);
         Div carOwnersPage = new Div(carOwnerSandboxView);
+        carOwnersPage.setSizeFull();
         tabs.add(carOwnersTab);
         pages.add(carOwnersPage);
         carOwnersPage.setVisible(false);
