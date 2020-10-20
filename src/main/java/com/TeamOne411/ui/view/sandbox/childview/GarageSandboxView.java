@@ -32,7 +32,6 @@ public class GarageSandboxView extends VerticalLayout {
         // configure the garage grid
         grid.addClassName("garage-grid");
         grid.setHeightByRows(true);
-        grid.setMaxHeight("25vh");
         grid.setColumns("companyName", "phoneNumber", "address");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
 
