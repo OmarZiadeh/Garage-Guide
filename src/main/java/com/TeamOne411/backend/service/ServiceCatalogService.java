@@ -3,6 +3,7 @@ package com.TeamOne411.backend.service;
 import com.TeamOne411.backend.entity.servicecatalog.DefaultCatalog;
 import com.TeamOne411.backend.entity.servicecatalog.OfferedService;
 import com.TeamOne411.backend.entity.servicecatalog.ServiceCategory;
+import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -11,6 +12,7 @@ import java.util.List;
 /**
  * Back-end service interface for retrieving and updating service catalog data.
  */
+@Service
 public class ServiceCatalogService implements Serializable {
 
     private static ServiceCatalogService INSTANCE;

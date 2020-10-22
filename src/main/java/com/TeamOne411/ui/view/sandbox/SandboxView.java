@@ -3,10 +3,12 @@ package com.TeamOne411.ui.view.sandbox;
 import com.TeamOne411.backend.service.CarOwnerService;
 import com.TeamOne411.backend.service.GarageEmployeeService;
 import com.TeamOne411.backend.service.GarageService;
+import com.TeamOne411.backend.service.ServiceCatalogService;
 import com.TeamOne411.ui.MainLayout;
 import com.TeamOne411.ui.view.sandbox.childview.CarOwnerSandboxView;
 import com.TeamOne411.ui.view.sandbox.childview.GarageEmployeeSandboxView;
 import com.TeamOne411.ui.view.sandbox.childview.GarageSandboxView;
+import com.TeamOne411.ui.view.sandbox.childview.ServiceCatalogSandboxView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -25,7 +27,8 @@ import java.util.Map;
 public class SandboxView extends VerticalLayout {
     public SandboxView(GarageService garageService,
                        GarageEmployeeService garageEmployeeService,
-                       CarOwnerService carOwnerService) {
+                       CarOwnerService carOwnerService,
+                        ServiceCatalogService serviceCatalogService) {
         Tabs tabs = new Tabs();
         Div pages = new Div();
         Map<Tab, Component> tabsToPages = new HashMap<>();
@@ -63,6 +66,18 @@ public class SandboxView extends VerticalLayout {
         pages.add(carOwnersPage);
         carOwnersPage.setVisible(false);
         tabsToPages.put(carOwnersTab, carOwnersPage);
+
+        //TODO this is a temporary UI for testing. Needs to be rewritten or removed later
+        /*
+        Forth Tab - Car Owners
+         */
+        Tab serviceCatalogTab = new Tab("Offered Services");
+        ServiceCatalogSandboxView serviceCatalogSandboxView = new ServiceCatalogSandboxView(serviceCatalogService);
+        Div serviceCatalogPage = new Div(serviceCatalogSandboxView);
+        tabs.add(serviceCatalogTab);
+        pages.add(serviceCatalogPage);
+        carOwnersPage.setVisible(false);
+        tabsToPages.put(serviceCatalogTab, serviceCatalogPage);
 
         // hook up the listener for tab change
         tabs.addSelectedChangeListener(event -> {
