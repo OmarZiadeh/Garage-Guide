@@ -42,17 +42,20 @@ public class ServiceCatalogSandboxView extends VerticalLayout {
         grid.addClassName("service-catalog-grid");
         grid.setHeightByRows(true);
         grid.setMaxHeight("25vh");
-        grid.getColumns().forEach(col -> col.setAutoWidth(true));
-/*
+        grid.setColumns("serviceName", "serviceDescription", "duration");
+        grid.addColumn(OfferedService::getServiceCategory).setHeader("Category").setSortable(true).setKey("serviceCategory");
+
         // Format and add " $" to price
         final DecimalFormat decimalFormat = new DecimalFormat();
         decimalFormat.setMaximumFractionDigits(2);
         decimalFormat.setMinimumFractionDigits(2);
 
-        grid.addColumn(offeredService -> decimalFormat.format(offeredService.getPrice()) + " $")
-                .setHeader("Price").setTextAlign(ColumnTextAlign.END)
-                .setComparator(Comparator.comparing(OfferedService::getPrice)).setFlexGrow(3).setKey("price");
-*/
+        grid.addColumn(offeredService -> decimalFormat.format(offeredService.getPrice()))
+                .setHeader("Price")
+                .setComparator(Comparator.comparing(OfferedService::getPrice)).setKey("price");
+
+        grid.getColumns().forEach(col -> col.setAutoWidth(true));
+
         // attach event listener on grid item select
         //TODO modify this
        /* grid.asSingleSelect().addValueChangeListener(event -> editGarageEmployee(event.getValue()));
