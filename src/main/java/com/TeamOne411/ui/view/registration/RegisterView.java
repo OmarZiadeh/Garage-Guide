@@ -1,11 +1,13 @@
 package com.TeamOne411.ui.view.registration;
 
 import com.TeamOne411.backend.entity.Garage;
+import com.TeamOne411.backend.entity.users.CarOwner;
 import com.TeamOne411.backend.entity.users.GarageEmployee;
 import com.TeamOne411.backend.service.EmailExistsException;
 import com.TeamOne411.backend.service.GarageService;
 import com.TeamOne411.backend.service.UserDetailsService;
 import com.TeamOne411.backend.service.UsernameExistsException;
+import com.TeamOne411.ui.view.registration.subform.CarOwnerRegisterForm;
 import com.TeamOne411.ui.view.registration.subform.GarageAdminRegisterForm;
 import com.TeamOne411.ui.view.registration.subform.GarageCreateForm;
 import com.TeamOne411.ui.view.registration.subform.GarageEmployeeConfirmationView;
@@ -19,10 +21,11 @@ import com.vaadin.flow.router.Route;
 @Route(value = "register")
 public class RegisterView extends VerticalLayout {
     private GarageAdminRegisterForm garageAdminRegisterForm;
+    private CarOwnerRegisterForm carOwnerRegisterForm;
     private GarageCreateForm garageCreateForm = new GarageCreateForm();
     private GarageEmployeeConfirmationView garageConfirmView;
     private H3 userTypePrompt = new H3("I am a...");
-    private Button carOwnerSelectButton = new Button("Car Owner (coming soon)");
+    private Button carOwnerSelectButton = new Button("Car Owner");
     private Button garageAdminSelectButton = new Button("Garage Owner/Manager");
     private RegistrationState state = RegistrationState.USER_TYPE_SELECTION;
     private RegistrationPath path;
@@ -38,6 +41,8 @@ public class RegisterView extends VerticalLayout {
         this.userDetailsService = userDetailsService;
         this.garageAdminRegisterForm = new GarageAdminRegisterForm(userDetailsService);
         this.garageConfirmView = new GarageEmployeeConfirmationView();
+
+        this.carOwnerRegisterForm = new CarOwnerRegisterForm(userDetailsService);
 
         // initial view setup
         addClassName("register-view");
@@ -137,6 +142,7 @@ public class RegisterView extends VerticalLayout {
         if (path == RegistrationPath.CAR_OWNER) {
             // todo once car owner form is done:
             // get carOwner
+            CarOwner carOwner = carOwnerRegisterForm.getValidCarOwner();
             // pass to carOwnerService for saving
             // redirect to car owner's home screen
         } else if (path == RegistrationPath.GARAGE_ADMIN) {
