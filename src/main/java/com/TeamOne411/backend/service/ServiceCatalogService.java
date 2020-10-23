@@ -43,11 +43,11 @@ public class ServiceCatalogService implements Serializable {
     }
 
     public synchronized List<OfferedService> getAllOfferedServices() {
-        return Collections.unmodifiableList(offeredServices);
+        return (offeredServices);
     }
 
     public synchronized List<ServiceCategory> getAllCategories() {
-        return Collections.unmodifiableList(serviceCategories);
+        return (serviceCategories);
     }
 
     public synchronized void updateOfferedService(OfferedService offeredService) {

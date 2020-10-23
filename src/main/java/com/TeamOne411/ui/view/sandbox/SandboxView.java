@@ -71,12 +71,12 @@ public class SandboxView extends VerticalLayout {
         /*
         Forth Tab - Car Owners
          */
-        Tab serviceCatalogTab = new Tab("Offered Services");
+        Tab serviceCatalogTab = new Tab("Services");
         ServiceCatalogSandboxView serviceCatalogSandboxView = new ServiceCatalogSandboxView(serviceCatalogService);
         Div serviceCatalogPage = new Div(serviceCatalogSandboxView);
         tabs.add(serviceCatalogTab);
         pages.add(serviceCatalogPage);
-        carOwnersPage.setVisible(false);
+        serviceCatalogPage.setVisible(false);
         tabsToPages.put(serviceCatalogTab, serviceCatalogPage);
 
         // hook up the listener for tab change
