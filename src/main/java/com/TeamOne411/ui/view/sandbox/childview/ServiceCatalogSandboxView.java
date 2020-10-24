@@ -1,14 +1,9 @@
 package com.TeamOne411.ui.view.sandbox.childview;
 
-import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.servicecatalog.OfferedService;
-import com.TeamOne411.backend.entity.users.GarageEmployee;
-import com.TeamOne411.backend.service.GarageEmployeeService;
-import com.TeamOne411.backend.service.GarageService;
 import com.TeamOne411.backend.service.ServiceCatalogService;
-import com.TeamOne411.ui.view.sandbox.form.GarageEmployeeEditorForm;
+import com.TeamOne411.ui.view.sandbox.form.ServiceCatalogEditorForm;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
@@ -24,9 +19,8 @@ import java.util.Comparator;
 public class ServiceCatalogSandboxView extends VerticalLayout {
     private Grid<OfferedService> grid = new Grid<>(OfferedService.class);
     private ServiceCatalogService serviceCatalogService;
-    //TODO create the form class and determine what to do with the button
-    // private ServiceCatalogEditorForm form = new ServiceCatalogEditorForm();
-    // private Button addButton = new Button("Add GarageEmployee");
+    private ServiceCatalogEditorForm form = new ServiceCatalogEditorForm();
+    private Button addButton = new Button("Add Service");
 
     /**
      * The constructor for the sandbox view. Does initial layout setup, grid configuration, and event listener attachment
@@ -42,7 +36,7 @@ public class ServiceCatalogSandboxView extends VerticalLayout {
         grid.addClassName("service-catalog-grid");
         grid.setHeightByRows(true);
         grid.setMaxHeight("25vh");
-        grid.setColumns("serviceName", "serviceDescription", "duration");
+        grid.setColumns("serviceName", "serviceDescription");
         grid.addColumn(OfferedService::getServiceCategory).setHeader("Category").setSortable(true).setKey("serviceCategory");
 
         // Format and add " $" to price
@@ -55,13 +49,12 @@ public class ServiceCatalogSandboxView extends VerticalLayout {
                 .setComparator(Comparator.comparing(OfferedService::getPrice)).setKey("price");
 
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
-
+/*
         // attach event listener on grid item select
-        //TODO modify this
-       /* grid.asSingleSelect().addValueChangeListener(event -> editGarageEmployee(event.getValue()));
+        grid.asSingleSelect().addValueChangeListener(event -> editOfferedService(event.getValue()));
 
         // connect the handlers to the form events
-        form.addListener(GarageEmployeeEditorForm.SaveEvent.class, this::saveGarageEmployee);
+        form.addListener(ServiceCatalogEditorForm.SaveEvent.class, this::saveOfferedService);
         form.addListener(GarageEmployeeEditorForm.DeleteEvent.class, this::deleteGarageEmployee);
         form.addListener(GarageEmployeeEditorForm.CloseEvent.class, this::closeGarageEmployeeFormHandler);
 
@@ -72,13 +65,12 @@ public class ServiceCatalogSandboxView extends VerticalLayout {
         });
 
 
-
+*/
 
         // set the form's default visibility to false
         form.setVisible(false);
 
 
-        */
         // build a div element with title, garageEmployee grid, and editor form
         Div serviceCatalogContent = new Div(
                 grid//,
