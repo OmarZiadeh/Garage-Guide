@@ -1,26 +1,21 @@
 package com.TeamOne411.backend.entity.servicecatalog;
 
-import java.io.Serializable;
-import java.util.Objects;
+import com.TeamOne411.backend.entity.AbstractEntity;
+import com.TeamOne411.backend.entity.Garage;
 
-import javax.validation.constraints.NotNull;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.Size;
 
-public class ServiceCategory implements Serializable {
-
-    @NotNull
-    private int id = -1;
+@Entity
+public class ServiceCategory extends AbstractEntity {
     @Size(min = 2, message = "Category name must be at least two characters")
     private String name;
 
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+    @ManyToOne
+    @JoinColumn(name = "garage_id")
+    private Garage garage;
 
     public String getName() {
         return name;
@@ -30,37 +25,11 @@ public class ServiceCategory implements Serializable {
         this.name = name;
     }
 
-
-    /*
-    TODO: Need to determine if this method is needed or not.
-     Why do we need this method 'toString' when there is already the getName() method up above?
-     */
-    @Override
-    public String toString() {
-        return getName();
+    public Garage getGarage() {
+        return garage;
     }
 
-    /*
-     * Vaadin DataProviders rely on properly implemented equals and hashcode
-     * methods.
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null || id == -1) {
-            return false;
-        }
-        if (obj instanceof ServiceCategory) {
-            return id == ((ServiceCategory) obj).id;
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        if (id == -1) {
-            return super.hashCode();
-        }
-
-        return Objects.hash(id);
+    public void setGarage(Garage garage) {
+        this.garage = garage;
     }
 }

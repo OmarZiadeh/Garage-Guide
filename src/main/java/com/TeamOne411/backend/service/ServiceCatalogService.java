@@ -1,118 +1,63 @@
 package com.TeamOne411.backend.service;
 
-import com.TeamOne411.backend.entity.servicecatalog.DefaultCatalog;
 import com.TeamOne411.backend.entity.servicecatalog.OfferedService;
 import com.TeamOne411.backend.entity.servicecatalog.ServiceCategory;
+import com.TeamOne411.backend.repository.OfferedServiceRepository;
+import com.TeamOne411.backend.repository.ServiceCategoryRepository;
 import org.springframework.stereotype.Service;
 
-import java.io.Serializable;
-import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Back-end service interface for retrieving and updating service catalog data.
  */
 @Service
-public class ServiceCatalogService implements Serializable {
+public class ServiceCatalogService {
+    private static final Logger LOGGER = Logger.getLogger(GarageEmployeeService.class.getName());
+    private OfferedServiceRepository offeredServiceRepository;
+    private ServiceCategoryRepository serviceCategoryRepository;
 
-    private static ServiceCatalogService INSTANCE;
-
-    private List<OfferedService> offeredServices;
-    private List<ServiceCategory> serviceCategories;
-    private int nextServiceId = 0;
-    private int nextCategoryId = 0;
-
-    public ServiceCatalogService() {
-
-        serviceCategories = DefaultCatalog.createCategories();
-        offeredServices = DefaultCatalog.createServices();
-        nextServiceId = offeredServices.size() + 1;
-        nextCategoryId = serviceCategories.size() + 1;
+    public ServiceCatalogService(OfferedServiceRepository offeredServiceRepository, ServiceCategoryRepository serviceCategoryRepository) {
+        this.offeredServiceRepository = offeredServiceRepository;
+        this.serviceCategoryRepository = serviceCategoryRepository;
     }
 
-    /**
-     * This checks if the service catalog already exists for the garage or not. (EAK - I think?)
-     * If the service catalog doesn't exists, then a new service catalog is created.
-     * @return Instance
+    /*
+    Offered Services Section
      */
-    public synchronized static ServiceCatalogService getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new ServiceCatalogService();
-        }
-        return INSTANCE;
+
+    public List<OfferedService> findAllOfferedServices() {
+        return offeredServiceRepository.findAll();
     }
 
-    public synchronized List<OfferedService> getAllOfferedServices() {
-        return (offeredServices);
+    public void saveOfferedService(OfferedService offeredService) {
+        offeredServiceRepository.save(offeredService);
     }
 
-    public synchronized List<ServiceCategory> getAllCategories() {
-        return (serviceCategories);
+    public void deleteOfferedService(OfferedService offeredService) {
+        offeredServiceRepository.delete(offeredService);
     }
 
-    public synchronized void updateOfferedService(OfferedService offeredService) {
+    /*
+    Service Category Section
+     */
 
-        if (offeredService.getId() < 0) {
-            // New product
-            offeredService.setId(nextServiceId++);
-            offeredServices.add(offeredService);
+    public List<ServiceCategory> findAllServiceCategories() {
+        return serviceCategoryRepository.findAll();
+    }
+
+    public void saveServiceCategory(ServiceCategory serviceCategory) {
+        if (serviceCategory == null) {
+            LOGGER.log(Level.SEVERE,
+                    "GarageEmployee is null. Are you sure you have connected your form to the application?");
             return;
         }
-        for (int i = 0; i < offeredServices.size(); i++) {
-            if (offeredServices.get(i).getId() == offeredService.getId()) {
-                offeredServices.set(i, offeredService);
-                return;
-            }
-        }
-
-        throw new IllegalArgumentException("No service with id " + offeredService.getId()
-                + " found");
-
+        serviceCategoryRepository.save(serviceCategory);
     }
 
-    public synchronized void deleteOfferedService(int offeredServiceId) {
-        OfferedService offeredService = getOfferedServiceById(offeredServiceId);
-        if (offeredService == null) {
-            throw new IllegalArgumentException("Service with id " + offeredServiceId
-                    + " not found");
-        }
-        offeredServices.remove(offeredService);
+    public void deleteServiceCategory(ServiceCategory serviceCategory) {
+        serviceCategoryRepository.delete(serviceCategory);
     }
-
-    public synchronized OfferedService getOfferedServiceById(int offeredServiceId) {
-        for (int i = 0; i < offeredServices.size(); i++) {
-            if (offeredServices.get(i).getId() == offeredServiceId) {
-                return offeredServices.get(i);
-            }
-        }
-        return null;
-    }
-
-    public void updateServiceCategory(ServiceCategory serviceCategory) {
-        if (serviceCategory.getId() < 0) {
-            serviceCategory.setId(nextCategoryId++);
-            serviceCategories.add(serviceCategory);
-        }
-    }
-
-
-    public void deleteServiceCategory(int categoryId) {
-        /*  Commented out until method can be rewritten
-
-        if (serviceCategories.removeIf(category -> category.getId() == categoryId)) {
-            getAllOfferedServices().forEach(offeredService -> {
-                offeredService.getServiceCategory().removeIf(category -> category.getId() == categoryId);
-            });
-
-
-        }
-         */
-
-    }
-    /*
-    TODO: This needs to be added to the GarageService (or whichever class performs the garage creation)
-    / public static ServiceCatalogService get() {
-        return ServiceCatalogService.getInstance();
-    }
-    */
 }

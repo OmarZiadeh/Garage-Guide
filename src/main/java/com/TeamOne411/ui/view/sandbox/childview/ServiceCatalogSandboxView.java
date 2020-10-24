@@ -1,6 +1,7 @@
 package com.TeamOne411.ui.view.sandbox.childview;
 
 import com.TeamOne411.backend.entity.servicecatalog.OfferedService;
+import com.TeamOne411.backend.entity.servicecatalog.ServiceCategory;
 import com.TeamOne411.backend.service.ServiceCatalogService;
 import com.TeamOne411.ui.view.sandbox.form.ServiceCatalogEditorForm;
 import com.vaadin.flow.component.button.Button;
@@ -37,7 +38,10 @@ public class ServiceCatalogSandboxView extends VerticalLayout {
         grid.setHeightByRows(true);
         grid.setMaxHeight("25vh");
         grid.setColumns("serviceName", "serviceDescription");
-        grid.addColumn(OfferedService::getServiceCategory).setHeader("Category").setSortable(true).setKey("serviceCategory");
+        grid.addColumn(service -> {
+            ServiceCategory category = service.getServiceCategory();
+            return category == null ? "[None]" : category.getName();
+        }).setHeader("Category");
 
         // Format and add " $" to price
         final DecimalFormat decimalFormat = new DecimalFormat();
@@ -107,7 +111,7 @@ public class ServiceCatalogSandboxView extends VerticalLayout {
      * Refreshes the grid list from the database
      */
     private void updateServiceCatalogList() {
-        grid.setItems(serviceCatalogService.getAllOfferedServices());
+        grid.setItems(serviceCatalogService.findAllOfferedServices());
     }
 
 /*
