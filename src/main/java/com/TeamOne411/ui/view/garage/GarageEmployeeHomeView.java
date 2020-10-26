@@ -8,6 +8,8 @@ import com.TeamOne411.backend.service.UserDetailsService;
 import com.TeamOne411.ui.MainLayout;
 import com.TeamOne411.ui.view.garage.childview.GarageAppointmentsView;
 import com.TeamOne411.ui.view.garage.childview.GarageEmployeesView;
+import com.TeamOne411.ui.view.garage.childview.GarageScheduleView;
+import com.TeamOne411.ui.view.garage.childview.GarageServicesView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
@@ -65,6 +67,32 @@ public class GarageEmployeeHomeView extends VerticalLayout {
         pages.add(employeesPage);
         employeesPage.setVisible(false);
         tabsToPages.put(employeesTab, employeesPage);
+
+        /*
+        Third Tab - Garage Services
+         */
+        // todo make this only visible to admins?
+        Tab servicesTab = new Tab("Services Configuration");
+        GarageServicesView servicesView = new GarageServicesView();
+        Div servicesPage = new Div(servicesView);
+        servicesTab.add(servicesPage);
+        tabs.add(servicesTab);
+        pages.add(servicesPage);
+        servicesPage.setVisible(false);
+        tabsToPages.put(servicesTab, servicesPage);
+
+        /*
+        Fourth Tab - Garage Services
+         */
+        // todo make this only visible to admins?
+        Tab scheduleTab = new Tab("Schedule");
+        GarageScheduleView scheduleView = new GarageScheduleView();
+        Div schedulePage = new Div(scheduleView);
+        scheduleTab.add(schedulePage);
+        tabs.add(scheduleTab);
+        pages.add(schedulePage);
+        schedulePage.setVisible(false);
+        tabsToPages.put(scheduleTab, schedulePage);
 
         // todo add more tabs here
 
