@@ -1,4 +1,7 @@
-package com.TeamOne411.backend.entity.servicecatalog;
+package com.TeamOne411.backend.config;
+
+import com.TeamOne411.backend.entity.servicecatalog.OfferedService;
+import com.TeamOne411.backend.entity.servicecatalog.ServiceCategory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,7 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * This class generates a default service catalog for the garage
+ * This class generates a default service catalog for a new garage
  */
 public class DefaultCatalog {
 
@@ -19,9 +22,8 @@ public class DefaultCatalog {
     //These are the default Categories that are enabled for a garage
     private static final String[] defaultCategories = { "Routine Maintenance", "Tires", "Batteries", "Shocks & Struts", "Other/Not Sure"};
 
-
     /**
-     * This method creates the default categories from the defaultCategories array
+     * This method creates the default categories objects from the defaultCategories String[] array
      * @return the default List of categories for a garage
      */
     public static List<ServiceCategory> createCategories() {
@@ -32,20 +34,6 @@ public class DefaultCatalog {
             serviceCategories.add(serviceCategory);
         }
         return serviceCategories;
-    }
-
-    /**
-     * This method returns the service category for use in the createServices() method
-     * @param categoryName A String representing the service category that should be returned
-     * @return The service category found
-     */
-    private static ServiceCategory getDefaultCategory(String categoryName){
-
-        for(ServiceCategory sc : serviceCategories){
-            if(sc.getName().equals(categoryName))
-                return serviceCategories.get(serviceCategories.indexOf(sc));
-        }
-        return null;
     }
 
     /*The HashMap stores the default services that are enabled for a garage
@@ -112,5 +100,19 @@ public class DefaultCatalog {
             offeredServices.add(offeredService);
         }
         return offeredServices;
+    }
+
+    /**
+     * This method returns the service category for use in the createServices() method
+     * @param categoryName A String representing the service category that should be returned
+     * @return The service category found
+     */
+    private static ServiceCategory getDefaultCategory(String categoryName){
+
+        for(ServiceCategory sc : serviceCategories){
+            if(sc.getName().equals(categoryName))
+                return serviceCategories.get(serviceCategories.indexOf(sc));
+        }
+        return null;
     }
 }

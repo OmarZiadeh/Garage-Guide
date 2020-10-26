@@ -1,6 +1,6 @@
 package com.TeamOne411.backend.service;
 
-import com.TeamOne411.backend.entity.servicecatalog.DefaultCatalog;
+import com.TeamOne411.backend.config.DefaultCatalog;
 import com.TeamOne411.backend.entity.servicecatalog.OfferedService;
 import com.TeamOne411.backend.entity.servicecatalog.ServiceCategory;
 import org.springframework.stereotype.Service;
