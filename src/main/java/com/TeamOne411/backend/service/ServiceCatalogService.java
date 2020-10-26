@@ -46,7 +46,6 @@ public class ServiceCatalogService implements Serializable {
     }
 
     public synchronized void updateOfferedService(OfferedService offeredService) {
-
         if (offeredService.getId() < 0) {
             // New product
             offeredServices.add(offeredService);
@@ -58,10 +57,8 @@ public class ServiceCatalogService implements Serializable {
                 return;
             }
         }
-
         throw new IllegalArgumentException("No service with id " + offeredService.getId()
                 + " found");
-
     }
 
     public synchronized void deleteOfferedService(int offeredServiceId) {

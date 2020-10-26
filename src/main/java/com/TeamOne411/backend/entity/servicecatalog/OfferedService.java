@@ -70,5 +70,4 @@ public class OfferedService extends AbstractEntity {
     public boolean isNewService() {
         return getId() == -1;
     }
-
 }
