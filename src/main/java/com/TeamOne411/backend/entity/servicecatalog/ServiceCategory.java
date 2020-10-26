@@ -17,12 +17,4 @@ public class ServiceCategory extends AbstractEntity{
         this.name = name;
     }
 
-    /*
-    TODO: Need to determine if this method is needed or not.
-     Why do we need this method 'toString' when there is already the getName() method up above?
-     */
-    @Override
-    public String toString() {
-        return getName();
-    }
 }
