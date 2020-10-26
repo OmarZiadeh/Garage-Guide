@@ -11,9 +11,6 @@ import java.util.Set;
  */
 public class DefaultCatalog {
 
-    private static int nextCategoryId = 1;
-    private static int nextServiceId = 1;
-
     //The serviceCategories ArrayList is needed by the ServiceCatalogService
     private static final List<ServiceCategory> serviceCategories = new ArrayList<>();
     //The offeredServices ArrayList is needed by the ServiceCatalogService
@@ -32,7 +29,6 @@ public class DefaultCatalog {
         for (String name : defaultCategories) {
             ServiceCategory serviceCategory = new ServiceCategory();
             serviceCategory.setName(name);
-            serviceCategory.setId(nextCategoryId++);
             serviceCategories.add(serviceCategory);
         }
         return serviceCategories;
@@ -111,7 +107,6 @@ public class DefaultCatalog {
         for(Map.Entry<String,String> me : set) {
 
             OfferedService offeredService = new OfferedService();
-            offeredService.setId(nextServiceId++);
             offeredService.setServiceName(me.getKey());
             offeredService.setServiceCategory(getDefaultCategory(me.getValue()));
             offeredServices.add(offeredService);

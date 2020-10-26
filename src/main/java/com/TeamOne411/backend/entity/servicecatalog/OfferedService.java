@@ -1,38 +1,28 @@
 package com.TeamOne411.backend.entity.servicecatalog;
 
-import java.io.Serializable;
+import com.TeamOne411.backend.entity.AbstractEntity;
+
 import java.math.BigDecimal;
 import java.time.Duration;
-import java.util.Objects;
-import java.util.Set;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-public class OfferedService implements Serializable {
+public class OfferedService extends AbstractEntity {
 
-    @NotNull
-    private int id = -1;
     @NotNull
     @Size(min = 2, message = "Service name must have at least two characters")
     private String serviceName = "";
     private String serviceDescription = "";
-    @Min(0)
-    private BigDecimal price = BigDecimal.ZERO;
-    @Min(0)
-    private Duration duration = Duration.ZERO;
     @NotNull
     private ServiceCategory serviceCategory;
+    @Min(0)
+    private BigDecimal price = BigDecimal.ZERO;
 
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+    //TODO Need to determine the appropriate default for duration
+    @Min(0)
+    private Duration duration = Duration.ZERO;
 
     public String getServiceName() {
         return serviceName;
@@ -47,7 +37,6 @@ public class OfferedService implements Serializable {
      */
     public String getServiceDescription(){ return serviceDescription; }
 
-
     public void setServiceDescription(String serviceDescription) {
         this.serviceDescription = serviceDescription;
     }
@@ -60,7 +49,6 @@ public class OfferedService implements Serializable {
     public Duration getDuration() {
         return duration;
     }
-
 
     public BigDecimal getPrice() {
         return price;
@@ -77,32 +65,10 @@ public class OfferedService implements Serializable {
     public void setServiceCategory(ServiceCategory serviceCategory) {
         this.serviceCategory = serviceCategory;
     }
-    
+
+    //TODO: Determine if this is actually needed or not
     public boolean isNewService() {
         return getId() == -1;
     }
 
-    /*
-     * Vaadin DataProviders rely on properly implemented equals and hashcode
-     * methods.
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null || id == -1) {
-            return false;
-        }
-        if (obj instanceof OfferedService) {
-            return id == ((OfferedService) obj).id;
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        if (id == -1) {
-            return super.hashCode();
-        }
-
-        return Objects.hash(id);
-    }
 }

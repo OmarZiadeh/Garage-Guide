@@ -6,7 +6,6 @@ import com.TeamOne411.backend.entity.servicecatalog.ServiceCategory;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -19,15 +18,11 @@ public class ServiceCatalogService implements Serializable {
 
     private List<OfferedService> offeredServices;
     private List<ServiceCategory> serviceCategories;
-    private int nextServiceId = 0;
-    private int nextCategoryId = 0;
 
     public ServiceCatalogService() {
 
         serviceCategories = DefaultCatalog.createCategories();
         offeredServices = DefaultCatalog.createServices();
-        nextServiceId = offeredServices.size() + 1;
-        nextCategoryId = serviceCategories.size() + 1;
     }
 
     /**
@@ -54,7 +49,6 @@ public class ServiceCatalogService implements Serializable {
 
         if (offeredService.getId() < 0) {
             // New product
-            offeredService.setId(nextServiceId++);
             offeredServices.add(offeredService);
             return;
         }
@@ -90,7 +84,6 @@ public class ServiceCatalogService implements Serializable {
 
     public void updateServiceCategory(ServiceCategory serviceCategory) {
         if (serviceCategory.getId() < 0) {
-            serviceCategory.setId(nextCategoryId++);
             serviceCategories.add(serviceCategory);
         }
     }
