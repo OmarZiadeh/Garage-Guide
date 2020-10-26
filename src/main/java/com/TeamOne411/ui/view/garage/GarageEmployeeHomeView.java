@@ -1,4 +1,4 @@
-package com.TeamOne411.ui.garage;
+package com.TeamOne411.ui.view.garage;
 
 import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.users.GGUserDetails;
@@ -6,8 +6,8 @@ import com.TeamOne411.backend.entity.users.GarageEmployee;
 import com.TeamOne411.backend.service.GarageEmployeeService;
 import com.TeamOne411.backend.service.UserDetailsService;
 import com.TeamOne411.ui.MainLayout;
-import com.TeamOne411.ui.garage.childview.GarageAppointmentsView;
-import com.TeamOne411.ui.garage.childview.GarageEmployeesView;
+import com.TeamOne411.ui.view.garage.childview.GarageAppointmentsView;
+import com.TeamOne411.ui.view.garage.childview.GarageEmployeesView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;

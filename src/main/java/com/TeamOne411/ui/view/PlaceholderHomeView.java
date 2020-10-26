@@ -6,7 +6,7 @@ import com.TeamOne411.backend.entity.users.User;
 import com.TeamOne411.backend.service.UserDetailsService;
 import com.TeamOne411.security.SecurityUtils;
 import com.TeamOne411.ui.MainLayout;
-import com.TeamOne411.ui.garage.GarageEmployeeHomeView;
+import com.TeamOne411.ui.view.garage.GarageEmployeeHomeView;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;

@@ -1,4 +1,4 @@
-package com.TeamOne411.ui.garage.childview;
+package com.TeamOne411.ui.view.garage.childview;
 
 import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.users.GarageEmployee;
