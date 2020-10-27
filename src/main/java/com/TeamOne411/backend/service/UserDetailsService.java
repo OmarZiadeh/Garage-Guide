@@ -3,9 +3,13 @@ package com.TeamOne411.backend.service;
 import com.TeamOne411.backend.entity.users.*;
 import com.TeamOne411.backend.repository.RoleRepository;
 import com.TeamOne411.backend.repository.UserRepository;
+import com.TeamOne411.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,6 +36,13 @@ public class UserDetailsService implements org.springframework.security.core.use
         }
 
         return new GGUserDetails(user);
+    }
+
+    public GGUserDetails getLoggedInUserDetails() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!SecurityUtils.isUserLoggedIn() || authentication instanceof AnonymousAuthenticationToken) return null;
+
+        return (GGUserDetails) loadUserByUsername(authentication.getName());
     }
 
     public boolean isUsernameExisting(String username){
@@ -99,7 +110,9 @@ public class UserDetailsService implements org.springframework.security.core.use
             user.setRoles(new LinkedList<Role>(Arrays.asList(roleRepository.findByName("ROLE_GARAGE_EMPLOYEE"))));
 
             if (ge.getIsAdmin()) {
-                user.setRoles(new LinkedList<Role>(Arrays.asList(roleRepository.findByName("ROLE_GARAGE_ADMIN"))));
+                Collection<Role> roles = user.getRoles();
+                roles.addAll(user.getRoles());
+                user.setRoles(roles);
             }
         }
 

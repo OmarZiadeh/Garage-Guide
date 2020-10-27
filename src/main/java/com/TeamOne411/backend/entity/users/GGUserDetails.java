@@ -55,4 +55,8 @@ public class GGUserDetails implements UserDetails {
     public boolean isEnabled() {
         return user.getIsEnabled();
     }
+
+    public User getUser() {
+        return user;
+    }
 }
