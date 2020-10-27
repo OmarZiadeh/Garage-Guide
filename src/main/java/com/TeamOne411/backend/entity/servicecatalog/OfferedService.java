@@ -26,6 +26,7 @@ public class OfferedService extends AbstractEntity {
     private Duration duration = Duration.ZERO;
     @Min(0)
     private BigDecimal price = BigDecimal.ZERO;
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "garage_id")
     private Garage garage;

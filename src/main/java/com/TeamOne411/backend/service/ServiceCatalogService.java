@@ -28,9 +28,12 @@ public class ServiceCatalogService {
         return (offeredServiceRepository.findAll());
     }
 
+    /*
     public List<OfferedService> findServiceByGarage(Garage garage) {
         return offeredServiceRepository.findServiceByGarage(garage);
     }
+
+     */
 
     public void saveOfferedService(OfferedService offeredService) {
         offeredServiceRepository.save(offeredService);
@@ -43,11 +46,11 @@ public class ServiceCatalogService {
     public List<ServiceCategory> findAllServiceCategories() {
         return (serviceCategoryRepository.findAll());
     }
-
+/*
     public List<ServiceCategory> findCategoriesByGarage(Garage garage) {
         return serviceCategoryRepository.findCategoriesByGarage(garage);
     }
-
+*/
     public void saveServiceCategory(ServiceCategory serviceCategory) {
         serviceCategoryRepository.save(serviceCategory);
     }
