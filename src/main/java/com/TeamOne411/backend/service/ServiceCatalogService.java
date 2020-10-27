@@ -1,8 +1,10 @@
 package com.TeamOne411.backend.service;
 
 import com.TeamOne411.backend.config.DefaultCatalog;
+import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.servicecatalog.OfferedService;
 import com.TeamOne411.backend.entity.servicecatalog.ServiceCategory;
+import com.TeamOne411.backend.entity.users.GarageEmployee;
 import com.TeamOne411.backend.repository.OfferedServiceRepository;
 import com.TeamOne411.backend.repository.ServiceCategoryRepository;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,10 @@ public class ServiceCatalogService {
         return (offeredServiceRepository.findAll());
     }
 
+    public List<OfferedService> findServiceByGarage(Garage garage) {
+        return offeredServiceRepository.findServiceByGarage(garage);
+    }
+
     public void saveOfferedService(OfferedService offeredService) {
         offeredServiceRepository.save(offeredService);
     }
@@ -37,6 +43,10 @@ public class ServiceCatalogService {
 
     public List<ServiceCategory> findAllServiceCategories() {
         return (serviceCategoryRepository.findAll());
+    }
+
+    public List<ServiceCategory> findCategoriesByGarage(Garage garage) {
+        return serviceCategoryRepository.findCategoriesByGarage(garage);
     }
 
     public void saveServiceCategory(ServiceCategory serviceCategory) {
