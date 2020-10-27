@@ -75,7 +75,7 @@ public class SandboxView extends VerticalLayout {
         Forth Tab - Car Owners
          */
         Tab serviceCatalogTab = new Tab("Services");
-        ServiceCatalogSandboxView serviceCatalogSandboxView = new ServiceCatalogSandboxView(serviceCatalogService);
+        ServiceCatalogSandboxView serviceCatalogSandboxView = new ServiceCatalogSandboxView(serviceCatalogService, garageService);
         Div serviceCatalogPage = new Div(serviceCatalogSandboxView);
         serviceCatalogPage.setSizeFull();
         tabs.add(serviceCatalogTab);

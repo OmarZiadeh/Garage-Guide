@@ -1,9 +1,13 @@
 package com.TeamOne411.ui.view.sandbox.childview;
 
+import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.servicecatalog.OfferedService;
+import com.TeamOne411.backend.entity.users.GarageEmployee;
+import com.TeamOne411.backend.service.GarageService;
 import com.TeamOne411.backend.service.ServiceCatalogService;
-import com.TeamOne411.ui.view.sandbox.form.ServiceCatalogEditorForm;
+import com.TeamOne411.ui.view.sandbox.form.OfferedServiceEditorForm;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
@@ -19,156 +23,148 @@ import java.util.Comparator;
 public class ServiceCatalogSandboxView extends VerticalLayout {
     private Grid<OfferedService> grid = new Grid<>(OfferedService.class);
     private ServiceCatalogService serviceCatalogService;
-    private ServiceCatalogEditorForm form = new ServiceCatalogEditorForm();
-    private Button addButton = new Button("Add Service");
+    private GarageService garageService;
+    private OfferedServiceEditorForm form = new OfferedServiceEditorForm();
+    private Button addServiceButton = new Button("Add Service");
+   // private Button addCategoryButton = new Button("Add Service Category");
 
     /**
      * The constructor for the sandbox view. Does initial layout setup, grid configuration, and event listener attachment
-     * @param serviceCatalogService the ServiceCatalogService to broker the repository calls for OfferedServices
+     * @param serviceCatalogService the GarageEmployeeService to broker the repository calls for garage employees
+     * @param garageService the GarageService to broker the repository calls for garages
      */
-    public ServiceCatalogSandboxView(ServiceCatalogService serviceCatalogService) {
-        // initial layout setup
+    public ServiceCatalogSandboxView(ServiceCatalogService serviceCatalogService, GarageService garageService) {
+        //initial layout setup
         this.serviceCatalogService = serviceCatalogService;
+        this.garageService = garageService;
         addClassName("list-view");
         setSizeFull();
 
-        // configure the ServiceCatalog grid
+        //configure the service-catalog-grid
         grid.addClassName("service-catalog-grid");
         grid.setHeightByRows(true);
-        grid.setMaxHeight("25vh");
-        grid.setColumns("serviceName", "serviceDescription", "serviceCategory");
-        //grid.addColumn(OfferedService::getServiceCategory).setHeader("Category").setSortable(true).setKey("serviceCategory");
+        grid.setColumns("serviceName", "serviceDescription", "serviceCategory", "duration");
 
-        // Format and add " $" to price
+        //Format price
         final DecimalFormat decimalFormat = new DecimalFormat();
         decimalFormat.setMaximumFractionDigits(2);
         decimalFormat.setMinimumFractionDigits(2);
 
         grid.addColumn(offeredService -> decimalFormat.format(offeredService.getPrice()))
-                .setHeader("Price")
-                .setComparator(Comparator.comparing(OfferedService::getPrice)).setKey("price");
+                .setHeader("Price").setTextAlign(ColumnTextAlign.END)
+                .setComparator(Comparator.comparing(OfferedService::getPrice))
+                .setKey("price");
 
+        //add garage
+        grid.addColumn(offeredService -> {
+            Garage garage = offeredService.getGarage();
+            return garage == null ? "[None]" : garage.getCompanyName();
+        }).setHeader("Garage");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
-/*
+
         // attach event listener on grid item select
         grid.asSingleSelect().addValueChangeListener(event -> editOfferedService(event.getValue()));
 
         // connect the handlers to the form events
-        form.addListener(ServiceCatalogEditorForm.SaveEvent.class, this::saveOfferedService);
-        form.addListener(GarageEmployeeEditorForm.DeleteEvent.class, this::deleteGarageEmployee);
-        form.addListener(GarageEmployeeEditorForm.CloseEvent.class, this::closeGarageEmployeeFormHandler);
+        form.addListener(OfferedServiceEditorForm.SaveEvent.class, this::saveOfferedService);
+        form.addListener(OfferedServiceEditorForm.DeleteEvent.class, this::deleteOfferedService);
+        form.addListener(OfferedServiceEditorForm.CloseEvent.class, this::closeOfferedServiceFormHandler);
 
         // set a click lister to the add button to show the form and then hide the add button
-        addButton.addClickListener(event -> {
+        addServiceButton.addClickListener(event -> {
             form.setVisible(true);
-            addButton.setVisible(false);
+            addServiceButton.setVisible(false);
         });
-
-
-*/
 
         // set the form's default visibility to false
         form.setVisible(false);
 
-
         // build a div element with title, garageEmployee grid, and editor form
-        Div serviceCatalogContent = new Div(
-                grid//,
-                //form
+        Div offeredServiceContent = new Div(
+                grid,
+                form
         );
 
-
-        serviceCatalogContent.addClassName("serviceCatalogContent");
-        serviceCatalogContent.setSizeFull();
-
-
+        offeredServiceContent.addClassName("offeredServiceContent");
+        offeredServiceContent.setSizeFull();
 
         // add the components to this layout
-        add(new H1("Services"), serviceCatalogContent); //addButton,
-
+        add(new H1("Services"), addServiceButton, offeredServiceContent);
 
         // fetch the list for the grid
-        updateServiceCatalogList();
+        updateOfferedServicesList();
 
-        /*
-            TODO REVISE THIS
         // pass down garages to the form for the garage combobox
-         updateGarageCombobox();
-
-         */
+        updateGarageCombobox();
     }
-    /*
+
     private void updateGarageCombobox() {
         form.setGarages(garageService.findAll());
     }
-    */
 
     /**
      * Refreshes the grid list from the database
      */
-    private void updateServiceCatalogList() {
+    private void updateOfferedServicesList() {
         grid.setItems(serviceCatalogService.findAllOfferedServices());
     }
 
-/*
     /**
      * Saves the given garageEmployee to the database
      * @param event the SaveEvent from the garageEmployee editor form
-
-    private void saveGarageEmployee(GarageEmployeeEditorForm.SaveEvent event) {
-        employeeService.save(event.getGarageEmployee());
-        updateGarageEmployeeList();
-        closeGarageEmployeeForm();
+     */
+    private void saveOfferedService(OfferedServiceEditorForm.SaveEvent event) {
+        serviceCatalogService.saveOfferedService(event.getOfferedService());
+        updateOfferedServicesList();
+        closeOfferedServiceEditorForm();
         // TODO add toast to confirm add
     }
-
 
     /**
      * Deletes the given garageEmployee from the database.
      * @param event the DeleteEvent from the garageEmployee editor form
-
-    private void deleteGarageEmployee(GarageEmployeeEditorForm.DeleteEvent event) {
-        if (event.getGarageEmployee() != null) {
+     */
+    private void deleteOfferedService(OfferedServiceEditorForm.DeleteEvent event) {
+        if (event.getOfferedService() != null) {
             // TODO make this run only after confirm delete dialog
-            employeeService.delete(event.getGarageEmployee());
-            updateGarageEmployeeList();
+            serviceCatalogService.deleteOfferedService(event.getOfferedService());
+            updateOfferedServicesList();
         }
-        closeGarageEmployeeForm();
+        closeOfferedServiceEditorForm();
     }
 
     /**
      * Toggles the form visibility and sets initializes form fields if passed a GarageEmployee instance
-     * @param garageEmployee the GarageEmployee instance to edit, or null if none is selected
-
-    private void editGarageEmployee(GarageEmployee garageEmployee) {
-        if (garageEmployee == null) {
-            closeGarageEmployeeForm();
+     * @param offeredService the OfferedService instance to edit, or null if none is selected
+     */
+    private void editOfferedService(OfferedService offeredService) {
+        if (offeredService == null) {
+            closeOfferedServiceEditorForm();
         } else {
-            form.setGarageEmployee(garageEmployee);
+            form.setOfferedService(offeredService);
             form.setVisible(true);
-            addClassName("editing-garageEmployee");
+            addClassName("editing-Service");
         }
     }
 
     /**
      * Clears and hides the editor form
-
-    private void closeGarageEmployeeForm() {
-        form.setGarageEmployee(new GarageEmployee());
+     */
+    private void closeOfferedServiceEditorForm() {
+        form.setOfferedService(new OfferedService());
         form.setVisible(false);
-        removeClassName("editing-garageEmployee");
-        addButton.setVisible(true);
+        removeClassName("editing-Service");
+        addServiceButton.setVisible(true);
     }
 
     /**
      * Clears and hides the editor form
-
-    private void closeGarageEmployeeFormHandler(GarageEmployeeEditorForm.CloseEvent event) {
-        if (event.getGarageEmployee() != null)
+     */
+    private void closeOfferedServiceFormHandler(OfferedServiceEditorForm.CloseEvent event) {
+        if (event.getOfferedService() != null)
         {
             // TODO add confirm dialog
         }
-        closeGarageEmployeeForm();
+        closeOfferedServiceEditorForm();
     }
-    */
 }

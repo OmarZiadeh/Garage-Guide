@@ -22,10 +22,10 @@ public class OfferedService extends AbstractEntity {
     private String serviceDescription = "";
     @NotNull
     private ServiceCategory serviceCategory;
-    @Min(0)
-    private BigDecimal price = BigDecimal.ZERO;
     //TODO Need to determine the appropriate default for duration
     private Duration duration = Duration.ZERO;
+    @Min(0)
+    private BigDecimal price = BigDecimal.ZERO;
     @ManyToOne
     @JoinColumn(name = "garage_id")
     private Garage garage;

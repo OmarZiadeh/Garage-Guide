@@ -4,7 +4,6 @@ import com.TeamOne411.backend.config.DefaultCatalog;
 import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.servicecatalog.OfferedService;
 import com.TeamOne411.backend.entity.servicecatalog.ServiceCategory;
-import com.TeamOne411.backend.entity.users.GarageEmployee;
 import com.TeamOne411.backend.repository.OfferedServiceRepository;
 import com.TeamOne411.backend.repository.ServiceCategoryRepository;
 import org.springframework.stereotype.Service;
