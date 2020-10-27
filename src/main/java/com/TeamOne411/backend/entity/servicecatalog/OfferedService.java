@@ -1,28 +1,34 @@
 package com.TeamOne411.backend.entity.servicecatalog;
 
 import com.TeamOne411.backend.entity.AbstractEntity;
+import com.TeamOne411.backend.entity.Garage;
 
 import java.math.BigDecimal;
 import java.time.Duration;
 
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+@Entity
 public class OfferedService extends AbstractEntity {
 
     @NotNull
     @Size(min = 2, message = "Service name must have at least two characters")
     private String serviceName = "";
     private String serviceDescription = "";
-    @NotNull
-    private ServiceCategory serviceCategory;
     @Min(0)
     private BigDecimal price = BigDecimal.ZERO;
-
     //TODO Need to determine the appropriate default for duration
-    @Min(0)
     private Duration duration = Duration.ZERO;
+    @NotNull
+    private ServiceCategory serviceCategory;
+    @ManyToOne
+    @JoinColumn(name = "garage_id")
+    private Garage garage;
 
     public String getServiceName() {
         return serviceName;
@@ -32,19 +38,17 @@ public class OfferedService extends AbstractEntity {
         this.serviceName = serviceName;
     }
 
-    /*
-    TODO: Add set and get functions to the calling function which creates the Offered Service.
-     */
-    public String getServiceDescription(){ return serviceDescription; }
+    public String getServiceDescription() {
+        return serviceDescription;
+    }
 
     public void setServiceDescription(String serviceDescription) {
         this.serviceDescription = serviceDescription;
     }
 
-    /*
-    TODO: Add set and get functions to calling function which creates the Offered Service.
-     */
-    public void setDuration(Duration duration) { this.duration = duration; }
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
 
     public Duration getDuration() {
         return duration;
@@ -66,4 +70,11 @@ public class OfferedService extends AbstractEntity {
         this.serviceCategory = serviceCategory;
     }
 
+    public Garage getGarage() {
+        return garage;
+    }
+
+    public void setGarage(Garage garage) {
+        this.garage = garage;
+    }
 }

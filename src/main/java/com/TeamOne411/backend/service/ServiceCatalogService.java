@@ -13,7 +13,7 @@ import java.util.List;
  * Back-end service interface for retrieving and updating service catalog data - offered services & service categories.
  */
 @Service
-public class ServiceCatalogService{
+public class ServiceCatalogService {
 
     private OfferedServiceRepository offeredServiceRepository;
     private ServiceCategoryRepository serviceCategoryRepository;
