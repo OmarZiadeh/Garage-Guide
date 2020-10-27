@@ -20,12 +20,12 @@ public class OfferedService extends AbstractEntity {
     @Size(min = 2, message = "Service name must have at least two characters")
     private String serviceName = "";
     private String serviceDescription = "";
+    @NotNull
+    private ServiceCategory serviceCategory;
     @Min(0)
     private BigDecimal price = BigDecimal.ZERO;
     //TODO Need to determine the appropriate default for duration
     private Duration duration = Duration.ZERO;
-    @NotNull
-    private ServiceCategory serviceCategory;
     @ManyToOne
     @JoinColumn(name = "garage_id")
     private Garage garage;

@@ -36,8 +36,8 @@ public class ServiceCatalogSandboxView extends VerticalLayout {
         grid.addClassName("service-catalog-grid");
         grid.setHeightByRows(true);
         grid.setMaxHeight("25vh");
-        grid.setColumns("serviceName", "serviceDescription");
-        grid.addColumn(OfferedService::getServiceCategory).setHeader("Category").setSortable(true).setKey("serviceCategory");
+        grid.setColumns("serviceName", "serviceDescription", "serviceCategory");
+        //grid.addColumn(OfferedService::getServiceCategory).setHeader("Category").setSortable(true).setKey("serviceCategory");
 
         // Format and add " $" to price
         final DecimalFormat decimalFormat = new DecimalFormat();
