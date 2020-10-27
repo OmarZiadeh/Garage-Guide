@@ -66,8 +66,4 @@ public class OfferedService extends AbstractEntity {
         this.serviceCategory = serviceCategory;
     }
 
-    //TODO: Determine if this is actually needed or not
-    public boolean isNewService() {
-        return getId() == -1;
-    }
 }

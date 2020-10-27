@@ -107,7 +107,7 @@ public class ServiceCatalogSandboxView extends VerticalLayout {
      * Refreshes the grid list from the database
      */
     private void updateServiceCatalogList() {
-        grid.setItems(serviceCatalogService.getAllOfferedServices());
+        grid.setItems(serviceCatalogService.findAllOfferedServices());
     }
 
 /*

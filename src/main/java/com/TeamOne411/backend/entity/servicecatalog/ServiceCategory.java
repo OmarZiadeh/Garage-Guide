@@ -7,13 +7,13 @@ import javax.validation.constraints.Size;
 public class ServiceCategory extends AbstractEntity{
 
     @Size(min = 2, message = "Category name must be at least two characters")
-    private String name;
+    private String categoryName;
 
     public String getName() {
-        return name;
+        return categoryName;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.categoryName = name;
     }
 }
