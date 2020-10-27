@@ -6,9 +6,7 @@ import com.TeamOne411.backend.entity.Garage;
 import java.math.BigDecimal;
 import java.time.Duration;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -21,6 +19,8 @@ public class OfferedService extends AbstractEntity {
     private String serviceName = "";
     private String serviceDescription = "";
     @NotNull
+    @ManyToOne
+    @JoinColumn(name = "service_category_id")
     private ServiceCategory serviceCategory;
     //TODO Need to determine the appropriate default for duration
     private Duration duration = Duration.ZERO;

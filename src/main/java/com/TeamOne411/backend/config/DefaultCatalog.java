@@ -30,7 +30,7 @@ public class DefaultCatalog {
 
         for (String name : defaultCategories) {
             ServiceCategory serviceCategory = new ServiceCategory();
-            serviceCategory.setName(name);
+            serviceCategory.setCategoryName(name);
             serviceCategories.add(serviceCategory);
         }
         return serviceCategories;
@@ -110,7 +110,7 @@ public class DefaultCatalog {
     private static ServiceCategory getDefaultCategory(String categoryName){
 
         for(ServiceCategory sc : serviceCategories){
-            if(sc.getName().equals(categoryName))
+            if(sc.getCategoryName().equals(categoryName))
                 return serviceCategories.get(serviceCategories.indexOf(sc));
         }
         return null;

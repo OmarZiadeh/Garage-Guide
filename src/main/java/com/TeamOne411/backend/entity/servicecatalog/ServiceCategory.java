@@ -19,11 +19,11 @@ public class ServiceCategory extends AbstractEntity {
     @JoinColumn(name = "garage_id")
     private Garage garage;
 
-    public String getName() {
+    public String getCategoryName() {
         return categoryName;
     }
 
-    public void setName(String name) {
+    public void setCategoryName(String name) {
         this.categoryName = name;
     }
 
