@@ -4,8 +4,10 @@ import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.users.GarageEmployee;
 import com.TeamOne411.backend.service.GarageEmployeeService;
 import com.TeamOne411.backend.service.UserDetailsService;
+import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
@@ -49,11 +51,30 @@ public class GarageEmployeesView extends VerticalLayout {
     }
 
     private void showNewEmployeeDialog() {
-        newEmployeeDialog = new NewEmployeeDialog(userDetailsService);
+        newEmployeeDialog = new NewEmployeeDialog(userDetailsService, employer);
 
         newEmployeeDialog.setWidth("250px");
         newEmployeeDialog.setWidth("750px");
 
+        newEmployeeDialog.addListener(NewEmployeeDialog.SuccessEvent.class, this::onEmployeeRegisteredSuccess);
+
         newEmployeeDialog.open();
+    }
+
+
+    public void onEmployeeRegisteredSuccess(ComponentEvent<NewEmployeeDialog> event) {
+        newEmployeeDialog.close();
+        updateGarageEmployeeList();
+        GarageEmployee newEmployee = event.getSource().getNewEmployee();
+
+        if (newEmployee != null) {
+            Notification notification = new Notification(
+                    "Successfully added new employee " + newEmployee.getFirstName() + " " + newEmployee.getLastName(),
+                    3000,
+                    Notification.Position.TOP_END
+            );
+
+            notification.open();
+        }
     }
 }
