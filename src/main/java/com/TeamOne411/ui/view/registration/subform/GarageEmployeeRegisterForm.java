@@ -86,11 +86,11 @@ public class GarageEmployeeRegisterForm extends VerticalLayout {
         );
     }
 
-    protected void setBackButtonText(String text) {
+    public void setBackButtonText(String text) {
         backButton.setText(text);
     }
 
-    protected void setNextButtonText(String text) {
+    public void setNextButtonText(String text) {
         nextButton.setText(text);
     }
 

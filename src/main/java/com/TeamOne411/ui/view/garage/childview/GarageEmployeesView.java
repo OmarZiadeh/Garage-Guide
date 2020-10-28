@@ -3,6 +3,7 @@ package com.TeamOne411.ui.view.garage.childview;
 import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.users.GarageEmployee;
 import com.TeamOne411.backend.service.GarageEmployeeService;
+import com.TeamOne411.backend.service.UserDetailsService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -12,10 +13,17 @@ public class GarageEmployeesView extends VerticalLayout {
     GarageEmployeeService garageEmployeeService;
 
     private Grid<GarageEmployee> grid = new Grid<>(GarageEmployee.class);
+    private UserDetailsService userDetailsService;
     private Garage employer;
+    private NewEmployeeDialog newEmployeeDialog;
 
-    public GarageEmployeesView(GarageEmployeeService garageEmployeeService, Garage employer) {
+    public GarageEmployeesView(
+            GarageEmployeeService garageEmployeeService,
+            UserDetailsService userDetailsService,
+            Garage employer
+    ) {
         this.garageEmployeeService = garageEmployeeService;
+        this.userDetailsService = userDetailsService;
         this.employer = employer;
 
         // configure the garageEmployee grid
@@ -26,7 +34,7 @@ public class GarageEmployeesView extends VerticalLayout {
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
 
         Button registerEmployeeButton = new Button("Register New Employee");
-        // todo hook up button to modal dialog or separate registration page
+        registerEmployeeButton.addClickListener(e -> showNewEmployeeDialog());
 
         add(
             new HorizontalLayout(registerEmployeeButton),
@@ -40,5 +48,12 @@ public class GarageEmployeesView extends VerticalLayout {
         grid.setItems(garageEmployeeService.findByGarage(employer));
     }
 
+    private void showNewEmployeeDialog() {
+        newEmployeeDialog = new NewEmployeeDialog(userDetailsService);
 
+        newEmployeeDialog.setWidth("250px");
+        newEmployeeDialog.setWidth("750px");
+
+        newEmployeeDialog.open();
+    }
 }
