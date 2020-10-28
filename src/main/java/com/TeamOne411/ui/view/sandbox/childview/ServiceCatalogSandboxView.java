@@ -2,12 +2,10 @@ package com.TeamOne411.ui.view.sandbox.childview;
 
 import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.servicecatalog.OfferedService;
-import com.TeamOne411.backend.entity.users.GarageEmployee;
 import com.TeamOne411.backend.service.GarageService;
 import com.TeamOne411.backend.service.ServiceCatalogService;
 import com.TeamOne411.ui.view.sandbox.form.OfferedServiceEditorForm;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
@@ -24,9 +22,9 @@ public class ServiceCatalogSandboxView extends VerticalLayout {
     private Grid<OfferedService> grid = new Grid<>(OfferedService.class);
     private ServiceCatalogService serviceCatalogService;
     private GarageService garageService;
-    private OfferedServiceEditorForm form = new OfferedServiceEditorForm();
+    private OfferedServiceEditorForm serviceEditorForm = new OfferedServiceEditorForm();
     private Button addServiceButton = new Button("Add Service");
-   // private Button addCategoryButton = new Button("Add Service Category");
+    private Button addCategoryButton = new Button("Add Service Category");
 
     /**
      * The constructor for the sandbox view. Does initial layout setup, grid configuration, and event listener attachment
@@ -43,7 +41,9 @@ public class ServiceCatalogSandboxView extends VerticalLayout {
         //configure the service-catalog-grid
         grid.addClassName("service-catalog-grid");
         grid.setHeightByRows(true);
-        grid.setColumns("serviceName", "serviceDescription", "serviceCategory", "duration");
+        grid.setColumns("serviceName", "serviceDescription");
+
+        grid.addColumn(OfferedService::getServiceCategory).setHeader("Category").setSortable(true).setKey("serviceCategory");
 
         //Format price
         final DecimalFormat decimalFormat = new DecimalFormat();
@@ -51,45 +51,46 @@ public class ServiceCatalogSandboxView extends VerticalLayout {
         decimalFormat.setMinimumFractionDigits(2);
 
         grid.addColumn(offeredService -> decimalFormat.format(offeredService.getPrice()))
-                .setHeader("Price").setTextAlign(ColumnTextAlign.END)
-                .setComparator(Comparator.comparing(OfferedService::getPrice))
+                .setHeader("Price").setComparator(Comparator.comparing(OfferedService::getPrice))
                 .setKey("price");
+
+        grid.addColumn(OfferedService::getDuration).setHeader("Duration").setSortable(true).setKey("duration");
 
         //add garage
         grid.addColumn(offeredService -> {
             Garage garage = offeredService.getGarage();
             return garage == null ? "[None]" : garage.getCompanyName();
-        }).setHeader("Garage");
+        }).setSortable(true).setHeader("Garage");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
 
         // attach event listener on grid item select
         grid.asSingleSelect().addValueChangeListener(event -> editOfferedService(event.getValue()));
 
         // connect the handlers to the form events
-        form.addListener(OfferedServiceEditorForm.SaveEvent.class, this::saveOfferedService);
-        form.addListener(OfferedServiceEditorForm.DeleteEvent.class, this::deleteOfferedService);
-        form.addListener(OfferedServiceEditorForm.CloseEvent.class, this::closeOfferedServiceFormHandler);
+        serviceEditorForm.addListener(OfferedServiceEditorForm.SaveEvent.class, this::saveOfferedService);
+        serviceEditorForm.addListener(OfferedServiceEditorForm.DeleteEvent.class, this::deleteOfferedService);
+        serviceEditorForm.addListener(OfferedServiceEditorForm.CloseEvent.class, this::closeOfferedServiceFormHandler);
 
         // set a click lister to the add button to show the form and then hide the add button
         addServiceButton.addClickListener(event -> {
-            form.setVisible(true);
+            serviceEditorForm.setVisible(true);
             addServiceButton.setVisible(false);
         });
 
         // set the form's default visibility to false
-        form.setVisible(false);
+        serviceEditorForm.setVisible(false);
 
         // build a div element with title, garageEmployee grid, and editor form
         Div offeredServiceContent = new Div(
                 grid,
-                form
+                serviceEditorForm
         );
 
         offeredServiceContent.addClassName("offeredServiceContent");
         offeredServiceContent.setSizeFull();
 
         // add the components to this layout
-        add(new H1("Services"), addServiceButton, offeredServiceContent);
+        add(new H1("Services"), addServiceButton, addCategoryButton, offeredServiceContent);
 
         // fetch the list for the grid
         updateOfferedServicesList();
@@ -99,7 +100,7 @@ public class ServiceCatalogSandboxView extends VerticalLayout {
     }
 
     private void updateGarageCombobox() {
-        form.setGarages(garageService.findAll());
+        serviceEditorForm.setGarages(garageService.findAll());
     }
 
     /**
@@ -141,8 +142,8 @@ public class ServiceCatalogSandboxView extends VerticalLayout {
         if (offeredService == null) {
             closeOfferedServiceEditorForm();
         } else {
-            form.setOfferedService(offeredService);
-            form.setVisible(true);
+            serviceEditorForm.setOfferedService(offeredService);
+            serviceEditorForm.setVisible(true);
             addClassName("editing-Service");
         }
     }
@@ -151,8 +152,8 @@ public class ServiceCatalogSandboxView extends VerticalLayout {
      * Clears and hides the editor form
      */
     private void closeOfferedServiceEditorForm() {
-        form.setOfferedService(new OfferedService());
-        form.setVisible(false);
+        serviceEditorForm.setOfferedService(new OfferedService());
+        serviceEditorForm.setVisible(false);
         removeClassName("editing-Service");
         addServiceButton.setVisible(true);
     }
