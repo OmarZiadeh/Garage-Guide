@@ -41,7 +41,8 @@ public class ServiceCatalogSandboxView extends VerticalLayout {
         //configure the service-catalog-grid
         grid.addClassName("service-catalog-grid");
         grid.setHeightByRows(true);
-        grid.setColumns("serviceName", "serviceDescription");
+        //TODO add serviceDescription back in if we decide to keep it
+        grid.setColumns("serviceName"); //, "serviceDescription");
 
         grid.addColumn(OfferedService::getServiceCategory).setHeader("Category").setSortable(true).setKey("serviceCategory");
 
@@ -54,7 +55,8 @@ public class ServiceCatalogSandboxView extends VerticalLayout {
                 .setHeader("Price").setComparator(Comparator.comparing(OfferedService::getPrice))
                 .setKey("price");
 
-        grid.addColumn(OfferedService::getDuration).setHeader("Duration").setSortable(true).setKey("duration");
+        //TODO add duration in once CRUD operations for duration are completed
+        //grid.addColumn(OfferedService::getDuration).setHeader("Duration").setSortable(true).setKey("duration");
 
         //add garage
         grid.addColumn(offeredService -> {
@@ -97,11 +99,16 @@ public class ServiceCatalogSandboxView extends VerticalLayout {
 
         // pass down garages to the form for the garage combobox
         updateGarageCombobox();
+
+        // pass down categories to the form for the categories combobox
+        updateCategoriesCombobox();
     }
 
     private void updateGarageCombobox() {
         serviceEditorForm.setGarages(garageService.findAll());
     }
+
+    private void updateCategoriesCombobox() {serviceEditorForm.setServiceCategories(serviceCatalogService.findAllServiceCategories());}
 
     /**
      * Refreshes the grid list from the database
