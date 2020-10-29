@@ -64,7 +64,7 @@ public class ServicesSandboxView extends VerticalLayout {
 
         //add garage
         grid.addColumn(offeredService -> {
-            Garage garage = offeredService.getGarage();
+            Garage garage = offeredService.getServiceCategory().getGarage();
             return garage == null ? "[None]" : garage.getCompanyName();
         }).setSortable(true).setHeader("Garage");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));

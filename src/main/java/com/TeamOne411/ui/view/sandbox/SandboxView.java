@@ -68,19 +68,7 @@ public class SandboxView extends VerticalLayout {
         tabsToPages.put(carOwnersTab, carOwnersPage);
 
         /*
-        Forth Tab - Offered Services
-         */
-        Tab servicesTab = new Tab("Services");
-        ServicesSandboxView servicesSandboxView = new ServicesSandboxView(serviceCatalogService, garageService);
-        Div servicesPage = new Div(servicesSandboxView);
-        servicesPage.setSizeFull();
-        tabs.add(servicesTab);
-        pages.add(servicesPage);
-        servicesPage.setVisible(false);
-        tabsToPages.put(servicesTab, servicesPage);
-
-        /*
-        Fifth Tab - Service Categories
+        Forth Tab - Service Categories
          */
         Tab categoriesTab = new Tab("Categories");
         CategoriesSandboxView categoriesSandboxView = new CategoriesSandboxView(serviceCatalogService, garageService);
@@ -90,6 +78,18 @@ public class SandboxView extends VerticalLayout {
         pages.add(categoriesPage);
         categoriesPage.setVisible(false);
         tabsToPages.put(categoriesTab, categoriesPage);
+
+        /*
+        Fifth Tab - Offered Services
+         */
+        Tab servicesTab = new Tab("Services");
+        ServicesSandboxView servicesSandboxView = new ServicesSandboxView(serviceCatalogService, garageService);
+        Div servicesPage = new Div(servicesSandboxView);
+        servicesPage.setSizeFull();
+        tabs.add(servicesTab);
+        pages.add(servicesPage);
+        servicesPage.setVisible(false);
+        tabsToPages.put(servicesTab, servicesPage);
 
         // hook up the listener for tab change
         tabs.addSelectedChangeListener(event -> {

@@ -27,10 +27,6 @@ public class ServiceCatalogService {
         return (offeredServiceRepository.findAll());
     }
 
-    public List<OfferedService> findServiceByGarage(Garage garage) {
-        return offeredServiceRepository.findServiceByGarage(garage);
-    }
-
     public OfferedService findServiceByName(String serviceName) {
         return offeredServiceRepository.findByServiceName(serviceName);
     }

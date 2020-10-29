@@ -26,10 +26,6 @@ public class OfferedService extends AbstractEntity {
     private Duration duration = Duration.ZERO;
     @Min(0)
     private BigDecimal price = BigDecimal.ZERO;
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "garage_id")
-    private Garage garage;
 
     public String getServiceName() {
         return serviceName;
@@ -71,11 +67,4 @@ public class OfferedService extends AbstractEntity {
         this.serviceCategory = serviceCategory;
     }
 
-    public Garage getGarage() {
-        return garage;
-    }
-
-    public void setGarage(Garage garage) {
-        this.garage = garage;
-    }
 }
