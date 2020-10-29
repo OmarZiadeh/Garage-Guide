@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface OfferedServiceRepository extends JpaRepository<OfferedService, Long> {
     //List<OfferedService> findServiceByGarage(Garage garage);
+    OfferedService findByServiceName(String serviceName);
 }
