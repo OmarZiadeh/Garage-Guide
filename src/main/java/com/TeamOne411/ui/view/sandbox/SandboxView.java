@@ -5,10 +5,7 @@ import com.TeamOne411.backend.service.GarageEmployeeService;
 import com.TeamOne411.backend.service.GarageService;
 import com.TeamOne411.backend.service.ServiceCatalogService;
 import com.TeamOne411.ui.MainLayout;
-import com.TeamOne411.ui.view.sandbox.childview.CarOwnerSandboxView;
-import com.TeamOne411.ui.view.sandbox.childview.GarageEmployeeSandboxView;
-import com.TeamOne411.ui.view.sandbox.childview.GarageSandboxView;
-import com.TeamOne411.ui.view.sandbox.childview.ServiceCatalogSandboxView;
+import com.TeamOne411.ui.view.sandbox.childview.*;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -70,18 +67,29 @@ public class SandboxView extends VerticalLayout {
         carOwnersPage.setVisible(false);
         tabsToPages.put(carOwnersTab, carOwnersPage);
 
-        //TODO this is a temporary UI for testing. Needs to be rewritten or removed later
         /*
-        Forth Tab - Car Owners
+        Forth Tab - Offered Services
          */
-        Tab serviceCatalogTab = new Tab("Services");
-        ServiceCatalogSandboxView serviceCatalogSandboxView = new ServiceCatalogSandboxView(serviceCatalogService, garageService);
-        Div serviceCatalogPage = new Div(serviceCatalogSandboxView);
-        serviceCatalogPage.setSizeFull();
-        tabs.add(serviceCatalogTab);
-        pages.add(serviceCatalogPage);
-        serviceCatalogPage.setVisible(false);
-        tabsToPages.put(serviceCatalogTab, serviceCatalogPage);
+        Tab servicesTab = new Tab("Services");
+        ServicesSandboxView servicesSandboxView = new ServicesSandboxView(serviceCatalogService, garageService);
+        Div servicesPage = new Div(servicesSandboxView);
+        servicesPage.setSizeFull();
+        tabs.add(servicesTab);
+        pages.add(servicesPage);
+        servicesPage.setVisible(false);
+        tabsToPages.put(servicesTab, servicesPage);
+
+        /*
+        Fifth Tab - Service Categories
+         */
+        Tab categoriesTab = new Tab("Categories");
+        CategoriesSandboxView categoriesSandboxView = new CategoriesSandboxView(serviceCatalogService, garageService);
+        Div categoriesPage = new Div(categoriesSandboxView);
+        categoriesPage.setSizeFull();
+        tabs.add(categoriesTab);
+        pages.add(categoriesPage);
+        categoriesPage.setVisible(false);
+        tabsToPages.put(categoriesTab, categoriesPage);
 
         // hook up the listener for tab change
         tabs.addSelectedChangeListener(event -> {

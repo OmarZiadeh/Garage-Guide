@@ -17,24 +17,22 @@ import java.text.DecimalFormat;
 import java.util.Comparator;
 
 /**
- * The ServiceCatalogSandboxView is a God-mode ServiceCatalog editor for testing purposes.
+ * The ServicesSandboxView is a God-mode ServiceCatalog editor for testing purposes.
  * This should either be deleted as the application evolves or turned into an Admin screen meant only for technical support, well hidden behind authentication.
  */
-public class ServiceCatalogSandboxView extends VerticalLayout {
+public class ServicesSandboxView extends VerticalLayout {
     private Grid<OfferedService> grid = new Grid<>(OfferedService.class);
     private ServiceCatalogService serviceCatalogService;
     private GarageService garageService;
     private OfferedServiceEditorForm serviceEditorForm = new OfferedServiceEditorForm();
-    private CategoryEditorForm categoryEditorForm = new CategoryEditorForm();
     private Button addServiceButton = new Button("Add Service");
-    private Button addCategoryButton = new Button("Add Category");
 
     /**
      * The constructor for the sandbox view. Does initial layout setup, grid configuration, and event listener attachment
-     * @param serviceCatalogService the GarageEmployeeService to broker the repository calls for garage employees
+     * @param serviceCatalogService the ServiceCatalogService to broker the repository calls for garage employees
      * @param garageService the GarageService to broker the repository calls for garages
      */
-    public ServiceCatalogSandboxView(ServiceCatalogService serviceCatalogService, GarageService garageService) {
+    public ServicesSandboxView(ServiceCatalogService serviceCatalogService, GarageService garageService) {
         //initial layout setup
         this.serviceCatalogService = serviceCatalogService;
         this.garageService = garageService;
@@ -79,38 +77,26 @@ public class ServiceCatalogSandboxView extends VerticalLayout {
         serviceEditorForm.addListener(OfferedServiceEditorForm.DeleteEvent.class, this::deleteOfferedService);
         serviceEditorForm.addListener(OfferedServiceEditorForm.CloseEvent.class, this::closeOfferedServiceFormHandler);
 
-        categoryEditorForm.addListener(CategoryEditorForm.SaveEvent.class, this::saveServiceCategory);
-        categoryEditorForm.addListener(CategoryEditorForm.DeleteEvent.class, this::deleteServiceCategory);
-        categoryEditorForm.addListener(CategoryEditorForm.CloseEvent.class, this::closeCategoryFormHandler);
-
         // set a click lister to the add button to show the service form and then hide the add button
         addServiceButton.addClickListener(event -> {
             serviceEditorForm.setVisible(true);
             addServiceButton.setVisible(false);
         });
 
-        // set a click lister to the add button to show the category form and then hide the add button
-        addCategoryButton.addClickListener(event -> {
-            categoryEditorForm.setVisible(true);
-            addCategoryButton.setVisible(false);
-        });
-
         // set the forms' default visibility to false
         serviceEditorForm.setVisible(false);
-        categoryEditorForm.setVisible(false);
 
         // build a div element with title, serviceCatalog grid, and editor forms
         Div offeredServiceContent = new Div(
                 grid,
-                serviceEditorForm,
-                categoryEditorForm
+                serviceEditorForm
         );
 
         offeredServiceContent.addClassName("offeredServiceContent");
         offeredServiceContent.setSizeFull();
 
         // add the components to this layout
-        add(new H1("Services"), addCategoryButton, addServiceButton, offeredServiceContent);
+        add(new H1("Services"), addServiceButton, offeredServiceContent);
 
         // fetch the list for the grid
         updateOfferedServicesList();
@@ -124,7 +110,6 @@ public class ServiceCatalogSandboxView extends VerticalLayout {
 
     private void updateGarageCombobox() {
         serviceEditorForm.setGarages(garageService.findAll());
-        categoryEditorForm.setGarages(garageService.findAll());
     }
 
     private void updateCategoriesCombobox() {
@@ -149,16 +134,6 @@ public class ServiceCatalogSandboxView extends VerticalLayout {
         // TODO add toast to confirm add
     }
 
-    /**
-     * Saves the given serviceCategory to the database
-     * @param event the SaveEvent from the serviceCategory editor form
-     */
-    private void saveServiceCategory(CategoryEditorForm.SaveEvent event) {
-        serviceCatalogService.saveServiceCategory(event.getServiceCategory());
-        closeCategoryEditorForm();
-        // TODO add toast to confirm add
-    }
-
 
     /**
      * Deletes the given offeredService from the database.
@@ -173,17 +148,6 @@ public class ServiceCatalogSandboxView extends VerticalLayout {
         closeOfferedServiceEditorForm();
     }
 
-    /**
-     * Deletes the given serviceCategory from the database.
-     * @param event the DeleteEvent from the serviceCategory editor form
-     */
-    private void deleteServiceCategory(CategoryEditorForm.DeleteEvent event) {
-        if (event.getServiceCategory() != null) {
-            // TODO make this run only after confirm delete dialog
-            serviceCatalogService.deleteServiceCategory(event.getServiceCategory());
-        }
-        closeCategoryEditorForm();
-    }
 
     /**
      * Toggles the form visibility and sets initializes form fields if passed a OfferedService instance
@@ -200,20 +164,6 @@ public class ServiceCatalogSandboxView extends VerticalLayout {
     }
 
     /**
-     * Toggles the form visibility and sets initializes form fields if passed a ServiceCategory instance
-     * @param serviceCategory the ServiceCategory instance to edit, or null if none is selected
-     */
-    private void editServiceCategory(ServiceCategory serviceCategory) {
-        if (serviceCategory == null) {
-            closeCategoryEditorForm();
-        } else {
-            categoryEditorForm.setServiceCategory(serviceCategory);
-            categoryEditorForm.setVisible(true);
-            addClassName("editing-Category");
-        }
-    }
-
-    /**
      * Clears and hides the editor form
      */
     private void closeOfferedServiceEditorForm() {
@@ -223,15 +173,6 @@ public class ServiceCatalogSandboxView extends VerticalLayout {
         addServiceButton.setVisible(true);
     }
 
-    /**
-     * Clears and hides the editor form
-     */
-    private void closeCategoryEditorForm() {
-        categoryEditorForm.setServiceCategory(new ServiceCategory());
-        categoryEditorForm.setVisible(false);
-        removeClassName("editing-Service");
-        addCategoryButton.setVisible(true);
-    }
 
     /**
      * Clears and hides the editor form
@@ -244,14 +185,4 @@ public class ServiceCatalogSandboxView extends VerticalLayout {
         closeOfferedServiceEditorForm();
     }
 
-    /**
-     * Clears and hides the editor form
-     */
-    private void closeCategoryFormHandler(CategoryEditorForm.CloseEvent event) {
-        if (event.getServiceCategory() != null)
-        {
-            // TODO add confirm dialog
-        }
-        closeCategoryEditorForm();
-    }
 }
