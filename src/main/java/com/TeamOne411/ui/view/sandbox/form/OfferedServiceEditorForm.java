@@ -1,9 +1,11 @@
 package com.TeamOne411.ui.view.sandbox.form;
+
 import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.servicecatalog.OfferedService;
 import com.TeamOne411.backend.entity.servicecatalog.ServiceCategory;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -79,6 +81,7 @@ public class OfferedServiceEditorForm extends FormLayout {
     public void setServiceCategories(List<ServiceCategory> categories) {
         this.serviceCategory.setItems(categories);
     }
+
 
     public void setOfferedService(OfferedService offeredService) {
         this.offeredService = offeredService;

@@ -18,6 +18,8 @@ public class ServiceCatalogService {
     private OfferedServiceRepository offeredServiceRepository;
     private ServiceCategoryRepository serviceCategoryRepository;
 
+   // public ServiceCatalogService(){ }
+
     public ServiceCatalogService(OfferedServiceRepository offeredServiceRepository, ServiceCategoryRepository serviceCategoryRepository) {
         this.offeredServiceRepository = offeredServiceRepository;
         this.serviceCategoryRepository = serviceCategoryRepository;
@@ -59,7 +61,9 @@ public class ServiceCatalogService {
         serviceCategoryRepository.delete(serviceCategory);
     }
 
-    public void initializeDefaultServiceCatalog(Garage garage) {
+    //Saves the default categories and services for a garage when a garage is first created
+    public void initializeDefaultServices(Garage garage) {
+
         //These are the default Categories that are enabled for a garage
         ServiceCategory catRoutineMaintenance = createDefaultServiceCategory("Routine Maintenance", garage);
         ServiceCategory catTires = createDefaultServiceCategory("Tires", garage);
@@ -67,6 +71,7 @@ public class ServiceCatalogService {
         ServiceCategory catShocksStruts = createDefaultServiceCategory("Shocks & Struts", garage);
         ServiceCategory catOther = createDefaultServiceCategory("Other/Not Sure", garage);
 
+        //These are the default Services that are enabled for a garage
         //Routine Maintenance
         createDefaultOfferedService("Oil Change", catRoutineMaintenance);
         createDefaultOfferedService("Brake Replacement", catRoutineMaintenance);
@@ -96,6 +101,7 @@ public class ServiceCatalogService {
 
         //Shocks & Struts
         createDefaultOfferedService("Struts & Shocks Consultation", catShocksStruts);
+
         //consultation differs from check in restoration/upgrade preference vs current safety status - Hope
         createDefaultOfferedService("Check: Struts & Suspension", catShocksStruts);
 

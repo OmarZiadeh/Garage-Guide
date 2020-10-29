@@ -5,7 +5,6 @@ import com.TeamOne411.backend.entity.servicecatalog.OfferedService;
 import com.TeamOne411.backend.entity.servicecatalog.ServiceCategory;
 import com.TeamOne411.backend.service.GarageService;
 import com.TeamOne411.backend.service.ServiceCatalogService;
-import com.TeamOne411.ui.view.sandbox.form.CategoryEditorForm;
 import com.TeamOne411.ui.view.sandbox.form.OfferedServiceEditorForm;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
@@ -29,8 +28,9 @@ public class ServicesSandboxView extends VerticalLayout {
 
     /**
      * The constructor for the sandbox view. Does initial layout setup, grid configuration, and event listener attachment
+     *
      * @param serviceCatalogService the ServiceCatalogService to broker the repository calls for garage employees
-     * @param garageService the GarageService to broker the repository calls for garages
+     * @param garageService         the GarageService to broker the repository calls for garages
      */
     public ServicesSandboxView(ServiceCatalogService serviceCatalogService, GarageService garageService) {
         //initial layout setup
@@ -125,6 +125,7 @@ public class ServicesSandboxView extends VerticalLayout {
 
     /**
      * Saves the given offeredService to the database
+     *
      * @param event the SaveEvent from the offeredService editor form
      */
     private void saveOfferedService(OfferedServiceEditorForm.SaveEvent event) {
@@ -134,9 +135,9 @@ public class ServicesSandboxView extends VerticalLayout {
         // TODO add toast to confirm add
     }
 
-
     /**
      * Deletes the given offeredService from the database.
+     *
      * @param event the DeleteEvent from the offeredService editor form
      */
     private void deleteOfferedService(OfferedServiceEditorForm.DeleteEvent event) {
@@ -148,9 +149,9 @@ public class ServicesSandboxView extends VerticalLayout {
         closeOfferedServiceEditorForm();
     }
 
-
     /**
      * Toggles the form visibility and sets initializes form fields if passed a OfferedService instance
+     *
      * @param offeredService the OfferedService instance to edit, or null if none is selected
      */
     private void editOfferedService(OfferedService offeredService) {
@@ -178,8 +179,7 @@ public class ServicesSandboxView extends VerticalLayout {
      * Clears and hides the editor form
      */
     private void closeOfferedServiceFormHandler(OfferedServiceEditorForm.CloseEvent event) {
-        if (event.getOfferedService() != null)
-        {
+        if (event.getOfferedService() != null) {
             // TODO add confirm dialog
         }
         closeOfferedServiceEditorForm();

@@ -2,10 +2,7 @@ package com.TeamOne411.ui.view.registration;
 
 import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.users.GarageEmployee;
-import com.TeamOne411.backend.service.EmailExistsException;
-import com.TeamOne411.backend.service.GarageService;
-import com.TeamOne411.backend.service.UserDetailsService;
-import com.TeamOne411.backend.service.UsernameExistsException;
+import com.TeamOne411.backend.service.*;
 import com.TeamOne411.ui.view.registration.subform.GarageAdminRegisterForm;
 import com.TeamOne411.ui.view.registration.subform.GarageCreateForm;
 import com.TeamOne411.ui.view.registration.subform.GarageEmployeeConfirmationView;
@@ -28,14 +25,17 @@ public class RegisterView extends VerticalLayout {
     private RegistrationPath path;
     private GarageService garageService;
     private UserDetailsService userDetailsService;
+    private ServiceCatalogService serviceCatalogService;
 
     public RegisterView(
             GarageService garageService,
-            UserDetailsService userDetailsService
+            UserDetailsService userDetailsService,
+            ServiceCatalogService serviceCatalogService
     ) {
         // field assignments
         this.garageService = garageService;
         this.userDetailsService = userDetailsService;
+        this.serviceCatalogService = serviceCatalogService;
         this.garageAdminRegisterForm = new GarageAdminRegisterForm(userDetailsService);
         this.garageConfirmView = new GarageEmployeeConfirmationView();
 
@@ -148,7 +148,7 @@ public class RegisterView extends VerticalLayout {
             if (garageEmployee != null && garage != null) {
                 // save the garage first because the employee has dependency
                 garageService.save(garage);
-
+                serviceCatalogService.initializeDefaultServices(garage);
                 garageEmployee.setGarage(garage);
 
                 try {
