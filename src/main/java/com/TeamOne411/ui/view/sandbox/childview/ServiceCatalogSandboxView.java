@@ -2,8 +2,10 @@ package com.TeamOne411.ui.view.sandbox.childview;
 
 import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.servicecatalog.OfferedService;
+import com.TeamOne411.backend.entity.servicecatalog.ServiceCategory;
 import com.TeamOne411.backend.service.GarageService;
 import com.TeamOne411.backend.service.ServiceCatalogService;
+import com.TeamOne411.ui.view.sandbox.form.CategoryEditorForm;
 import com.TeamOne411.ui.view.sandbox.form.OfferedServiceEditorForm;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
@@ -23,8 +25,9 @@ public class ServiceCatalogSandboxView extends VerticalLayout {
     private ServiceCatalogService serviceCatalogService;
     private GarageService garageService;
     private OfferedServiceEditorForm serviceEditorForm = new OfferedServiceEditorForm();
+    private CategoryEditorForm categoryEditorForm = new CategoryEditorForm();
     private Button addServiceButton = new Button("Add Service");
-    private Button addCategoryButton = new Button("Add Service Category");
+    private Button addCategoryButton = new Button("Add Category");
 
     /**
      * The constructor for the sandbox view. Does initial layout setup, grid configuration, and event listener attachment
@@ -73,26 +76,38 @@ public class ServiceCatalogSandboxView extends VerticalLayout {
         serviceEditorForm.addListener(OfferedServiceEditorForm.DeleteEvent.class, this::deleteOfferedService);
         serviceEditorForm.addListener(OfferedServiceEditorForm.CloseEvent.class, this::closeOfferedServiceFormHandler);
 
-        // set a click lister to the add button to show the form and then hide the add button
+        categoryEditorForm.addListener(CategoryEditorForm.SaveEvent.class, this::saveServiceCategory);
+        categoryEditorForm.addListener(CategoryEditorForm.DeleteEvent.class, this::deleteServiceCategory);
+        categoryEditorForm.addListener(CategoryEditorForm.CloseEvent.class, this::closeCategoryFormHandler);
+
+        // set a click lister to the add button to show the service form and then hide the add button
         addServiceButton.addClickListener(event -> {
             serviceEditorForm.setVisible(true);
             addServiceButton.setVisible(false);
         });
 
-        // set the form's default visibility to false
-        serviceEditorForm.setVisible(false);
+        // set a click lister to the add button to show the category form and then hide the add button
+        addCategoryButton.addClickListener(event -> {
+            categoryEditorForm.setVisible(true);
+            addCategoryButton.setVisible(false);
+        });
 
-        // build a div element with title, garageEmployee grid, and editor form
+        // set the forms' default visibility to false
+        serviceEditorForm.setVisible(false);
+        categoryEditorForm.setVisible(false);
+
+        // build a div element with title, serviceCatalog grid, and editor forms
         Div offeredServiceContent = new Div(
                 grid,
-                serviceEditorForm
+                serviceEditorForm,
+                categoryEditorForm
         );
 
         offeredServiceContent.addClassName("offeredServiceContent");
         offeredServiceContent.setSizeFull();
 
         // add the components to this layout
-        add(new H1("Services"), addServiceButton, addCategoryButton, offeredServiceContent);
+        add(new H1("Services"), addCategoryButton, addServiceButton, offeredServiceContent);
 
         // fetch the list for the grid
         updateOfferedServicesList();
@@ -106,9 +121,12 @@ public class ServiceCatalogSandboxView extends VerticalLayout {
 
     private void updateGarageCombobox() {
         serviceEditorForm.setGarages(garageService.findAll());
+        categoryEditorForm.setGarages(garageService.findAll());
     }
 
-    private void updateCategoriesCombobox() {serviceEditorForm.setServiceCategories(serviceCatalogService.findAllServiceCategories());}
+    private void updateCategoriesCombobox() {
+        serviceEditorForm.setServiceCategories(serviceCatalogService.findAllServiceCategories());
+    }
 
     /**
      * Refreshes the grid list from the database
@@ -118,8 +136,8 @@ public class ServiceCatalogSandboxView extends VerticalLayout {
     }
 
     /**
-     * Saves the given garageEmployee to the database
-     * @param event the SaveEvent from the garageEmployee editor form
+     * Saves the given offeredService to the database
+     * @param event the SaveEvent from the offeredService editor form
      */
     private void saveOfferedService(OfferedServiceEditorForm.SaveEvent event) {
         serviceCatalogService.saveOfferedService(event.getOfferedService());
@@ -129,8 +147,19 @@ public class ServiceCatalogSandboxView extends VerticalLayout {
     }
 
     /**
-     * Deletes the given garageEmployee from the database.
-     * @param event the DeleteEvent from the garageEmployee editor form
+     * Saves the given serviceCategory to the database
+     * @param event the SaveEvent from the serviceCategory editor form
+     */
+    private void saveServiceCategory(CategoryEditorForm.SaveEvent event) {
+        serviceCatalogService.saveServiceCategory(event.getServiceCategory());
+        closeCategoryEditorForm();
+        // TODO add toast to confirm add
+    }
+
+
+    /**
+     * Deletes the given offeredService from the database.
+     * @param event the DeleteEvent from the offeredService editor form
      */
     private void deleteOfferedService(OfferedServiceEditorForm.DeleteEvent event) {
         if (event.getOfferedService() != null) {
@@ -142,7 +171,19 @@ public class ServiceCatalogSandboxView extends VerticalLayout {
     }
 
     /**
-     * Toggles the form visibility and sets initializes form fields if passed a GarageEmployee instance
+     * Deletes the given serviceCategory from the database.
+     * @param event the DeleteEvent from the serviceCategory editor form
+     */
+    private void deleteServiceCategory(CategoryEditorForm.DeleteEvent event) {
+        if (event.getServiceCategory() != null) {
+            // TODO make this run only after confirm delete dialog
+            serviceCatalogService.deleteServiceCategory(event.getServiceCategory());
+        }
+        closeCategoryEditorForm();
+    }
+
+    /**
+     * Toggles the form visibility and sets initializes form fields if passed a OfferedService instance
      * @param offeredService the OfferedService instance to edit, or null if none is selected
      */
     private void editOfferedService(OfferedService offeredService) {
@@ -152,6 +193,20 @@ public class ServiceCatalogSandboxView extends VerticalLayout {
             serviceEditorForm.setOfferedService(offeredService);
             serviceEditorForm.setVisible(true);
             addClassName("editing-Service");
+        }
+    }
+
+    /**
+     * Toggles the form visibility and sets initializes form fields if passed a ServiceCategory instance
+     * @param serviceCategory the ServiceCategory instance to edit, or null if none is selected
+     */
+    private void editServiceCategory(ServiceCategory serviceCategory) {
+        if (serviceCategory == null) {
+            closeCategoryEditorForm();
+        } else {
+            categoryEditorForm.setServiceCategory(serviceCategory);
+            categoryEditorForm.setVisible(true);
+            addClassName("editing-Category");
         }
     }
 
@@ -168,11 +223,32 @@ public class ServiceCatalogSandboxView extends VerticalLayout {
     /**
      * Clears and hides the editor form
      */
+    private void closeCategoryEditorForm() {
+        categoryEditorForm.setServiceCategory(new ServiceCategory());
+        categoryEditorForm.setVisible(false);
+        removeClassName("editing-Service");
+        addCategoryButton.setVisible(true);
+    }
+
+    /**
+     * Clears and hides the editor form
+     */
     private void closeOfferedServiceFormHandler(OfferedServiceEditorForm.CloseEvent event) {
         if (event.getOfferedService() != null)
         {
             // TODO add confirm dialog
         }
         closeOfferedServiceEditorForm();
+    }
+
+    /**
+     * Clears and hides the editor form
+     */
+    private void closeCategoryFormHandler(CategoryEditorForm.CloseEvent event) {
+        if (event.getServiceCategory() != null)
+        {
+            // TODO add confirm dialog
+        }
+        closeCategoryEditorForm();
     }
 }

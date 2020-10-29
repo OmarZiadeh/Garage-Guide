@@ -57,7 +57,7 @@ public class OfferedServiceEditorForm extends FormLayout {
     private OfferedService offeredService = new OfferedService();
 
     public OfferedServiceEditorForm() {
-        addClassName("service-catalog-form");
+        addClassName("offered-service-form");
         binder.forField(price).withConverter(new PriceConverter()).bind("price");
         binder.bindInstanceFields(this);
         garage.setItemLabelGenerator(Garage::getCompanyName);
@@ -76,13 +76,13 @@ public class OfferedServiceEditorForm extends FormLayout {
         this.garage.setItems(garages);
     }
 
+    public void setServiceCategories(List<ServiceCategory> categories) {
+        this.serviceCategory.setItems(categories);
+    }
+
     public void setOfferedService(OfferedService offeredService) {
         this.offeredService = offeredService;
         binder.readBean(offeredService);
-    }
-
-    public void setServiceCategories(List<ServiceCategory> categories) {
-        this.serviceCategory.setItems(categories);
     }
 
     private HorizontalLayout createButtonsLayout() {

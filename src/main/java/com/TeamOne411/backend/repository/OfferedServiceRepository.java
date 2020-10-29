@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface OfferedServiceRepository extends JpaRepository<OfferedService, Long> {
-    //List<OfferedService> findServiceByGarage(Garage garage);
+    List<OfferedService> findServiceByGarage(Garage garage);
     OfferedService findByServiceName(String serviceName);
 }

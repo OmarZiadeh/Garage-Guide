@@ -1,5 +1,6 @@
 package com.TeamOne411.backend.service;
 
+import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.servicecatalog.OfferedService;
 import com.TeamOne411.backend.entity.servicecatalog.ServiceCategory;
 import com.TeamOne411.backend.repository.OfferedServiceRepository;
@@ -26,11 +27,9 @@ public class ServiceCatalogService {
         return (offeredServiceRepository.findAll());
     }
 
-    /*
     public List<OfferedService> findServiceByGarage(Garage garage) {
         return offeredServiceRepository.findServiceByGarage(garage);
     }
-     */
 
     public OfferedService findServiceByName(String serviceName) {
         return offeredServiceRepository.findByServiceName(serviceName);
@@ -51,11 +50,11 @@ public class ServiceCatalogService {
     public List<ServiceCategory> findAllServiceCategories() {
         return (serviceCategoryRepository.findAll());
     }
-/*
+
     public List<ServiceCategory> findCategoriesByGarage(Garage garage) {
         return serviceCategoryRepository.findCategoriesByGarage(garage);
     }
-*/
+
     public void saveServiceCategory(ServiceCategory serviceCategory) {
         serviceCategoryRepository.save(serviceCategory);
     }
