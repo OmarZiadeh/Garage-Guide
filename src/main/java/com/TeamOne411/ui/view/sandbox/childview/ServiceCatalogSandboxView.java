@@ -47,7 +47,10 @@ public class ServiceCatalogSandboxView extends VerticalLayout {
         //TODO add serviceDescription back in if we decide to keep it
         grid.setColumns("serviceName"); //, "serviceDescription");
 
-        grid.addColumn(OfferedService::getServiceCategory).setHeader("Category").setSortable(true).setKey("serviceCategory");
+        grid.addColumn(offeredService -> {
+            ServiceCategory serviceCategory = offeredService.getServiceCategory();
+            return serviceCategory.getCategoryName();
+        }).setSortable(true).setHeader("Category").setKey("serviceCategory");
 
         //Format price
         final DecimalFormat decimalFormat = new DecimalFormat();

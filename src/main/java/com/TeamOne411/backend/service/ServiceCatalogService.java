@@ -35,8 +35,8 @@ public class ServiceCatalogService {
         return offeredServiceRepository.findByServiceName(serviceName);
     }
 
-    public ServiceCategory findByCategoryName(String name) {
-        return serviceCategoryRepository.findByCategoryName(name);
+    public ServiceCategory findByCategoryName(String categoryName) {
+        return serviceCategoryRepository.findByCategoryName(categoryName);
     }
 
     public void saveOfferedService(OfferedService offeredService) {

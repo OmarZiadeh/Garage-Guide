@@ -26,10 +26,10 @@ import java.util.Locale;
 public class OfferedServiceEditorForm extends FormLayout {
     private TextField serviceName = new TextField("Service name");
     //private TextField description = new TextField("Description");
-    private ComboBox<ServiceCategory> serviceCategory = new ComboBox<>("Category");
+    private ComboBox<Garage> garage = new ComboBox<>("Garage");
     private TextField price = new TextField("Price");
     //private TextField duration = new TextField("Duration");
-    private ComboBox<Garage> garage = new ComboBox<>("Garage");
+    private ComboBox<ServiceCategory> serviceCategory = new ComboBox<>("Category");
 
     private Button save = new Button("Save");
     private Button delete = new Button("Delete");
@@ -64,10 +64,10 @@ public class OfferedServiceEditorForm extends FormLayout {
         serviceCategory.setItemLabelGenerator(ServiceCategory::getCategoryName);
         add(serviceName,
                 //description,
-                serviceCategory,
+                garage,
                 price,
                 //duration
-                garage,
+                serviceCategory,
                 createButtonsLayout());
     }
 

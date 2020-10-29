@@ -38,7 +38,6 @@ public class CategoryEditorForm extends FormLayout {
                 createButtonsLayout());
     }
 
-
     public void setGarages(List<Garage> garages) {
         this.garage.setItems(garages);
     }
