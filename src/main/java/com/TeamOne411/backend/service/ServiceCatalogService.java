@@ -29,14 +29,6 @@ public class ServiceCatalogService {
         return (offeredServiceRepository.findAll());
     }
 
-    public OfferedService findServiceByName(String serviceName) {
-        return offeredServiceRepository.findByServiceName(serviceName);
-    }
-
-    public ServiceCategory findByCategoryName(String categoryName) {
-        return serviceCategoryRepository.findByCategoryName(categoryName);
-    }
-
     public void saveOfferedService(OfferedService offeredService) {
         offeredServiceRepository.save(offeredService);
     }
@@ -48,11 +40,11 @@ public class ServiceCatalogService {
     public List<ServiceCategory> findAllServiceCategories() {
         return (serviceCategoryRepository.findAll());
     }
-
+/*
     public List<ServiceCategory> findCategoriesByGarage(Garage garage) {
         return serviceCategoryRepository.findCategoriesByGarage(garage);
     }
-
+*/
     public void saveServiceCategory(ServiceCategory serviceCategory) {
         serviceCategoryRepository.save(serviceCategory);
     }
@@ -110,28 +102,17 @@ public class ServiceCatalogService {
     }
 
     ServiceCategory createDefaultServiceCategory(String name, Garage garage) {
-        ServiceCategory category = serviceCategoryRepository.findByCategoryName(name);
-
-        if (category == null) {
-            category = new ServiceCategory();
-            category.setCategoryName(name);
-            category.setGarage(garage);
-            serviceCategoryRepository.save(category);
-        }
+        ServiceCategory category = new ServiceCategory();
+        category.setCategoryName(name);
+        category.setGarage(garage);
+        serviceCategoryRepository.save(category);
         return category;
     }
 
-    OfferedService createDefaultOfferedService(String name, ServiceCategory category) {
-        OfferedService service = offeredServiceRepository.findByServiceName(name);
-
-        if (service == null) {
-            service = new OfferedService();
-            service.setServiceName(name);
-            service.setServiceCategory(category);
-            offeredServiceRepository.save(service);
-        }
-
-        return service;
+    private void createDefaultOfferedService(String name, ServiceCategory category) {
+        OfferedService service = new OfferedService();
+        service.setServiceName(name);
+        service.setServiceCategory(category);
+        offeredServiceRepository.save(service);
     }
-
 }
