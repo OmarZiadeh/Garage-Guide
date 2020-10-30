@@ -1,7 +1,5 @@
 package com.TeamOne411.backend.config;
 
-import com.TeamOne411.backend.entity.servicecatalog.OfferedService;
-import com.TeamOne411.backend.entity.servicecatalog.ServiceCategory;
 import com.TeamOne411.backend.entity.users.Privilege;
 import com.TeamOne411.backend.entity.users.Role;
 import com.TeamOne411.backend.entity.users.User;
