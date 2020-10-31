@@ -35,6 +35,7 @@ public class EmployeeEditorDialog extends Dialog {
         this.garage = garage;
 
         initDialog("Register New Employee");
+        garageEmployeeRegisterForm.setIsAdminToggleValue(false);
     }
 
     /**
@@ -49,7 +50,6 @@ public class EmployeeEditorDialog extends Dialog {
         isEditMode = true;
 
         initDialog("Edit Employee Details");
-
         garageEmployeeRegisterForm.prefillForm(employee);
     }
 
@@ -64,6 +64,7 @@ public class EmployeeEditorDialog extends Dialog {
         garageEmployeeRegisterForm.addListener(GarageAdminRegisterForm.NextEvent.class, this::onComplete);
         garageEmployeeRegisterForm.setBackButtonText("Cancel");
         garageEmployeeRegisterForm.setNextButtonText(isEditMode ? "Save Changes" : "Complete Registration");
+        garageEmployeeRegisterForm.setIsAdminToggleEnabled(true);
 
         // only way to exit is to hit cancel or complete the form
         setCloseOnEsc(false);

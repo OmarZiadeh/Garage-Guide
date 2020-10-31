@@ -15,6 +15,10 @@ public class GarageAdminRegisterForm extends GarageEmployeeRegisterForm {
 
         setBackButtonText("Back To User Selection");
         setNextButtonText("Enter Garage Info");
+
+        // Set the isAdmin to true (always true for this subclass) and prevent user from doing something stupid.
+        setIsAdminToggleValue(true);
+        setIsAdminToggleEnabled(false);
     }
 
     @Override

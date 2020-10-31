@@ -2,6 +2,7 @@ package com.TeamOne411.ui.view.registration.subform;
 
 import com.TeamOne411.backend.entity.users.GarageEmployee;
 import com.TeamOne411.backend.service.UserDetailsService;
+import com.vaadin.componentfactory.ToggleButton;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Key;
@@ -33,6 +34,7 @@ public class GarageEmployeeRegisterForm extends VerticalLayout {
     private TextField email = new TextField("Email Address");
     private Button backButton = new Button("Back", new Icon(VaadinIcon.ARROW_LEFT));
     private Button nextButton = new Button("Next", new Icon(VaadinIcon.ARROW_RIGHT));
+    private ToggleButton isAdmin = new ToggleButton("Garage Admin");
 
     private boolean isEditMode = false;
 
@@ -63,23 +65,24 @@ public class GarageEmployeeRegisterForm extends VerticalLayout {
         backButton.addClickListener(e -> fireEvent(new BackEvent(this)));
         nextButton.addClickListener(e -> validateAndFireNext());
 
-        if (!isEditMode) {
-            // hook up username field to validator
-            username.setValueChangeMode(ValueChangeMode.LAZY);
-            username.addValueChangeListener(e -> validateUsername());
+        // hook up username field to validator
+        username.setValueChangeMode(ValueChangeMode.LAZY);
+        username.addValueChangeListener(e -> validateUsername());
 
-            // hook up email field to validator
-            email.setValueChangeMode(ValueChangeMode.LAZY);
-            email.addValueChangeListener(e -> validateEmailField());
+        // hook up email field to validator
+        email.setValueChangeMode(ValueChangeMode.LAZY);
+        email.addValueChangeListener(e -> validateEmailField());
 
-            // hook up password fields to validator
-            password.addValueChangeListener(e -> validatePasswordFields());
-            confirmPassword.setValueChangeMode(ValueChangeMode.LAZY);
-            confirmPassword.addValueChangeListener(e -> validatePasswordFields());
+        // hook up password fields to validator
+        password.addValueChangeListener(e -> validatePasswordFields());
+        confirmPassword.setValueChangeMode(ValueChangeMode.LAZY);
+        confirmPassword.addValueChangeListener(e -> validatePasswordFields());
 
-            firstName.setValueChangeMode(ValueChangeMode.LAZY);
-            lastName.setValueChangeMode(ValueChangeMode.LAZY);
-        }
+        firstName.setValueChangeMode(ValueChangeMode.LAZY);
+        lastName.setValueChangeMode(ValueChangeMode.LAZY);
+
+        // disable isAdmin by default, parent component can enable selectively
+        isAdmin.setEnabled(false);
 
         add(
                 username,
@@ -88,6 +91,7 @@ public class GarageEmployeeRegisterForm extends VerticalLayout {
                 firstName,
                 lastName,
                 email,
+                isAdmin,
                 new HorizontalLayout(backButton, nextButton)
         );
     }
@@ -200,6 +204,7 @@ public class GarageEmployeeRegisterForm extends VerticalLayout {
             garageEmployee.setFirstName(firstName.getValue());
             garageEmployee.setLastName(lastName.getValue());
             garageEmployee.setEmail(email.getValue());
+            garageEmployee.setIsAdmin(isAdmin.getValue());
             return garageEmployee;
         }
 
@@ -241,6 +246,22 @@ public class GarageEmployeeRegisterForm extends VerticalLayout {
      */
     public void setIsEditMode(boolean isEditMode) {
         this.isEditMode = isEditMode;
+    }
+
+    /**
+     * Setter for isAdmin toggle control enabled
+     * @param isEnabled true to enable the toggle, false to disable
+     */
+    public void setIsAdminToggleEnabled(boolean isEnabled) {
+        isAdmin.setEnabled(isEnabled);
+    }
+
+    /**
+     * Setter for the isAdmin toggle control value
+     * @param isAdmin true to set toggle to true, false to set toggle to false
+     */
+    public void setIsAdminToggleValue(boolean isAdmin) {
+        this.isAdmin.setValue(isAdmin);
     }
 
     /**
