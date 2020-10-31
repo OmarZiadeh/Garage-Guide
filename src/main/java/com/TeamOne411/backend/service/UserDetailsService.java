@@ -118,4 +118,19 @@ public class UserDetailsService implements org.springframework.security.core.use
 
         return userRepository.save(user);
     }
+
+    public User updateUser(User user) {
+        if (user instanceof GarageEmployee) {
+            GarageEmployee ge = (GarageEmployee) user;
+            user.setRoles(new LinkedList<Role>(Arrays.asList(roleRepository.findByName("ROLE_GARAGE_EMPLOYEE"))));
+
+            if (ge.getIsAdmin()) {
+                Collection<Role> roles = user.getRoles();
+                roles.addAll(user.getRoles());
+                user.setRoles(roles);
+            }
+        }
+
+        return userRepository.save(user);
+    }
 }

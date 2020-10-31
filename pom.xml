@@ -40,6 +40,10 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
+        <repository>
+            <id>vaadin-addons</id>
+            <url>https://maven.vaadin.com/vaadin-addons</url>
+        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -154,6 +158,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.vaadin.componentfactory</groupId>
+            <artifactId>togglebutton</artifactId>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 
