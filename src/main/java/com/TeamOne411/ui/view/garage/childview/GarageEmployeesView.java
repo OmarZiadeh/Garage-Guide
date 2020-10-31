@@ -6,6 +6,7 @@ import com.TeamOne411.backend.service.GarageEmployeeService;
 import com.TeamOne411.backend.service.UserDetailsService;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -47,16 +48,17 @@ public class GarageEmployeesView extends VerticalLayout {
         editEmployeeButton.addClickListener(e -> showEditEmployeeDialog());
         editEmployeeButton.setEnabled(false);
 
+        Button deleteEmployeeButton = new Button("Delete Employee");
+        deleteEmployeeButton.addClickListener(e -> deleteEmployeeClick());
+        deleteEmployeeButton.setEnabled(false);
+
         grid.addSelectionListener(e -> {
-            if (!grid.getSelectedItems().isEmpty()) {
-                editEmployeeButton.setEnabled(true);
-            } else {
-                editEmployeeButton.setEnabled(false);
-            }
+            editEmployeeButton.setEnabled(!grid.getSelectedItems().isEmpty());
+            deleteEmployeeButton.setEnabled(!grid.getSelectedItems().isEmpty());
         });
 
         add(
-            new HorizontalLayout(registerEmployeeButton, editEmployeeButton),
+            new HorizontalLayout(registerEmployeeButton, editEmployeeButton, deleteEmployeeButton),
             grid
         );
 
@@ -103,14 +105,48 @@ public class GarageEmployeesView extends VerticalLayout {
     }
 
     /**
+     * Fired on deleteEmployeeButton click. Shows a confirm dialog and then deletes the selected employee.
+     */
+    private void deleteEmployeeClick() {
+        Optional<GarageEmployee> selectedEmployee = grid.getSelectedItems().stream().findFirst();
+
+        if (selectedEmployee.isPresent()) {
+            String message = "Are you sure you want to delete " + selectedEmployee.get().getFullName() + "?";
+
+            ConfirmDialog confirmDeleteDialog = new ConfirmDialog(
+                    "Delete Employee", message,
+                    "Delete",
+                    e -> onDeleteConfirm(selectedEmployee.get()),
+                    "Cancel",
+                    e -> e.getSource().close());
+
+            confirmDeleteDialog.setConfirmButtonTheme("error primary");
+
+            confirmDeleteDialog.open();
+        }
+    }
+
+    /**
+     * Fired when delete confirm dialog is confirmed by user. Deletes garage employee.
+     * @param employee The employee to delete.
+     */
+    private void onDeleteConfirm(GarageEmployee employee) {
+        if (employee != null) {
+            garageEmployeeService.delete(employee);
+            employeeUpdates("Deleted employee " + employee.getFullName());
+        }
+    }
+
+    /**
      * Fired when a new employee is successfully registered using the employee editor dialog.
      * @param event the event that fired this method
      */
     private void onEmployeeRegisteredSuccess(ComponentEvent<EmployeeEditorDialog> event) {
         GarageEmployee newEmployee = event.getSource().getEmployee();
+        employeeEditorDialog.close();
 
         if (newEmployee != null) {
-            editEmployeeDialogSuccess("Successfully added new employee " + newEmployee.getFirstName() + " " + newEmployee.getLastName());
+            employeeUpdates("Successfully added new employee " + newEmployee.getFullName());
         }
     }
 
@@ -120,18 +156,18 @@ public class GarageEmployeesView extends VerticalLayout {
      */
     private void onEmployeeEditedSuccess(ComponentEvent<EmployeeEditorDialog> event) {
         GarageEmployee editedEmployee = event.getSource().getEmployee();
+        employeeEditorDialog.close();
 
         if (editedEmployee != null) {
-            editEmployeeDialogSuccess("Successfully edited employee " + editedEmployee.getFirstName() + " " + editedEmployee.getLastName());
+            employeeUpdates("Successfully edited employee " + editedEmployee.getFullName());
         }
     }
 
     /**
-     * This method includes some common functionality for the success events
+     * This method includes some common functionality when any change to employees occurs
      * @param successMessage the message text to display to the user in a notification
      */
-    private void editEmployeeDialogSuccess(String successMessage) {
-        employeeEditorDialog.close();
+    private void employeeUpdates(String successMessage) {
         updateGarageEmployeeList();
 
         Notification notification = new Notification(
