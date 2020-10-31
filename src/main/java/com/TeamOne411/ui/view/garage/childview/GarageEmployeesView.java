@@ -11,13 +11,18 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
+import java.util.Optional;
+
+/**
+ * This class is a Vertical layout that shows a list of employees for a given garage and controls to add new or edit them.
+ */
 public class GarageEmployeesView extends VerticalLayout {
     GarageEmployeeService garageEmployeeService;
 
     private Grid<GarageEmployee> grid = new Grid<>(GarageEmployee.class);
     private UserDetailsService userDetailsService;
     private Garage employer;
-    private NewEmployeeDialog newEmployeeDialog;
+    private EmployeeEditorDialog employeeEditorDialog;
 
     public GarageEmployeesView(
             GarageEmployeeService garageEmployeeService,
@@ -38,43 +43,103 @@ public class GarageEmployeesView extends VerticalLayout {
         Button registerEmployeeButton = new Button("Register New Employee");
         registerEmployeeButton.addClickListener(e -> showNewEmployeeDialog());
 
+        Button editEmployeeButton = new Button("Edit Employee");
+        editEmployeeButton.addClickListener(e -> showEditEmployeeDialog());
+        editEmployeeButton.setEnabled(false);
+
+        grid.addSelectionListener(e -> {
+            if (!grid.getSelectedItems().isEmpty()) {
+                editEmployeeButton.setEnabled(true);
+            } else {
+                editEmployeeButton.setEnabled(false);
+            }
+        });
+
         add(
-            new HorizontalLayout(registerEmployeeButton),
+            new HorizontalLayout(registerEmployeeButton, editEmployeeButton),
             grid
         );
 
         updateGarageEmployeeList();
     }
 
+    /**
+     * Calls the GarageEmployeeService to refresh the list of employees. Call this anytime the employees may have been edited.
+     */
     private void updateGarageEmployeeList() {
         grid.setItems(garageEmployeeService.findByGarage(employer));
     }
 
+    /**
+     * Creates and opens a new EmployeeEditorDialog instance not in edit mode (to register new employee)
+     */
     private void showNewEmployeeDialog() {
-        newEmployeeDialog = new NewEmployeeDialog(userDetailsService, employer);
+        employeeEditorDialog = new EmployeeEditorDialog(userDetailsService, employer);
 
-        newEmployeeDialog.setWidth("250px");
-        newEmployeeDialog.setWidth("750px");
+        employeeEditorDialog.setWidth("250px");
+        employeeEditorDialog.setWidth("750px");
 
-        newEmployeeDialog.addListener(NewEmployeeDialog.SuccessEvent.class, this::onEmployeeRegisteredSuccess);
+        employeeEditorDialog.addListener(EmployeeEditorDialog.AddEmployeeSuccessEvent.class, this::onEmployeeRegisteredSuccess);
 
-        newEmployeeDialog.open();
+        employeeEditorDialog.open();
     }
 
+    /**
+     * Gets the selected employee from the grid, passes it to a new EmployeeEditorDialog instance and opens it in Edit Mode.
+     */
+    private void showEditEmployeeDialog() {
+        Optional<GarageEmployee> selectedEmployee = grid.getSelectedItems().stream().findFirst();
 
-    public void onEmployeeRegisteredSuccess(ComponentEvent<NewEmployeeDialog> event) {
-        newEmployeeDialog.close();
-        updateGarageEmployeeList();
-        GarageEmployee newEmployee = event.getSource().getNewEmployee();
+        if (selectedEmployee.isPresent()) {
+            employeeEditorDialog = new EmployeeEditorDialog(userDetailsService, selectedEmployee.get());
+
+            employeeEditorDialog.setWidth("250px");
+            employeeEditorDialog.setWidth("750px");
+
+            employeeEditorDialog.addListener(EmployeeEditorDialog.EditEmployeeSuccessEvent.class, this::onEmployeeEditedSuccess);
+
+            employeeEditorDialog.open();
+        }
+    }
+
+    /**
+     * Fired when a new employee is successfully registered using the employee editor dialog.
+     * @param event the event that fired this method
+     */
+    private void onEmployeeRegisteredSuccess(ComponentEvent<EmployeeEditorDialog> event) {
+        GarageEmployee newEmployee = event.getSource().getEmployee();
 
         if (newEmployee != null) {
-            Notification notification = new Notification(
-                    "Successfully added new employee " + newEmployee.getFirstName() + " " + newEmployee.getLastName(),
-                    3000,
-                    Notification.Position.TOP_END
-            );
-
-            notification.open();
+            editEmployeeDialogSuccess("Successfully added new employee " + newEmployee.getFirstName() + " " + newEmployee.getLastName());
         }
+    }
+
+    /**
+     * Fired when an existing employee is successfully edited using the employee editor dialog.
+     * @param event the event that fired this method
+     */
+    private void onEmployeeEditedSuccess(ComponentEvent<EmployeeEditorDialog> event) {
+        GarageEmployee editedEmployee = event.getSource().getEmployee();
+
+        if (editedEmployee != null) {
+            editEmployeeDialogSuccess("Successfully edited employee " + editedEmployee.getFirstName() + " " + editedEmployee.getLastName());
+        }
+    }
+
+    /**
+     * This method includes some common functionality for the success events
+     * @param successMessage the message text to display to the user in a notification
+     */
+    private void editEmployeeDialogSuccess(String successMessage) {
+        employeeEditorDialog.close();
+        updateGarageEmployeeList();
+
+        Notification notification = new Notification(
+                successMessage,
+                4000,
+                Notification.Position.TOP_END
+        );
+
+        notification.open();
     }
 }
