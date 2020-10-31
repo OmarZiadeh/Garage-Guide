@@ -18,8 +18,6 @@ public class ServiceCatalogService {
     private OfferedServiceRepository offeredServiceRepository;
     private ServiceCategoryRepository serviceCategoryRepository;
 
-   // public ServiceCatalogService(){ }
-
     public ServiceCatalogService(OfferedServiceRepository offeredServiceRepository, ServiceCategoryRepository serviceCategoryRepository) {
         this.offeredServiceRepository = offeredServiceRepository;
         this.serviceCategoryRepository = serviceCategoryRepository;
@@ -40,11 +38,12 @@ public class ServiceCatalogService {
     public List<ServiceCategory> findAllServiceCategories() {
         return (serviceCategoryRepository.findAll());
     }
-/*
-    public List<ServiceCategory> findCategoriesByGarage(Garage garage) {
-        return serviceCategoryRepository.findCategoriesByGarage(garage);
-    }
-*/
+
+    /*
+        public List<ServiceCategory> findCategoriesByGarage(Garage garage) {
+            return serviceCategoryRepository.findCategoriesByGarage(garage);
+        }
+    */
     public void saveServiceCategory(ServiceCategory serviceCategory) {
         serviceCategoryRepository.save(serviceCategory);
     }
@@ -53,7 +52,11 @@ public class ServiceCatalogService {
         serviceCategoryRepository.delete(serviceCategory);
     }
 
-    //Saves the default categories and services for a garage when a garage is first created
+    /**
+     * This class assigns the default categories and services to a garage when a garage is first created
+     *
+     * @param garage The new garage that default categories and services should be assigned to
+     */
     public void initializeDefaultServices(Garage garage) {
 
         //These are the default Categories that are enabled for a garage
@@ -101,6 +104,13 @@ public class ServiceCatalogService {
         createDefaultOfferedService("Other/Not Sure", catOther);
     }
 
+    /**
+     * This class creates the default categories
+     *
+     * @param name   The category name
+     * @param garage The garage the category will be assigned to
+     * @return ServiceCategory object that has been created
+     */
     ServiceCategory createDefaultServiceCategory(String name, Garage garage) {
         ServiceCategory category = new ServiceCategory();
         category.setCategoryName(name);
@@ -109,6 +119,12 @@ public class ServiceCatalogService {
         return category;
     }
 
+    /**
+     * This class creates the default offered services
+     *
+     * @param name     The service name
+     * @param category The ServiceCategory that the service should be associated to
+     */
     private void createDefaultOfferedService(String name, ServiceCategory category) {
         OfferedService service = new OfferedService();
         service.setServiceName(name);
