@@ -52,7 +52,13 @@ public class RegisterView extends VerticalLayout {
         setComponentAttributesForState();
 
         // coming soon
-        carOwnerSelectButton.setEnabled(false);
+        carOwnerSelectButton.addClickListener(e -> {
+            state = RegistrationState.CAR_OWNER_INFO;
+            setComponentAttributesForState();
+            path = RegistrationPath.CAR_OWNER;
+        });
+        carOwnerRegisterForm.addListener(CarOwnerRegisterForm.BackEvent.class, this::backClick);
+        carOwnerRegisterForm.addListener(CarOwnerRegisterForm.NextEvent.class, this::nextClick);
 
         // add listener to the select button for garage admin
         // todo can we animate the sub forms as they come in and out?
@@ -89,7 +95,7 @@ public class RegisterView extends VerticalLayout {
 
         switch (state) {
             case CAR_OWNER_INFO:
-                return reverse ? RegistrationState.USER_TYPE_SELECTION : null;
+                return reverse ? RegistrationState.USER_TYPE_SELECTION : RegistrationState.CAR_OWNER_INFO;
             case GARAGE_ADMIN_INFO:
                 return reverse ? RegistrationState.USER_TYPE_SELECTION : RegistrationState.GARAGE_INFO;
             case GARAGE_INFO:
@@ -114,6 +120,7 @@ public class RegisterView extends VerticalLayout {
         // also in these methods: set focus to first text field on setActive(true)
 
         // form and subview visibilities
+        carOwnerRegisterForm.setVisible(state == RegistrationState.CAR_OWNER_INFO);
         garageAdminRegisterForm.setVisible(state == RegistrationState.GARAGE_ADMIN_INFO);
         garageCreateForm.setVisible(state == RegistrationState.GARAGE_INFO);
         garageConfirmView.setVisible(state == RegistrationState.GARAGE_CONFIRMATION);
