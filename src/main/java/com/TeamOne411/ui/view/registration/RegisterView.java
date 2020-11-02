@@ -83,6 +83,7 @@ public class RegisterView extends VerticalLayout {
                 new H1("Garage Guide - New User Registration"),
                 userTypePrompt,
                 carOwnerSelectButton,
+                carOwnerRegisterForm,
                 garageAdminSelectButton,
                 garageAdminRegisterForm,
                 garageCreateForm,
