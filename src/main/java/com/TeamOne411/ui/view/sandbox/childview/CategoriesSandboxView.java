@@ -39,17 +39,18 @@ public class CategoriesSandboxView extends VerticalLayout{
         addClassName("list-view");
         setSizeFull();
 
-        //configure the service-catalog-grid
+        //configure the categories-grid
         grid.addClassName("categories-grid");
         grid.setHeightByRows(true);
-
         grid.setColumns("categoryName");
 
         //add garage
         grid.addColumn(serviceCategory -> {
             Garage garage = serviceCategory.getGarage();
-            return garage == null ? "[None]" : garage.getCompanyName();
+            return garage.getCompanyName();
         }).setSortable(true).setHeader("Garage");
+
+        // set column width
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
 
         // attach event listener on grid item select

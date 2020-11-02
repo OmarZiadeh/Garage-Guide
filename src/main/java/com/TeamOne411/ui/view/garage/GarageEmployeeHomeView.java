@@ -4,6 +4,7 @@ import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.users.GGUserDetails;
 import com.TeamOne411.backend.entity.users.GarageEmployee;
 import com.TeamOne411.backend.service.GarageEmployeeService;
+import com.TeamOne411.backend.service.ServiceCatalogService;
 import com.TeamOne411.backend.service.UserDetailsService;
 import com.TeamOne411.ui.MainLayout;
 import com.TeamOne411.ui.view.garage.childview.*;
@@ -31,7 +32,10 @@ public class GarageEmployeeHomeView extends VerticalLayout {
     private GarageEmployee loggedInEmployee;
     private Garage myGarage;
 
-    public GarageEmployeeHomeView(UserDetailsService userDetailsService, GarageEmployeeService garageEmployeeService) {
+    public GarageEmployeeHomeView(
+            UserDetailsService userDetailsService,
+            GarageEmployeeService garageEmployeeService,
+            ServiceCatalogService serviceCatalogService) {
         userDetails = userDetailsService.getLoggedInUserDetails();
         loggedInEmployee = (GarageEmployee) userDetails.getUser();
         myGarage = loggedInEmployee.getGarage();
@@ -66,23 +70,10 @@ public class GarageEmployeeHomeView extends VerticalLayout {
         tabsToPages.put(employeesTab, employeesPage);
 
         /*
-        Third Tab - Garage ServiceCategories
+        Third Tab - Garage Services
          */
         // todo make this only visible to admins
-        Tab categoriesTab = new Tab("Services Categories");
-        GarageCategoriesView categoriesView = new GarageCategoriesView();
-        Div categoriesPage = new Div(categoriesView);
-        categoriesTab.add(categoriesPage);
-        tabs.add(categoriesTab);
-        pages.add(categoriesPage);
-        categoriesPage.setVisible(false);
-        tabsToPages.put(categoriesTab, categoriesPage);
-
-        /*
-        Fourth Tab - Garage Services
-         */
-        // todo make this only visible to admins
-        Tab servicesTab = new Tab("Offered Services");
+        Tab servicesTab = new Tab("Services");
         GarageServicesView servicesView = new GarageServicesView();
         Div servicesPage = new Div(servicesView);
         servicesTab.add(servicesPage);
