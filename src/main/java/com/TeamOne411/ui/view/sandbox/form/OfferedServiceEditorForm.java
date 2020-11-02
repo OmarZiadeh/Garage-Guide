@@ -81,8 +81,14 @@ public class OfferedServiceEditorForm extends FormLayout {
     public void setServiceCategories(List<ServiceCategory> categories) {
         this.serviceCategory.setItems(categories);
     }
-    
+
     public void setOfferedService(OfferedService offeredService) {
+        this.offeredService = offeredService;
+        garageComboBox.setValue(offeredService.getServiceCategory().getGarage());
+        binder.readBean(offeredService);
+    }
+
+    public void clearOfferedService(OfferedService offeredService) {
         this.offeredService = offeredService;
         binder.readBean(offeredService);
     }
@@ -119,7 +125,6 @@ public class OfferedServiceEditorForm extends FormLayout {
             super(source, false);
             this.offeredService = offeredService;
         }
-
         public OfferedService getOfferedService() {
             return offeredService;
         }

@@ -65,8 +65,8 @@ public class ServicesSandboxView extends VerticalLayout {
 
         //add garage
         grid.addColumn(offeredService -> {
-            Garage garage = offeredService.getServiceCategory().getGarage();
-            return garage == null ? "[None]" : garage.getCompanyName();
+            garage = offeredService.getServiceCategory().getGarage();
+            return garage.getCompanyName();
         }).setSortable(true).setHeader("Garage");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
 
@@ -154,7 +154,7 @@ public class ServicesSandboxView extends VerticalLayout {
     }
 
     /**
-     * Toggles the form visibility and sets initializes form fields if passed a OfferedService instance
+     * Toggles the form visibility and initializes form fields if passed a OfferedService instance
      *
      * @param offeredService the OfferedService instance to edit, or null if none is selected
      */
@@ -172,7 +172,7 @@ public class ServicesSandboxView extends VerticalLayout {
      * Clears and hides the editor form
      */
     private void closeOfferedServiceEditorForm() {
-        serviceEditorForm.setOfferedService(new OfferedService());
+        serviceEditorForm.clearOfferedService(new OfferedService());
         serviceEditorForm.setVisible(false);
         removeClassName("editing-Service");
         addServiceButton.setVisible(true);
