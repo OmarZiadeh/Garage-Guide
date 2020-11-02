@@ -23,8 +23,9 @@ public class ServicesSandboxView extends VerticalLayout {
     private Grid<OfferedService> grid = new Grid<>(OfferedService.class);
     private ServiceCatalogService serviceCatalogService;
     private GarageService garageService;
-    private OfferedServiceEditorForm serviceEditorForm = new OfferedServiceEditorForm();
+    private OfferedServiceEditorForm serviceEditorForm = new OfferedServiceEditorForm(this);
     private Button addServiceButton = new Button("Add Service");
+    private Garage garage;
 
     /**
      * The constructor for the sandbox view. Does initial layout setup, grid configuration, and event listener attachment
@@ -103,7 +104,10 @@ public class ServicesSandboxView extends VerticalLayout {
 
         // pass down garages to the form for the garage combobox
         updateGarageCombobox();
+    }
 
+    public void setGarage(Garage garage){
+        this.garage = garage;
         // pass down categories to the form for the categories combobox
         updateCategoriesCombobox();
     }
@@ -113,7 +117,7 @@ public class ServicesSandboxView extends VerticalLayout {
     }
 
     private void updateCategoriesCombobox() {
-        serviceEditorForm.setServiceCategories(serviceCatalogService.findAllServiceCategories());
+        serviceEditorForm.setServiceCategories(serviceCatalogService.findCategoriesByGarage(garage));
     }
 
     /**

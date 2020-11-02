@@ -3,9 +3,9 @@ package com.TeamOne411.ui.view.sandbox.form;
 import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.servicecatalog.OfferedService;
 import com.TeamOne411.backend.entity.servicecatalog.ServiceCategory;
+import com.TeamOne411.ui.view.sandbox.childview.ServicesSandboxView;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -28,7 +28,7 @@ import java.util.Locale;
 public class OfferedServiceEditorForm extends FormLayout {
     private TextField serviceName = new TextField("Service name");
     //private TextField description = new TextField("Description");
-    private ComboBox<Garage> garage = new ComboBox<>("Garage");
+    private ComboBox<Garage> garageComboBox = new ComboBox<>("Garage");
     private TextField price = new TextField("Price");
     //private TextField duration = new TextField("Duration");
     private ComboBox<ServiceCategory> serviceCategory = new ComboBox<>("Category");
@@ -58,31 +58,30 @@ public class OfferedServiceEditorForm extends FormLayout {
     Binder<OfferedService> binder = new BeanValidationBinder<>(OfferedService.class);
     private OfferedService offeredService = new OfferedService();
 
-    public OfferedServiceEditorForm() {
+    public OfferedServiceEditorForm(ServicesSandboxView servicesSandboxView) {
         addClassName("offered-service-form");
         binder.forField(price).withConverter(new PriceConverter()).bind("price");
         binder.bindInstanceFields(this);
-        garage.setItemLabelGenerator(Garage::getCompanyName);
+        garageComboBox.setItemLabelGenerator(Garage::getCompanyName);
         serviceCategory.setItemLabelGenerator(ServiceCategory::getCategoryName);
         add(serviceName,
                 //description,
-                garage,
+                garageComboBox,
                 price,
                 //duration
                 serviceCategory,
                 createButtonsLayout());
+        garageComboBox.addValueChangeListener(comboBoxGarageComponentValueChangeEvent -> servicesSandboxView.setGarage(garageComboBox.getValue()));
     }
 
-
     public void setGarages(List<Garage> garages) {
-        this.garage.setItems(garages);
+        this.garageComboBox.setItems(garages);
     }
 
     public void setServiceCategories(List<ServiceCategory> categories) {
         this.serviceCategory.setItems(categories);
     }
-
-
+    
     public void setOfferedService(OfferedService offeredService) {
         this.offeredService = offeredService;
         binder.readBean(offeredService);
