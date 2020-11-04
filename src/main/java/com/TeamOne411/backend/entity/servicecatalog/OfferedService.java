@@ -17,7 +17,6 @@ public class OfferedService extends AbstractEntity {
     @NotNull
     @Size(min = 2, message = "Service name must have at least two characters")
     private String serviceName = "";
-    private String serviceDescription = "";
     @NotNull
     @ManyToOne
     @JoinColumn(name = "service_category_id")
@@ -33,14 +32,6 @@ public class OfferedService extends AbstractEntity {
 
     public void setServiceName(String serviceName) {
         this.serviceName = serviceName;
-    }
-
-    public String getServiceDescription() {
-        return serviceDescription;
-    }
-
-    public void setServiceDescription(String serviceDescription) {
-        this.serviceDescription = serviceDescription;
     }
 
     public void setDuration(Duration duration) {

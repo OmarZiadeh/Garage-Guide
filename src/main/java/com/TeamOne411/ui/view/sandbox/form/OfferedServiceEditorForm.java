@@ -22,15 +22,15 @@ import com.vaadin.flow.shared.Registration;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.time.Duration;
 import java.util.List;
 import java.util.Locale;
 
 public class OfferedServiceEditorForm extends FormLayout {
     private TextField serviceName = new TextField("Service name");
-    //private TextField description = new TextField("Description");
     private ComboBox<Garage> garageComboBox = new ComboBox<>("Garage");
-    private TextField price = new TextField("Price");
-    //private TextField duration = new TextField("Duration");
+    private TextField price = new TextField("$ Price");
+    private ComboBox<Duration> duration = new ComboBox<>("Duration");
     private ComboBox<ServiceCategory> serviceCategory = new ComboBox<>("Category");
 
     private Button save = new Button("Save");
@@ -64,11 +64,12 @@ public class OfferedServiceEditorForm extends FormLayout {
         binder.bindInstanceFields(this);
         garageComboBox.setItemLabelGenerator(Garage::getCompanyName);
         serviceCategory.setItemLabelGenerator(ServiceCategory::getCategoryName);
+        duration.setItems((Duration.ofMinutes(0)), Duration.ofMinutes(30), Duration.ofMinutes(60), Duration.ofMinutes(90), Duration.ofMinutes(120),
+                Duration.ofMinutes(150), Duration.ofMinutes(180));
         add(serviceName,
-                //description,
                 garageComboBox,
                 price,
-                //duration
+                duration,
                 serviceCategory,
                 createButtonsLayout());
         garageComboBox.addValueChangeListener(comboBoxGarageComponentValueChangeEvent -> servicesSandboxView.setGarage(garageComboBox.getValue()));

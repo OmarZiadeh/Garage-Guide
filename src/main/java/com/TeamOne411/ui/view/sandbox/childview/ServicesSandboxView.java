@@ -13,6 +13,7 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 import java.text.DecimalFormat;
+import java.time.Duration;
 import java.util.Comparator;
 
 /**
@@ -26,6 +27,7 @@ public class ServicesSandboxView extends VerticalLayout {
     private OfferedServiceEditorForm serviceEditorForm = new OfferedServiceEditorForm(this);
     private Button addServiceButton = new Button("Add Service");
     private Garage garage;
+    private Duration duration;
 
     /**
      * The constructor for the sandbox view. Does initial layout setup, grid configuration, and event listener attachment
@@ -57,11 +59,13 @@ public class ServicesSandboxView extends VerticalLayout {
         decimalFormat.setMinimumFractionDigits(2);
 
         grid.addColumn(offeredService -> decimalFormat.format(offeredService.getPrice()))
-                .setHeader("Price").setComparator(Comparator.comparing(OfferedService::getPrice))
+                .setHeader("$ Price").setComparator(Comparator.comparing(OfferedService::getPrice))
                 .setKey("price");
 
-        //TODO add duration in once CRUD operations for duration are completed
-        //grid.addColumn(OfferedService::getDuration).setHeader("Duration").setSortable(true).setKey("duration");
+        grid.addColumn(offeredService -> {
+            duration = offeredService.getDuration();
+            return duration.toMinutes();
+        }).setHeader("Duration in Minutes").setSortable(true).setKey("duration");
 
         //add garage
         grid.addColumn(offeredService -> {
