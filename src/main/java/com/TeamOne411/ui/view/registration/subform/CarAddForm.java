@@ -28,9 +28,9 @@ import java.util.List;
 public class CarAddForm extends VerticalLayout {
 
     //these need to be lists but vehicle API needs work
-    private ComboBox make = new ComboBox("Make");
-    private ComboBox model = new ComboBox("Model");
-    private ComboBox year = new ComboBox("Year");
+    private ComboBox<String> make = new ComboBox<String>("Make");
+    private ComboBox<String> model = new ComboBox<String>("Model");
+    private ComboBox<String> year = new ComboBox<String>("Year");
     private TextField color = new TextField("Color");
     private TextField vin = new TextField("VIN");
     private Button backButton = new Button("Back To My Information", new Icon(VaadinIcon.ARROW_LEFT));
@@ -50,6 +50,9 @@ public class CarAddForm extends VerticalLayout {
         nextButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         binder.bindInstanceFields(this);
+
+
+        fillYearComboBox();
 
         // set button click listeners
         backButton.addClickListener(e -> fireEvent(new BackEvent(this)));
