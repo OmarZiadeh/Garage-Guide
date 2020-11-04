@@ -1,6 +1,7 @@
 package com.TeamOne411.ui.view.registration.subform;
 
 import com.TeamOne411.backend.entity.Car;
+import com.TeamOne411.backend.service.api.car.ApiCarService;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Key;
@@ -21,6 +22,7 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.shared.Registration;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -39,8 +41,10 @@ public class CarAddForm extends VerticalLayout {
 
     Binder<Car> binder = new BeanValidationBinder<>(Car.class);
     private Car car = new Car();
+    private ApiCarService apiCarService;
 
-    public CarAddForm() {
+    public CarAddForm(ApiCarService apiCarService) {
+        this.apiCarService = apiCarService;
         // initial view setup
         addClassName("car-add-view");
         setSizeFull();
@@ -53,6 +57,7 @@ public class CarAddForm extends VerticalLayout {
 
 
         fillYearComboBox();
+        fillMakeComboBox();
 
         // set button click listeners
         backButton.addClickListener(e -> fireEvent(new BackEvent(this)));
@@ -80,8 +85,15 @@ public class CarAddForm extends VerticalLayout {
         fireEvent(new CarAddForm.NextEvent(this));
     }
 
-    public void fillYearComboBox(){
+    public void fillMakeComboBox(){
+        try {
+            this.make.setItems(apiCarService.getAllMakes());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
 
+    public void fillYearComboBox(){
         int year = Calendar.getInstance().get(Calendar.YEAR);
         List<String> years = new ArrayList<>();
         for (int i = 1980; i < year; i++){
