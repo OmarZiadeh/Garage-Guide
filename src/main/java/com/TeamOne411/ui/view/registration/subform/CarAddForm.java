@@ -7,7 +7,7 @@ import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.ShortcutRegistration;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.charts.model.Select;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.icon.Icon;
@@ -21,14 +21,18 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.shared.Registration;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
 public class CarAddForm extends VerticalLayout {
 
-    //these need to be lists but vehicle API needs work, replace SELECTS
-    private Select carMake = new Select("Make");
-    private Select carModel = new Select("Model");
-    private Select carYear = new Select("Year);
-    private TextField carColor = new TextField("Color");
-    private TextField carVIN = new TextField("VIN");
+    //these need to be lists but vehicle API needs work
+    private ComboBox make = new ComboBox("Make");
+    private ComboBox model = new ComboBox("Model");
+    private ComboBox year = new ComboBox("Year");
+    private TextField color = new TextField("Color");
+    private TextField vin = new TextField("VIN");
     private Button backButton = new Button("Back To My Information", new Icon(VaadinIcon.ARROW_LEFT));
     private Button nextButton = new Button("Confirm Details", new Icon(VaadinIcon.ARROW_RIGHT));
     private ShortcutRegistration enterKeyRegistration;
@@ -51,18 +55,18 @@ public class CarAddForm extends VerticalLayout {
         backButton.addClickListener(e -> fireEvent(new BackEvent(this)));
         nextButton.addClickListener(e -> validateAndFireNext());
 
-        carVIN.setValueChangeMode(ValueChangeMode.LAZY);
-        carVIN.setPlaceholder("1ABCD12ABCD123456");
+        vin.setValueChangeMode(ValueChangeMode.LAZY);
+        vin.setPlaceholder("1ABCD12ABCD123456");
 
         add(
-                new H3("Tell us about your garage"),
+                new H3("Tell us about your car"),
                 new H5("You're almost done"),
                 //incorrect components causing error, temporary
-                carMake,
-                carModel,
-                carYear,
-                carColor,
-                carVIN,
+                make,
+                model,
+                year,
+                color,
+                vin,
                 new HorizontalLayout(backButton, nextButton)
         );
     }
@@ -71,6 +75,17 @@ public class CarAddForm extends VerticalLayout {
         binder.validate();
         if (!binder.isValid()) return;
         fireEvent(new CarAddForm.NextEvent(this));
+    }
+
+    public void fillYearComboBox(){
+
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+        List<String> years = new ArrayList<>();
+        for (int i = 1980; i < year; i++){
+            years.add(Integer.toString(i));
+        }
+
+        this.year.setItems(years);
     }
 
     public Car getValidCar() {

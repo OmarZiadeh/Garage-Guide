@@ -1,16 +1,9 @@
 package com.TeamOne411.backend.entity;
 
-import com.TeamOne411.backend.entity.users.GarageEmployee;
-import com.sun.org.apache.xpath.internal.operations.Mod;
-
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-import java.util.LinkedList;
-import java.util.List;
 
 @Entity
 public class Car extends AbstractEntity {
@@ -18,52 +11,53 @@ public class Car extends AbstractEntity {
     //Make Model and Year might change based off of how it is selected in form
     @NotNull
     @NotEmpty(message = "Make can't be empty.")
-    private String Make = "";
+    private String make = "";
 
     @NotNull
     @NotEmpty(message = "Model can't be empty.")
-    private String Model = "";
+    private String model = "";
 
     @NotNull
     @NotEmpty(message = "Year can't be empty.")
-    private String Year = "";
+    @Pattern(regexp = "^\\d{4}$", message = "Invalid year, must be from 1980 to current year")
+    private String year = "";
 
     @NotNull
     @NotEmpty(message = "VIN can't be empty.")
-    @Pattern(regexp = "^\\d{1}\\s{4}\\d{2}\\s{4}\\d{6}$", message = "Invalid VIN, must be 17 digits with correct format")
-    private String VIN = "";
+    @Pattern(regexp = "^\\d{1}\\D{4}\\d{2}\\D{4}\\d{6}$", message = "Invalid VIN, must be 17 digits with correct format")
+    private String vin = "";
 
 
     public String getModel() {
-        return Model;
+        return model;
     }
 
-    public void setModel(String Model) {
-        this.Model = Model;
+    public void setModel(String model) {
+        this.model = model;
     }
 
     public String getMake() {
-        return Make;
+        return make;
     }
 
-    public void setMake(String Make) {
-        this.Make = Make;
+    public void setMake(String make) {
+        this.make = make;
     }
 
     public String getYear() {
-        return Year;
+        return year;
     }
 
-    public void setYear(String Year) {
-        this.Year = Year;
+    public void setYear(String year) {
+        this.year = year;
     }
 
-    public String getVIN() {
-        return VIN;
+    public String getVin() {
+        return vin;
     }
 
-    public void setVIN(String VIN) {
-        this.VIN = VIN;
+    public void setVin(String vin) {
+        this.vin = vin;
     }
 
 }
