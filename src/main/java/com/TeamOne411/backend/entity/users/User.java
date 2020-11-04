@@ -102,4 +102,8 @@ public class User extends AbstractEntity {
     public void setRoles(Collection<Role> roles) {
         this.roles = roles;
     }
+
+    public String getFullName() {
+        return getFirstName() + " " + getLastName();
+    }
 }
