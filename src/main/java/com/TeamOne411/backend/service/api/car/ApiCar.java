@@ -1,51 +1,51 @@
 package com.TeamOne411.backend.service.api.car;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonAlias;
 
 import java.io.Serializable;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+//@JsonIgnoreProperties(ignoreUnknown = true)
 public class ApiCar implements Serializable {
 
-    private int Make_ID;
-    private String Make_Name;
-    private int Model_ID;
-    private String Model_Name;
+    @JsonAlias({"Make_ID", "MakeId"})
+    private int makeId;
+    @JsonAlias({"Make_Name", "MakeName"})
+    private String makeName;
+    @JsonAlias({"Model_ID", "ModelId"})
+    private int modelId;
+    @JsonAlias({"Model_Name", "ModelName"})
+    private String modelName;
 
-
-
-
-
-    public int getMake_ID() {
-        return Make_ID;
+    public int getMakeId() {
+        return makeId;
     }
 
-    public void setMake_ID(int make_ID) {
-        Make_ID = make_ID;
+    public void setMakeId(int makeId) {
+        this.makeId = makeId;
     }
 
-    public String getMake_Name() {
-        return Make_Name;
+    public String getMakeName() {
+        return makeName;
     }
 
-    public void setMake_Name(String make_Name) {
-        Make_Name = make_Name;
+    public void setMakeName(String makeName) {
+        this.makeName = makeName;
     }
 
-    public int getModel_ID() {
-        return Model_ID;
+    public int getModelId() {
+        return modelId;
     }
 
-    public void setModel_ID(int model_ID) {
-        Model_ID = model_ID;
+    public void setModelId(int modelId) {
+        this.modelId = modelId;
     }
 
-    public String getModel_Name() {
-        return Model_Name;
+    public String getModelName() {
+        return modelName;
     }
 
-    public void setModel_Name(String model_Name) {
-        Model_Name = model_Name;
+    public void setModelName(String modelName) {
+        this.modelName = modelName;
     }
 
 

@@ -1,13 +1,12 @@
 package com.TeamOne411.backend.service.api.car;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ApiCarService {
@@ -17,13 +16,11 @@ public class ApiCarService {
 
     public List<String> getAllMakes() throws URISyntaxException {
 
-        URI fullUri = new URI(baseUri + "vehicles/GetAllMakes?format=json");
+        URI fullUri = new URI(baseUri + "vehicles/GetMakesForVehicleType/car?format=json");
         ApiCarResponse carsResponse = restTemplate.getForObject(fullUri, ApiCarResponse.class);
 
-        List<ApiCar> cars = Arrays.asList(carsResponse.getResults());
+        List<ApiCar> cars = carsResponse.getResults();
 
-        return (List<String>) cars.stream().map(c->c.getMake_Name());
-
-
+        return cars.stream().map(c->c.getMakeName()).collect(Collectors.toList());
     }
 }

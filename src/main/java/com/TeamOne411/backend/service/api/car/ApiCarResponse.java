@@ -1,46 +1,52 @@
 package com.TeamOne411.backend.service.api.car;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
+import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ApiCarResponse implements Serializable {
 
-    private int Count;
-    private String Message;
-    private String SearchCriteria;
-    private ApiCar[] Results;
+    @JsonProperty("Count")
+    private int count;
+    @JsonProperty("Message")
+    private String message;
+    @JsonProperty("SearchCriteria")
+    private String searchCriteria;
+    @JsonProperty("Results")
+    private List<ApiCar> results;
 
     public int getCount() {
-        return Count;
+        return count;
     }
 
     public void setCount(int count) {
-        Count = count;
+        this.count = count;
     }
 
     public String getMessage() {
-        return Message;
+        return message;
     }
 
     public void setMessage(String message) {
-        Message = message;
+        this.message = message;
     }
 
     public String getSearchCriteria() {
-        return SearchCriteria;
+        return searchCriteria;
     }
 
     public void setSearchCriteria(String searchCriteria) {
-        SearchCriteria = searchCriteria;
+        this.searchCriteria = searchCriteria;
     }
 
-    public ApiCar[] getResults() {
-        return Results;
+    public List<ApiCar> getResults() {
+        return results;
     }
 
-    public void setResults(ApiCar[] results) {
-        Results = results;
+    public void setResults(List<ApiCar> results) {
+        this.results = results;
     }
 }
