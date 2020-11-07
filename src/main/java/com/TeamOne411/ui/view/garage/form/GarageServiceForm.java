@@ -17,6 +17,9 @@ import java.text.NumberFormat;
 import java.time.Duration;
 import java.util.Locale;
 
+/**
+ * This class is a VerticalLayout for add/editing offered services for a garage
+ */
 public class GarageServiceForm extends VerticalLayout {
     private TextField serviceName = new TextField("Service name");
     private TextField price = new TextField("$ Price");
