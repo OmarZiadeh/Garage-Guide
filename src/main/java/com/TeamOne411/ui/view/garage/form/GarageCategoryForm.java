@@ -2,6 +2,7 @@ package com.TeamOne411.ui.view.garage.form;
 
 import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.servicecatalog.ServiceCategory;
+import com.TeamOne411.backend.service.ServiceCatalogService;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
@@ -17,11 +18,13 @@ public class GarageCategoryForm extends VerticalLayout {
     private Garage garage;
     private Button saveButton = new Button("Save");
     private Button cancelButton = new Button("Cancel");
+    private ServiceCatalogService serviceCatalogService;
 
     Binder<ServiceCategory> binder = new BeanValidationBinder<>(ServiceCategory.class);
     private ServiceCategory serviceCategory = new ServiceCategory();
 
-    public GarageCategoryForm(Garage garage) {
+    public GarageCategoryForm(Garage garage, ServiceCatalogService serviceCatalogService) {
+        this.serviceCatalogService = serviceCatalogService;
         this.garage = garage;
 
         // initial view setup
