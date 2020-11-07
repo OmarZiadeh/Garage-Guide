@@ -4,7 +4,10 @@ import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.servicecatalog.OfferedService;
 import com.TeamOne411.backend.entity.servicecatalog.ServiceCategory;
 import com.TeamOne411.backend.service.ServiceCatalogService;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
@@ -18,7 +21,7 @@ import java.time.Duration;
 import java.util.Locale;
 
 /**
- * This class is a VerticalLayout for add/editing offered services for a garage
+ * This class is a VerticalLayout for adding/editing offered services for a garage
  */
 public class GarageServiceForm extends VerticalLayout {
     private TextField serviceName = new TextField("Service name");
@@ -27,6 +30,8 @@ public class GarageServiceForm extends VerticalLayout {
     private ComboBox<ServiceCategory> serviceCategory = new ComboBox<>("Category");
     private Garage garage;
     private ServiceCatalogService serviceCatalogService;
+    private Button saveButton = new Button("Save");
+    private Button cancelButton = new Button("Cancel");
 
     Binder<OfferedService> binder = new BeanValidationBinder<>(OfferedService.class);
     private OfferedService offeredService = new OfferedService();
