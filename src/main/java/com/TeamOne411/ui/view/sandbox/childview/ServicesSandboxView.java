@@ -45,8 +45,7 @@ public class ServicesSandboxView extends VerticalLayout {
         //configure the service-catalog-grid
         grid.addClassName("service-catalog-grid");
         grid.setHeightByRows(true);
-        //TODO add serviceDescription back in if we decide to keep it
-        grid.setColumns("serviceName"); //, "serviceDescription");
+        grid.setColumns("serviceName");
 
         grid.addColumn(offeredService -> {
             ServiceCategory serviceCategory = offeredService.getServiceCategory();
