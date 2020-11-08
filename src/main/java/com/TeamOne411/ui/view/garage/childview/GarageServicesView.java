@@ -14,9 +14,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 import java.text.DecimalFormat;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 
 public class GarageServicesView extends VerticalLayout {
     ServiceCatalogService serviceCatalogService;
@@ -103,14 +101,6 @@ public class GarageServicesView extends VerticalLayout {
      * Calls the ServiceCatalogService to refresh the list of services. Call this anytime the services may have been edited.
      */
     private void updateServiceList() {
-        List<ServiceCategory> serviceCategoryList = new ArrayList<>();
-        serviceCategoryList.addAll(serviceCatalogService.findCategoriesByGarage(garage));
-
-        List<OfferedService> offeredServices = new ArrayList<>();
-        for(ServiceCategory sc : serviceCategoryList){
-            offeredServices.addAll(serviceCatalogService.findServicesByServiceCategory(sc));
-        }
-
-        grid.setItems(offeredServices);
+        grid.setItems(serviceCatalogService.findByServiceCategory_Garage(garage));
     }
 }
