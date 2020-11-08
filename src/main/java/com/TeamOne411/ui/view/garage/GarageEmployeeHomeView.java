@@ -55,44 +55,43 @@ public class GarageEmployeeHomeView extends VerticalLayout {
         pages.add(appointmentsPage);
         tabsToPages.put(appointmentsTab, appointmentsPage);
 
-        /*
-        Second Tab - Garage Employees
-         */
-        // todo make this only visible to admins
-        Tab employeesTab = new Tab("Employee Management");
-        GarageEmployeesView employeesView = new GarageEmployeesView(garageEmployeeService, userDetailsService, myGarage);
-        Div employeesPage = new Div(employeesView);
-        employeesTab.add(employeesPage);
-        tabs.add(employeesTab);
-        pages.add(employeesPage);
-        employeesPage.setVisible(false);
-        tabsToPages.put(employeesTab, employeesPage);
+        if (loggedInEmployee.getIsAdmin()) {
+            /*
+            Second Tab - Garage Employees
+             */
+            Tab employeesTab = new Tab("Employee Management");
+            GarageEmployeesView employeesView = new GarageEmployeesView(garageEmployeeService, userDetailsService, myGarage);
+            Div employeesPage = new Div(employeesView);
+            employeesTab.add(employeesPage);
+            tabs.add(employeesTab);
+            pages.add(employeesPage);
+            employeesPage.setVisible(false);
+            tabsToPages.put(employeesTab, employeesPage);
 
-        /*
-        Third Tab - Garage Services
-         */
-        // todo make this only visible to admins?
-        Tab servicesTab = new Tab("Services Configuration");
-        GarageServicesView servicesView = new GarageServicesView();
-        Div servicesPage = new Div(servicesView);
-        servicesTab.add(servicesPage);
-        tabs.add(servicesTab);
-        pages.add(servicesPage);
-        servicesPage.setVisible(false);
-        tabsToPages.put(servicesTab, servicesPage);
+            /*
+            Third Tab - Garage Services
+             */
+            Tab servicesTab = new Tab("Services Configuration");
+            GarageServicesView servicesView = new GarageServicesView();
+            Div servicesPage = new Div(servicesView);
+            servicesTab.add(servicesPage);
+            tabs.add(servicesTab);
+            pages.add(servicesPage);
+            servicesPage.setVisible(false);
+            tabsToPages.put(servicesTab, servicesPage);
 
-        /*
-        Fourth Tab - Garage Services
-         */
-        // todo make this only visible to admins?
-        Tab scheduleTab = new Tab("Schedule");
-        GarageScheduleView scheduleView = new GarageScheduleView();
-        Div schedulePage = new Div(scheduleView);
-        scheduleTab.add(schedulePage);
-        tabs.add(scheduleTab);
-        pages.add(schedulePage);
-        schedulePage.setVisible(false);
-        tabsToPages.put(scheduleTab, schedulePage);
+            /*
+            Fourth Tab - Garage Services
+             */
+            Tab scheduleTab = new Tab("Schedule");
+            GarageScheduleView scheduleView = new GarageScheduleView();
+            Div schedulePage = new Div(scheduleView);
+            scheduleTab.add(schedulePage);
+            tabs.add(scheduleTab);
+            pages.add(schedulePage);
+            schedulePage.setVisible(false);
+            tabsToPages.put(scheduleTab, schedulePage);
+        }
 
         // todo add more tabs here
 
