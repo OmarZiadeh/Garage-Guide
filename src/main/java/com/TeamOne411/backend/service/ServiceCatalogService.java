@@ -27,8 +27,8 @@ public class ServiceCatalogService {
         return offeredServiceRepository.findAll();
     }
 
-    public List<OfferedService> findServicesByServiceCategory(ServiceCategory serviceCategory) {
-        return offeredServiceRepository.findServicesByServiceCategory(serviceCategory);
+    public List<OfferedService> findByServiceCategory_Garage(Garage garage) {
+        return offeredServiceRepository.findByServiceCategory_Garage(garage);
     }
 
     public void saveOfferedService(OfferedService offeredService) {
