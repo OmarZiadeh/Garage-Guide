@@ -74,7 +74,7 @@ public class GarageEmployeeHomeView extends VerticalLayout {
          */
         // todo make this only visible to admins
         Tab servicesTab = new Tab("Services");
-        GarageServicesView servicesView = new GarageServicesView();
+        GarageServicesView servicesView = new GarageServicesView(serviceCatalogService, myGarage);
         Div servicesPage = new Div(servicesView);
         servicesTab.add(servicesPage);
         tabs.add(servicesTab);
