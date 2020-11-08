@@ -27,6 +27,10 @@ public class ServiceCatalogService {
         return offeredServiceRepository.findAll();
     }
 
+    public List<OfferedService> findServicesByServiceCategory(ServiceCategory serviceCategory) {
+        return offeredServiceRepository.findServicesByServiceCategory(serviceCategory);
+    }
+
     public void saveOfferedService(OfferedService offeredService) {
         offeredServiceRepository.save(offeredService);
     }
