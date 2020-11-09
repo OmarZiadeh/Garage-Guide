@@ -11,7 +11,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 /**
  * This class is a dialog that wraps GarageCategoryForm.
  */
-public class CategoryEditorDialog extends Dialog {
+public class GarageCategoryEditorDialog extends Dialog {
     private GarageCategoryForm garageCategoryForm;
     private ServiceCatalogService serviceCatalogService;
     private Garage garage;
@@ -22,7 +22,7 @@ public class CategoryEditorDialog extends Dialog {
      * @param serviceCatalogService
      * @param garage
      */
-    public CategoryEditorDialog(ServiceCatalogService serviceCatalogService, Garage garage) {
+    public GarageCategoryEditorDialog(ServiceCatalogService serviceCatalogService, Garage garage) {
         this.serviceCatalogService = serviceCatalogService;
         this.garage = garage;
 
@@ -34,7 +34,7 @@ public class CategoryEditorDialog extends Dialog {
      * @param serviceCatalogService
      * @param serviceCategory
      */
-    public CategoryEditorDialog(ServiceCatalogService serviceCatalogService, ServiceCategory serviceCategory) {
+    public GarageCategoryEditorDialog(ServiceCatalogService serviceCatalogService, ServiceCategory serviceCategory) {
         this.serviceCatalogService = serviceCatalogService;
         this.serviceCategory = serviceCategory;
         this.garage = serviceCategory.getGarage();
@@ -49,8 +49,8 @@ public class CategoryEditorDialog extends Dialog {
      */
     private void initDialog(String title) {
         garageCategoryForm = new GarageCategoryForm(garage, serviceCatalogService);
-       // categoryEditorForm.addListener(CategoryEditorForm.CancelEvent.class, this::onCancelClick);
-      //  categoryEditorForm.addListener(CategoryEditorForm.SaveEvent.class, this::onComplete);
+  //      garageCategoryForm.addListener(GarageCategoryForm.CancelEvent.class, this::onCancelClick);
+  //      garageCategoryForm.addListener(GarageCategoryForm.SaveEvent.class, this::onComplete);
 
         // only way to exit is to hit cancel or complete the form
         setCloseOnEsc(false);
