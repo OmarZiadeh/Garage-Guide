@@ -64,44 +64,33 @@ public class ServiceCatalogService {
 
         //These are the default Categories that are enabled for a garage
         ServiceCategory catRoutineMaintenance = createDefaultServiceCategory("Routine Maintenance", garage);
-        ServiceCategory catTires = createDefaultServiceCategory("Tires", garage);
-        ServiceCategory catBatteries = createDefaultServiceCategory("Batteries", garage);
-        ServiceCategory catShocksStruts = createDefaultServiceCategory("Shocks & Struts", garage);
-        ServiceCategory catOther = createDefaultServiceCategory("Other/Not Sure", garage);
+        ServiceCategory catTireServices = createDefaultServiceCategory("Tire Services", garage);
+        ServiceCategory catRepairServices = createDefaultServiceCategory("Repair Services", garage);
+        ServiceCategory catOther = createDefaultServiceCategory("Other", garage);
 
         //These are the default Services that are enabled for a garage
+
         //Routine Maintenance
         createDefaultOfferedService("Oil Change", catRoutineMaintenance);
+        createDefaultOfferedService("Filter Replacement", catRoutineMaintenance);
         createDefaultOfferedService("Brake Replacement", catRoutineMaintenance);
         createDefaultOfferedService("Headlight Replacement", catRoutineMaintenance);
         createDefaultOfferedService("Wiper Blade Replacement", catRoutineMaintenance);
-        createDefaultOfferedService("Power Steering and Suspension", catRoutineMaintenance);
-        createDefaultOfferedService("Check: Fluids", catRoutineMaintenance);
-        createDefaultOfferedService("Check: Brakes", catRoutineMaintenance);
-        createDefaultOfferedService("Check: Belts & Hoses", catRoutineMaintenance);
-        createDefaultOfferedService("Check: Vehicle Health", catRoutineMaintenance);
-        createDefaultOfferedService("Check: Air & Cabin Filters", catRoutineMaintenance);
-        createDefaultOfferedService("Check: Alternators & Starters", catRoutineMaintenance);
+        createDefaultOfferedService("Battery Replacement", catRoutineMaintenance);
+        createDefaultOfferedService("Fluid Change", catRoutineMaintenance);
 
-        //Tires
-        createDefaultOfferedService("New Tires", catTires);
-        createDefaultOfferedService("Alignment", catTires);
-        createDefaultOfferedService("Flat Repair", catTires);
-        createDefaultOfferedService("TPMS Service", catTires);
-        createDefaultOfferedService("Wheel Balance", catTires);
-        createDefaultOfferedService("Tire Rotation", catTires);
-        createDefaultOfferedService("Seasonal Changeover", catTires);
-        createDefaultOfferedService("Check: Pre-Trip Safety", catTires);
+        //Tire Services
+        createDefaultOfferedService("New Tires", catTireServices);
+        createDefaultOfferedService("Tire Rotation", catTireServices);
+        createDefaultOfferedService("Alignment", catTireServices);
+        createDefaultOfferedService("Flat Tire Repair", catTireServices);
+        createDefaultOfferedService("Tire Pressure Monitoring System", catTireServices);
+        createDefaultOfferedService("Wheel Balance", catTireServices);
 
-        //Batteries
-        createDefaultOfferedService("Battery Check", catBatteries);
-        createDefaultOfferedService("Battery Installation", catBatteries);
-
-        //Shocks & Struts
-        createDefaultOfferedService("Struts & Shocks Consultation", catShocksStruts);
-
-        //consultation differs from check in restoration/upgrade preference vs current safety status - Hope
-        createDefaultOfferedService("Check: Struts & Suspension", catShocksStruts);
+        //Repair Services
+        createDefaultOfferedService("Heating and Cooling", catRepairServices);
+        createDefaultOfferedService("Belts and Hoses", catRepairServices);
+        createDefaultOfferedService("Steering and Suspension", catRepairServices);
 
         //Other/Not Sure - no services to include, but does need to a descriptor for car owner clarity
         createDefaultOfferedService("Other/Not Sure", catOther);
