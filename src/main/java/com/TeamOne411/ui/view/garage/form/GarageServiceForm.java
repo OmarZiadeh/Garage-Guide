@@ -35,6 +35,7 @@ public class GarageServiceForm extends VerticalLayout {
     private ServiceCatalogService serviceCatalogService;
     private Button saveButton = new Button("Save");
     private Button cancelButton = new Button("Cancel");
+    private Button editCategoriesButton = new Button("Edit Categories");
 
     Binder<OfferedService> binder = new BeanValidationBinder<>(OfferedService.class);
     private OfferedService offeredService = new OfferedService();
@@ -83,10 +84,10 @@ public class GarageServiceForm extends VerticalLayout {
         duration.setItems((Duration.ofMinutes(0)), Duration.ofMinutes(30), Duration.ofMinutes(60), Duration.ofMinutes(90), Duration.ofMinutes(120),
                 Duration.ofMinutes(150), Duration.ofMinutes(180));
         add(serviceName,
-                serviceCategory,
                 price,
                 duration,
-                new HorizontalLayout(saveButton, cancelButton));
+                serviceCategory,
+                new HorizontalLayout(saveButton, editCategoriesButton, cancelButton));
     }
 
     /**
