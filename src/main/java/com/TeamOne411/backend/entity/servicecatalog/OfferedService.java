@@ -21,10 +21,11 @@ public class OfferedService extends AbstractEntity {
     @ManyToOne
     @JoinColumn(name = "service_category_id")
     private ServiceCategory serviceCategory;
-    //TODO Need to determine the appropriate default for duration
-    private Duration duration = Duration.ZERO;
+    @NotNull
+    private Duration duration;
     @Min(0)
-    private BigDecimal price = BigDecimal.ZERO;
+    @NotNull
+    private BigDecimal price;
 
     public String getServiceName() {
         return serviceName;

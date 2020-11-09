@@ -25,6 +25,7 @@ public class GarageServicesView extends VerticalLayout {
     private Grid<OfferedService> grid = new Grid<>(OfferedService.class);
     private Garage garage;
     private Duration duration;
+  //  private GarageCategoryEditorDialog garageCategoryEditorDialog;
     private GarageServiceEditorDialog garageServiceEditorDialog;
 
     public GarageServicesView(

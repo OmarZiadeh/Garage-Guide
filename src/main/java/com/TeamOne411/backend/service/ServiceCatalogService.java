@@ -69,7 +69,6 @@ public class ServiceCatalogService {
         ServiceCategory catOther = createDefaultServiceCategory("Other", garage);
 
         //These are the default Services that are enabled for a garage
-
         //Routine Maintenance
         createDefaultOfferedService("Oil Change", catRoutineMaintenance);
         createDefaultOfferedService("Filter Replacement", catRoutineMaintenance);

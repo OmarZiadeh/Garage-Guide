@@ -83,16 +83,16 @@ public class GarageEmployeeHomeView extends VerticalLayout {
             tabsToPages.put(servicesTab, servicesPage);
 
             /*
-            Fourth Tab - Garage Business Hours (aka Schedule)
+            Fourth Tab - Business Hours (aka Schedule)
              */
-            Tab businessHoursTab = new Tab("Business Hours");
+            Tab scheduleTab = new Tab("Business Hours");
             GarageBusinessHoursView businessHoursView = new GarageBusinessHoursView();
-            Div businessHoursPage = new Div(businessHoursView);
-            businessHoursTab.add(businessHoursPage);
-            tabs.add(businessHoursTab);
-            pages.add(businessHoursPage);
-            businessHoursPage.setVisible(false);
-            tabsToPages.put(businessHoursTab, businessHoursPage);
+            Div schedulePage = new Div(businessHoursView);
+            scheduleTab.add(schedulePage);
+            tabs.add(scheduleTab);
+            pages.add(schedulePage);
+            schedulePage.setVisible(false);
+            tabsToPages.put(scheduleTab, schedulePage);
         }
 
         // todo add more tabs here
