@@ -62,7 +62,6 @@ public class GarageServiceEditorDialog extends Dialog {
         setCloseOnOutsideClick(false);
 
         setResizable(true);
-
         VerticalLayout container = new VerticalLayout();
 
         // Centers the title within the dialog window
