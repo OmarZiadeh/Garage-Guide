@@ -4,7 +4,6 @@ package com.TeamOne411.ui.view.garage.childview;
 import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.servicecatalog.OfferedService;
 import com.TeamOne411.backend.entity.servicecatalog.ServiceCategory;
-import com.TeamOne411.backend.entity.users.GarageEmployee;
 import com.TeamOne411.backend.service.ServiceCatalogService;
 import com.TeamOne411.ui.view.garage.form.GarageServiceEditorDialog;
 import com.vaadin.flow.component.ComponentEvent;
@@ -26,7 +25,6 @@ public class GarageServicesView extends VerticalLayout {
     private Grid<OfferedService> grid = new Grid<>(OfferedService.class);
     private Garage garage;
     private Duration duration;
-  //  private GarageCategoryEditorDialog garageCategoryEditorDialog;
     private GarageServiceEditorDialog garageServiceEditorDialog;
 
     public GarageServicesView(
