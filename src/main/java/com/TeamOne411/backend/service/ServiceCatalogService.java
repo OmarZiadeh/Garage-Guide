@@ -7,6 +7,8 @@ import com.TeamOne411.backend.repository.OfferedServiceRepository;
 import com.TeamOne411.backend.repository.ServiceCategoryRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.Duration;
 import java.util.List;
 
 /**
@@ -120,6 +122,8 @@ public class ServiceCatalogService {
         OfferedService service = new OfferedService();
         service.setServiceName(name);
         service.setServiceCategory(category);
+        service.setDuration(Duration.ofMinutes(30));
+        service.setPrice(BigDecimal.ZERO);
         offeredServiceRepository.save(service);
     }
 }

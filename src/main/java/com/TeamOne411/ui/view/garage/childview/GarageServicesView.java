@@ -25,7 +25,6 @@ public class GarageServicesView extends VerticalLayout {
     private Grid<OfferedService> grid = new Grid<>(OfferedService.class);
     private Garage garage;
     private Duration duration;
-  //  private GarageCategoryEditorDialog garageCategoryEditorDialog;
     private GarageServiceEditorDialog garageServiceEditorDialog;
 
     public GarageServicesView(
@@ -100,10 +99,7 @@ public class GarageServicesView extends VerticalLayout {
      */
     private void showNewServiceDialog() {
         garageServiceEditorDialog = new GarageServiceEditorDialog(serviceCatalogService, garage);
-
-        garageServiceEditorDialog.setWidth("250px");
-        garageServiceEditorDialog.setWidth("750px");
-
+        garageServiceEditorDialog.setWidth("25%");
         garageServiceEditorDialog.addListener(GarageServiceEditorDialog.AddServiceSuccessEvent.class, this::onServiceAddedSuccess);
         garageServiceEditorDialog.open();
     }
@@ -116,10 +112,7 @@ public class GarageServicesView extends VerticalLayout {
 
         if (selectedService.isPresent()) {
             garageServiceEditorDialog = new GarageServiceEditorDialog(serviceCatalogService, selectedService.get());
-
-            garageServiceEditorDialog.setWidth("250px");
-            garageServiceEditorDialog.setWidth("750px");
-
+            garageServiceEditorDialog.setWidth("25%");
             garageServiceEditorDialog.addListener(GarageServiceEditorDialog.EditServiceSuccessEvent.class, this::onServiceEditedSuccess);
             garageServiceEditorDialog.open();
         }

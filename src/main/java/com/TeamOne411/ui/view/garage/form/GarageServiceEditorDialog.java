@@ -62,11 +62,11 @@ public class GarageServiceEditorDialog extends Dialog {
         setCloseOnOutsideClick(false);
 
         setResizable(true);
-        setDraggable(true);
 
         VerticalLayout container = new VerticalLayout();
+
+        // Centers the title within the dialog window
         container.setAlignItems(FlexComponent.Alignment.CENTER);
-        container.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
 
         container.add(new H3(title), garageServiceForm);
         add(container);

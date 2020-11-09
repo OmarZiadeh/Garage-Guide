@@ -64,12 +64,14 @@ public class GarageServiceForm extends VerticalLayout {
 
         // initial view setup
         addClassName("garage-service-form");
-        setSizeFull();
+        serviceName.setWidth("100%");
+
+        // centers the form contents within the window
         setAlignItems(Alignment.CENTER);
-        setJustifyContentMode(JustifyContentMode.CENTER);
 
         // format Price
         binder.forField(price).withConverter(new PriceConverter()).bind("price");
+        price.setWidth("100%");
         binder.bindInstanceFields(this);
 
         // set button click listeners
@@ -79,15 +81,19 @@ public class GarageServiceForm extends VerticalLayout {
         // format Service Category
         serviceCategory.setItemLabelGenerator(ServiceCategory::getCategoryName);
         serviceCategory.setItems(serviceCatalogService.findCategoriesByGarage(garage));
+        serviceCategory.setWidth("100%");
 
         // format Duration
         duration.setItems((Duration.ofMinutes(0)), Duration.ofMinutes(30), Duration.ofMinutes(60), Duration.ofMinutes(90), Duration.ofMinutes(120),
                 Duration.ofMinutes(150), Duration.ofMinutes(180));
+        duration.setWidth("100%");
+
+        // add fields to the form
         add(serviceName,
                 price,
                 duration,
                 serviceCategory,
-                new HorizontalLayout(saveButton, editCategoriesButton, cancelButton));
+                new HorizontalLayout(saveButton, cancelButton));
     }
 
     /**
