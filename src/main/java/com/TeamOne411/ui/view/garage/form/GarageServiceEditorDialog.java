@@ -62,6 +62,7 @@ public class GarageServiceEditorDialog extends Dialog {
         setCloseOnOutsideClick(false);
 
         setResizable(true);
+        setDraggable(true);
 
         VerticalLayout container = new VerticalLayout();
         container.setAlignItems(FlexComponent.Alignment.CENTER);
