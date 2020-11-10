@@ -67,6 +67,7 @@ public class GarageServiceForm extends VerticalLayout {
         serviceCategory.setWidth("100%");
 
         // format Duration
+        // TODO fix duration formatting and add 30 minutes increments up to 10 hours
         duration.setItems((Duration.ofMinutes(0)), Duration.ofMinutes(30), Duration.ofMinutes(60), Duration.ofMinutes(90), Duration.ofMinutes(120),
                 Duration.ofMinutes(150), Duration.ofMinutes(180));
         duration.setWidth("100%");
@@ -80,7 +81,7 @@ public class GarageServiceForm extends VerticalLayout {
     }
 
     /**
-     * Fills all form controls with known details of an existing service.
+     * Fills form with known details of an existing service.
      *
      * @param service the offeredService to fill details for
      */
