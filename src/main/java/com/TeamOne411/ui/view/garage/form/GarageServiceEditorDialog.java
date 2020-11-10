@@ -3,7 +3,6 @@ package com.TeamOne411.ui.view.garage.form;
 
 import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.servicecatalog.OfferedService;
-import com.TeamOne411.backend.entity.servicecatalog.ServiceCategory;
 import com.TeamOne411.backend.service.ServiceCatalogService;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -17,15 +16,17 @@ import com.vaadin.flow.shared.Registration;
  * This class is a dialog that wraps GarageServiceForm.
  */
 public class GarageServiceEditorDialog extends Dialog {
+    private final ServiceCatalogService serviceCatalogService;
+    private final Garage garage;
     private GarageServiceForm garageServiceForm;
-    private ServiceCatalogService serviceCatalogService;
-    private Garage garage;
-    private ServiceCategory serviceCategory;
     private OfferedService offeredService;
     private boolean isEditMode = false;
 
     /**
      * This constructor is for the dialog to create a new service.
+     *
+     * @param serviceCatalogService service class for the OfferedService repository
+     * @param garage                service class for the Garage repository
      */
     public GarageServiceEditorDialog(ServiceCatalogService serviceCatalogService, Garage garage) {
         this.serviceCatalogService = serviceCatalogService;
@@ -36,12 +37,14 @@ public class GarageServiceEditorDialog extends Dialog {
 
     /**
      * This constructor is for the dialog to edit an existing employee service.
+     *
+     * @param serviceCatalogService service class for the OfferedService repository
+     * @param offeredService        OfferedService instance to populate in the form
      */
     public GarageServiceEditorDialog(ServiceCatalogService serviceCatalogService, OfferedService offeredService) {
         this.serviceCatalogService = serviceCatalogService;
         this.offeredService = offeredService;
-        this.serviceCategory = offeredService.getServiceCategory();
-        this.garage = serviceCategory.getGarage();
+        this.garage = offeredService.getServiceCategory().getGarage();
         isEditMode = true;
 
         initDialog("Edit Service Details");
@@ -50,10 +53,11 @@ public class GarageServiceEditorDialog extends Dialog {
 
     /**
      * Initializes the dialog with some common functions. Should be called by all constructors.
+     *
      * @param title The title text to give to the dialog
      */
     private void initDialog(String title) {
-        garageServiceForm = new GarageServiceForm(garage, serviceCatalogService);
+        garageServiceForm = new GarageServiceForm(serviceCatalogService, garage);
         garageServiceForm.addListener(GarageServiceForm.CancelEvent.class, this::onCancelClick);
         garageServiceForm.addListener(GarageServiceForm.SaveEvent.class, this::onSaveClick);
 
@@ -64,7 +68,7 @@ public class GarageServiceEditorDialog extends Dialog {
         setResizable(true);
         VerticalLayout container = new VerticalLayout();
 
-        // Centers the title within the dialog window
+        // Centers the title and form within the dialog window
         container.setAlignItems(FlexComponent.Alignment.CENTER);
 
         container.add(new H3(title), garageServiceForm);
@@ -73,7 +77,8 @@ public class GarageServiceEditorDialog extends Dialog {
 
     /**
      * Fired when cancel button in child form is clicked. Closes the dialog.
-     * @param event
+     *
+     * @param event event that occurred
      */
     private void onCancelClick(ComponentEvent event) {
         close();
@@ -82,7 +87,8 @@ public class GarageServiceEditorDialog extends Dialog {
 
     /**
      * Fired when save button in child form is clicked. Propagates another event depending on Add or Edit mode.
-     * @param event
+     *
+     * @param event event that occurred
      */
     private void onSaveClick(ComponentEvent event) {
         // get the offeredService
@@ -94,6 +100,12 @@ public class GarageServiceEditorDialog extends Dialog {
         } else {
             fireEvent(new GarageServiceEditorDialog.EditServiceSuccessEvent(this));
         }
+    }
+
+    @Override
+    public <T extends ComponentEvent<?>> Registration addListener(Class<T> eventType,
+                                                                  ComponentEventListener<T> listener) {
+        return getEventBus().addListener(eventType, listener);
     }
 
     /**
@@ -112,11 +124,5 @@ public class GarageServiceEditorDialog extends Dialog {
         EditServiceSuccessEvent(GarageServiceEditorDialog source) {
             super(source, false);
         }
-    }
-
-    @Override
-    public <T extends ComponentEvent<?>> Registration addListener(Class<T> eventType,
-                                                                  ComponentEventListener<T> listener) {
-        return getEventBus().addListener(eventType, listener);
     }
 }

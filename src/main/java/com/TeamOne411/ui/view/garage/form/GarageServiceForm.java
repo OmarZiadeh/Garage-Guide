@@ -27,19 +27,86 @@ import java.util.Locale;
  * This class is a VerticalLayout for adding/editing offered services for a garage
  */
 public class GarageServiceForm extends VerticalLayout {
-    private TextField serviceName = new TextField("Service name");
-    private TextField price = new TextField("$ Price");
-    private ComboBox<Duration> duration = new ComboBox<>("Duration");
-    private ComboBox<ServiceCategory> serviceCategory = new ComboBox<>("Category");
-    private Garage garage;
-    private ServiceCatalogService serviceCatalogService;
-    private Button saveButton = new Button("Save");
-    private Button cancelButton = new Button("Cancel");
-    private Button editCategoriesButton = new Button("Edit Categories");
 
     Binder<OfferedService> binder = new BeanValidationBinder<>(OfferedService.class);
     private OfferedService offeredService = new OfferedService();
 
+    public GarageServiceForm(ServiceCatalogService serviceCatalogService, Garage garage) {
+
+        // initial view setup
+        addClassName("garage-service-form");
+        TextField serviceName = new TextField("Service name");
+        serviceName.setWidth("100%");
+
+        // centers the form contents within the window
+        setAlignItems(Alignment.CENTER);
+
+        // format Price
+        TextField price = new TextField("Price");
+        binder.forField(price).withConverter(new PriceConverter()).bind("price");
+        binder.bindInstanceFields(this);
+        price.setWidth("100%");
+
+        // set button click listeners
+        Button saveButton = new Button("Save");
+        saveButton.addClickListener(e -> fireEvent(new SaveEvent(this)));
+        Button cancelButton = new Button("Cancel");
+        cancelButton.addClickListener(e -> fireEvent(new CancelEvent(this)));
+
+        // format Service Category
+        ComboBox<ServiceCategory> serviceCategory = new ComboBox<>("Category");
+        serviceCategory.setItemLabelGenerator(ServiceCategory::getCategoryName);
+        serviceCategory.setItems(serviceCatalogService.findCategoriesByGarage(garage));
+        serviceCategory.setWidth("100%");
+
+        // format Duration
+        ComboBox<Duration> duration = new ComboBox<>("Duration");
+        duration.setItems((Duration.ofMinutes(0)), Duration.ofMinutes(30), Duration.ofMinutes(60), Duration.ofMinutes(90), Duration.ofMinutes(120),
+                Duration.ofMinutes(150), Duration.ofMinutes(180));
+        duration.setWidth("100%");
+
+        // add fields to the form
+        add(serviceName,
+                price,
+                duration,
+                serviceCategory,
+                new HorizontalLayout(saveButton, cancelButton));
+    }
+
+    /**
+     * Fills all form controls with known details of an existing service.
+     *
+     * @param service the offeredService to fill details in for
+     */
+    public void prefillForm(OfferedService service) {
+        offeredService = service;
+        binder.readBean(service);
+    }
+
+    /**
+     * Attempts to return an offeredService instance from the values of the form controls.
+     *
+     * @return an offeredService instance
+     */
+    public OfferedService getOfferedService() {
+        try {
+            binder.writeBean(offeredService);
+            return offeredService;
+        } catch (ValidationException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public <T extends ComponentEvent<?>> Registration addListener(Class<T> eventType,
+                                                                  ComponentEventListener<T> listener) {
+        return getEventBus().addListener(eventType, listener);
+    }
+
+    /**
+     * This method formats the price as a two digit decimal
+     */
     private static class PriceConverter extends StringToBigDecimalConverter {
 
         public PriceConverter() {
@@ -58,67 +125,6 @@ public class GarageServiceForm extends VerticalLayout {
         }
     }
 
-    public GarageServiceForm(Garage garage, ServiceCatalogService serviceCatalogService){
-        this.garage = garage;
-        this.serviceCatalogService = serviceCatalogService;
-
-        // initial view setup
-        addClassName("garage-service-form");
-        serviceName.setWidth("100%");
-
-        // centers the form contents within the window
-        setAlignItems(Alignment.CENTER);
-
-        // format Price
-        binder.forField(price).withConverter(new PriceConverter()).bind("price");
-        price.setWidth("100%");
-        binder.bindInstanceFields(this);
-
-        // set button click listeners
-        saveButton.addClickListener(e -> fireEvent(new SaveEvent(this)));
-        cancelButton.addClickListener(e -> fireEvent(new CancelEvent(this)));
-
-        // format Service Category
-        serviceCategory.setItemLabelGenerator(ServiceCategory::getCategoryName);
-        serviceCategory.setItems(serviceCatalogService.findCategoriesByGarage(garage));
-        serviceCategory.setWidth("100%");
-
-        // format Duration
-        duration.setItems((Duration.ofMinutes(0)), Duration.ofMinutes(30), Duration.ofMinutes(60), Duration.ofMinutes(90), Duration.ofMinutes(120),
-                Duration.ofMinutes(150), Duration.ofMinutes(180));
-        duration.setWidth("100%");
-
-        // add fields to the form
-        add(serviceName,
-                price,
-                duration,
-                serviceCategory,
-                new HorizontalLayout(saveButton, cancelButton));
-    }
-
-    /**
-     * Fills all form controls with known details of an existing service.
-     * @param service the offeredService to fill details for
-     */
-    public void prefillForm(OfferedService service) {
-        offeredService = service;
-        binder.readBean(service);
-    }
-
-    /**
-     * Attempts to return an offered service instance from the values of the form controls.
-     * @return an offered service instance
-     */
-    public OfferedService getOfferedService() {
-        try {
-            binder.writeBean(offeredService);
-            return offeredService;
-        } catch (ValidationException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     /**
      * Event to emit when save button is clicked
      */
@@ -135,11 +141,5 @@ public class GarageServiceForm extends VerticalLayout {
         CancelEvent(GarageServiceForm source) {
             super(source, false);
         }
-    }
-
-    @Override
-    public <T extends ComponentEvent<?>> Registration addListener(Class<T> eventType,
-                                                                  ComponentEventListener<T> listener) {
-        return getEventBus().addListener(eventType, listener);
     }
 }
