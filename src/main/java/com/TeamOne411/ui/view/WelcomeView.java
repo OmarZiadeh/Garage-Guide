@@ -8,25 +8,40 @@ import com.TeamOne411.security.SecurityUtils;
 import com.TeamOne411.ui.MainLayout;
 import com.TeamOne411.ui.view.garage.GarageEmployeeHomeView;
 import com.vaadin.flow.component.Text;
-import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 
 @Route(value = "", layout = MainLayout.class)
-public class PlaceholderHomeView extends VerticalLayout implements BeforeEnterObserver {
+public class WelcomeView extends VerticalLayout implements BeforeEnterObserver {
     private UserDetailsService userDetailsService;
 
-    public PlaceholderHomeView(UserDetailsService userDetailsService) {
+    public WelcomeView(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
 
         setAlignItems(Alignment.CENTER);
         setAlignSelf(Alignment.CENTER);
 
+        Button newuser_button = new Button("Create Account");
+        newuser_button.addClickListener(e ->
+                newuser_button.getUI().ifPresent(ui ->
+                        ui.navigate("register")));
+
+        Button login_button = new Button("Log In");
+        login_button.addClickListener(e ->
+                login_button.getUI().ifPresent(ui ->
+                        ui.navigate("login")));
+
+        HorizontalLayout buttons = new HorizontalLayout(newuser_button, login_button);
+
         add(
-                new H1("Welcome to GarageGuide! Sign in or register a new account."),
-                new Text("This is just a placeholder until the landing page is complete.")
+                new H1("Welcome to GarageGuide!"),
+                new H2("Sign in or register a new account."),
+                buttons
         );
     }
 

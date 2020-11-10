@@ -3,6 +3,7 @@ package com.TeamOne411.ui.view.registration;
 import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.users.GarageEmployee;
 import com.TeamOne411.backend.service.*;
+import com.TeamOne411.ui.MainLayout;
 import com.TeamOne411.ui.view.registration.subform.GarageAdminRegisterForm;
 import com.TeamOne411.ui.view.registration.subform.GarageCreateForm;
 import com.TeamOne411.ui.view.registration.subform.GarageEmployeeConfirmationView;
@@ -13,7 +14,7 @@ import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 
-@Route(value = "register")
+@Route(value = "register", layout = MainLayout.class)
 public class RegisterView extends VerticalLayout {
     private GarageAdminRegisterForm garageAdminRegisterForm;
     private GarageCreateForm garageCreateForm = new GarageCreateForm();
@@ -43,7 +44,7 @@ public class RegisterView extends VerticalLayout {
         addClassName("register-view");
         setSizeFull();
         setAlignItems(Alignment.CENTER);
-        setJustifyContentMode(JustifyContentMode.CENTER);
+        setJustifyContentMode(JustifyContentMode.START);
         setComponentAttributesForState();
 
         // coming soon

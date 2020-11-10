@@ -30,9 +30,9 @@ public class MainLayout extends AppLayout {
 
         if (SecurityUtils.isUserLoggedIn()) {
             header.add(new Anchor("logout", "Log out"));
-        } else {
-            header.add(new Anchor("register", "Create Account"));
-            header.add(new Anchor("login", "Log In"));
+//        } else {
+//            header.add(new Anchor("register", "Create Account"));
+//            header.add(new Anchor("login", "Log In"));
         }
 
         header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
