@@ -33,6 +33,10 @@ public class ServiceCatalogService {
         return offeredServiceRepository.findByServiceCategory_Garage(garage);
     }
 
+    public List<OfferedService> findByServiceCategory(ServiceCategory serviceCategory){
+        return offeredServiceRepository.findByServiceCategory(serviceCategory);
+    }
+
     public void saveOfferedService(OfferedService offeredService) {
         offeredServiceRepository.save(offeredService);
     }
