@@ -1,7 +1,6 @@
 package com.TeamOne411.backend.entity.servicecatalog;
 
 import com.TeamOne411.backend.entity.AbstractEntity;
-import com.TeamOne411.backend.entity.Garage;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -17,15 +16,15 @@ public class OfferedService extends AbstractEntity {
     @NotNull
     @Size(min = 2, message = "Service name must have at least two characters")
     private String serviceName = "";
-    private String serviceDescription = "";
     @NotNull
     @ManyToOne
     @JoinColumn(name = "service_category_id")
     private ServiceCategory serviceCategory;
-    //TODO Need to determine the appropriate default for duration
-    private Duration duration = Duration.ZERO;
+    @NotNull
+    private Duration duration;
     @Min(0)
-    private BigDecimal price = BigDecimal.ZERO;
+    @NotNull
+    private BigDecimal price;
 
     public String getServiceName() {
         return serviceName;
@@ -35,20 +34,12 @@ public class OfferedService extends AbstractEntity {
         this.serviceName = serviceName;
     }
 
-    public String getServiceDescription() {
-        return serviceDescription;
-    }
-
-    public void setServiceDescription(String serviceDescription) {
-        this.serviceDescription = serviceDescription;
+    public Duration getDuration() {
+        return duration;
     }
 
     public void setDuration(Duration duration) {
         this.duration = duration;
-    }
-
-    public Duration getDuration() {
-        return duration;
     }
 
     public BigDecimal getPrice() {
