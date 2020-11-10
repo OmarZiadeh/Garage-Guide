@@ -5,6 +5,7 @@ import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.servicecatalog.OfferedService;
 import com.TeamOne411.backend.entity.servicecatalog.ServiceCategory;
 import com.TeamOne411.backend.service.ServiceCatalogService;
+import com.TeamOne411.ui.view.garage.form.GarageCategoryEditorDialog;
 import com.TeamOne411.ui.view.garage.form.GarageServiceEditorDialog;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.button.Button;
@@ -19,13 +20,17 @@ import java.time.Duration;
 import java.util.Comparator;
 import java.util.Optional;
 
+/**
+ * This class is a Vertical layout that shows a list of employees for a given garage and controls to add new or edit them.
+ */
 public class GarageServicesView extends VerticalLayout {
     ServiceCatalogService serviceCatalogService;
 
-    private Grid<OfferedService> grid = new Grid<>(OfferedService.class);
-    private Garage garage;
+    private final Grid<OfferedService> grid = new Grid<>(OfferedService.class);
+    private final Garage garage;
     private Duration duration;
     private GarageServiceEditorDialog garageServiceEditorDialog;
+    private GarageCategoryEditorDialog garageCategoryEditorDialog;
 
     public GarageServicesView(
             ServiceCatalogService serviceCatalogService,
@@ -40,21 +45,22 @@ public class GarageServicesView extends VerticalLayout {
         grid.setMaxHeight("25vh");
         grid.setColumns("serviceName");
 
-        //Format Service Category
+        // Format Service Category
         grid.addColumn(offeredService -> {
             ServiceCategory serviceCategory = offeredService.getServiceCategory();
             return serviceCategory.getCategoryName();
-        }).setSortable(true).setHeader("Category").setKey("serviceCategory");
+        }).setSortable(true).setHeader("Category").setKey("serviceCategory").setFooter("");
 
-        //Format price
+        // Format price
         final DecimalFormat decimalFormat = new DecimalFormat();
         decimalFormat.setMaximumFractionDigits(2);
         decimalFormat.setMinimumFractionDigits(2);
         grid.addColumn(offeredService -> decimalFormat.format(offeredService.getPrice()))
-                .setHeader("$ Price").setComparator(Comparator.comparing(OfferedService::getPrice))
+                .setHeader("Price").setComparator(Comparator.comparing(OfferedService::getPrice))
                 .setKey("price");
 
-        //Format Duration
+        // Format Duration
+        // TODO fix duration formatting
         grid.addColumn(offeredService -> {
             duration = offeredService.getDuration();
             return duration.toMinutes();
@@ -73,39 +79,41 @@ public class GarageServicesView extends VerticalLayout {
         deleteServiceButton.addClickListener(e -> deleteServiceClick());
         deleteServiceButton.setEnabled(false);
 
+        Button editCategoriesButton = new Button("Edit Categories");
+        editCategoriesButton.addClickListener(e -> showEditCategoriesDialog());
+
         grid.addSelectionListener(e -> {
             editServiceButton.setEnabled(!grid.getSelectedItems().isEmpty());
             deleteServiceButton.setEnabled(!grid.getSelectedItems().isEmpty());
         });
 
-        add(
-                new HorizontalLayout(addServiceButton, editServiceButton, deleteServiceButton),
-                grid
-        );
-
+        add(new HorizontalLayout(addServiceButton, editServiceButton, deleteServiceButton, editCategoriesButton),
+                grid);
         updateServiceList();
     }
 
     /**
-     * Calls the ServiceCatalogService to refresh the list of services. Call this anytime the services may have been edited.
+     * Calls the ServiceCatalogService to refresh the list of services.
+     * Call this anytime the services or categories may have been edited.
      */
     private void updateServiceList() {
         grid.setItems(serviceCatalogService.findByServiceCategory_Garage(garage));
     }
 
-
     /**
-     * Creates and opens a new GarageServiceEditorDialog instance not in edit mode (for adding a new service)
+     * Creates and opens a new GarageServiceEditorDialog instance for adding a new service
      */
     private void showNewServiceDialog() {
         garageServiceEditorDialog = new GarageServiceEditorDialog(serviceCatalogService, garage);
         garageServiceEditorDialog.setWidth("25%");
-        garageServiceEditorDialog.addListener(GarageServiceEditorDialog.AddServiceSuccessEvent.class, this::onServiceAddedSuccess);
+        garageServiceEditorDialog.addListener(GarageServiceEditorDialog.AddServiceSuccessEvent.class,
+                this::onServiceAddedSuccess);
         garageServiceEditorDialog.open();
     }
 
     /**
-     * Gets the selected service from the grid, passes it to a new GarageServiceEditorDialog instance and opens it in Edit Mode.
+     * Gets the selected service from the grid,
+     * passes it to a new GarageServiceEditorDialog instance and opens it in Edit Mode.
      */
     private void showEditServiceDialog() {
         Optional<OfferedService> selectedService = grid.getSelectedItems().stream().findFirst();
@@ -113,9 +121,22 @@ public class GarageServicesView extends VerticalLayout {
         if (selectedService.isPresent()) {
             garageServiceEditorDialog = new GarageServiceEditorDialog(serviceCatalogService, selectedService.get());
             garageServiceEditorDialog.setWidth("25%");
-            garageServiceEditorDialog.addListener(GarageServiceEditorDialog.EditServiceSuccessEvent.class, this::onServiceEditedSuccess);
+            garageServiceEditorDialog.addListener(GarageServiceEditorDialog.EditServiceSuccessEvent.class,
+                    this::onServiceEditedSuccess);
             garageServiceEditorDialog.open();
         }
+    }
+
+    /**
+     * Creates and opens a new GarageCategoryEditorDialog instance for updating the ServiceCategories
+     */
+    private void showEditCategoriesDialog() {
+        garageCategoryEditorDialog = new GarageCategoryEditorDialog(serviceCatalogService, garage);
+        garageCategoryEditorDialog.setWidth("25%");
+        garageCategoryEditorDialog.setHeight("auto");
+        garageCategoryEditorDialog.addListener(GarageCategoryEditorDialog.EditCategoriesExitEvent.class,
+                this::onEditCategoriesExit);
+        garageCategoryEditorDialog.open();
     }
 
     /**
@@ -155,28 +176,27 @@ public class GarageServicesView extends VerticalLayout {
      * @param event the event that fired this method
      */
     private void onServiceAddedSuccess(ComponentEvent<GarageServiceEditorDialog> event) {
-     //  OfferedService newService = event.getSource().getOfferedService();
         garageServiceEditorDialog.close();
-
-      //  if (newEmployee != null) {
-            offeredServiceUpdates("Successfully added new service ");// + newEmployee.getFullName());
-     //   }
+        offeredServiceUpdates("Successfully added new service");
     }
-
 
     /**
      * Fired when an existing service is successfully edited using the service editor dialog.
      * @param event the event that fired this method
      */
     private void onServiceEditedSuccess(ComponentEvent<GarageServiceEditorDialog> event) {
-    //    OfferedService newService = event.getSource().getOfferedService();
         garageServiceEditorDialog.close();
-
-        //  if (newEmployee != null) {
-        offeredServiceUpdates("Successfully edited service ");// + newEmployee.getFullName());
-        //   }
+        offeredServiceUpdates("Successfully edited service");
     }
 
+    /**
+     * Fired when the edit categories form has been exited. Refreshes the service list grid.
+     * @param event the event that fired this method
+     */
+    private void onEditCategoriesExit(ComponentEvent<GarageCategoryEditorDialog> event) {
+        garageCategoryEditorDialog.close();
+        updateServiceList();
+    }
 
     /**
      * This method includes some common functionality when any change to an offered service occurs
@@ -190,7 +210,6 @@ public class GarageServicesView extends VerticalLayout {
                 4000,
                 Notification.Position.TOP_END
         );
-
         notification.open();
     }
 }
