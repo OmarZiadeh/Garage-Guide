@@ -27,40 +27,45 @@ import java.util.Locale;
  * This class is a VerticalLayout for adding/editing offered services for a garage
  */
 public class GarageServiceForm extends VerticalLayout {
-
     Binder<OfferedService> binder = new BeanValidationBinder<>(OfferedService.class);
+    private TextField serviceName = new TextField("Service name");
+    private TextField price = new TextField("Price");
+    private ComboBox<Duration> duration = new ComboBox<>("Duration");
+    private ComboBox<ServiceCategory> serviceCategory = new ComboBox<>("Category");
+    private Button saveButton = new Button("Save");
+    private Button cancelButton = new Button("Cancel");
     private OfferedService offeredService = new OfferedService();
 
+    /**
+     * Constructor for the form
+     *
+     * @param serviceCatalogService the service class for the offeredService repository
+     * @param garage                the service class for the garage repository
+     */
     public GarageServiceForm(ServiceCatalogService serviceCatalogService, Garage garage) {
 
         // initial view setup
         addClassName("garage-service-form");
-        TextField serviceName = new TextField("Service name");
         serviceName.setWidth("100%");
 
         // centers the form contents within the window
         setAlignItems(Alignment.CENTER);
 
         // format Price
-        TextField price = new TextField("Price");
         binder.forField(price).withConverter(new PriceConverter()).bind("price");
-        binder.bindInstanceFields(this);
         price.setWidth("100%");
+        binder.bindInstanceFields(this);
 
         // set button click listeners
-        Button saveButton = new Button("Save");
         saveButton.addClickListener(e -> fireEvent(new SaveEvent(this)));
-        Button cancelButton = new Button("Cancel");
         cancelButton.addClickListener(e -> fireEvent(new CancelEvent(this)));
 
         // format Service Category
-        ComboBox<ServiceCategory> serviceCategory = new ComboBox<>("Category");
         serviceCategory.setItemLabelGenerator(ServiceCategory::getCategoryName);
         serviceCategory.setItems(serviceCatalogService.findCategoriesByGarage(garage));
         serviceCategory.setWidth("100%");
 
         // format Duration
-        ComboBox<Duration> duration = new ComboBox<>("Duration");
         duration.setItems((Duration.ofMinutes(0)), Duration.ofMinutes(30), Duration.ofMinutes(60), Duration.ofMinutes(90), Duration.ofMinutes(120),
                 Duration.ofMinutes(150), Duration.ofMinutes(180));
         duration.setWidth("100%");
@@ -76,7 +81,7 @@ public class GarageServiceForm extends VerticalLayout {
     /**
      * Fills all form controls with known details of an existing service.
      *
-     * @param service the offeredService to fill details in for
+     * @param service the offeredService to fill details for
      */
     public void prefillForm(OfferedService service) {
         offeredService = service;
@@ -84,9 +89,9 @@ public class GarageServiceForm extends VerticalLayout {
     }
 
     /**
-     * Attempts to return an offeredService instance from the values of the form controls.
+     * Attempts to return an offered service instance from the values of the form controls.
      *
-     * @return an offeredService instance
+     * @return an offered service instance
      */
     public OfferedService getOfferedService() {
         try {
@@ -104,9 +109,6 @@ public class GarageServiceForm extends VerticalLayout {
         return getEventBus().addListener(eventType, listener);
     }
 
-    /**
-     * This method formats the price as a two digit decimal
-     */
     private static class PriceConverter extends StringToBigDecimalConverter {
 
         public PriceConverter() {

@@ -33,7 +33,7 @@ public class ServiceCatalogService {
         return offeredServiceRepository.findByServiceCategory_Garage(garage);
     }
 
-    public List<OfferedService> findByServiceCategory(ServiceCategory serviceCategory){
+    public List<OfferedService> findByServiceCategory(ServiceCategory serviceCategory) {
         return offeredServiceRepository.findByServiceCategory(serviceCategory);
     }
 
@@ -68,36 +68,31 @@ public class ServiceCatalogService {
      */
     public void initializeDefaultServices(Garage garage) {
 
-        //These are the default Categories that are enabled for a garage
+        // These are the default Categories that are enabled for a garage
         ServiceCategory catRoutineMaintenance = createDefaultServiceCategory("Routine Maintenance", garage);
         ServiceCategory catTireServices = createDefaultServiceCategory("Tire Services", garage);
         ServiceCategory catRepairServices = createDefaultServiceCategory("Repair Services", garage);
         ServiceCategory catOther = createDefaultServiceCategory("Other", garage);
 
-        //These are the default Services that are enabled for a garage
-        //Routine Maintenance
+        // These are the default Services that are enabled for a garage
+        // Routine Maintenance
         createDefaultOfferedService("Oil Change", catRoutineMaintenance);
-        createDefaultOfferedService("Filter Replacement", catRoutineMaintenance);
         createDefaultOfferedService("Brake Replacement", catRoutineMaintenance);
         createDefaultOfferedService("Headlight Replacement", catRoutineMaintenance);
         createDefaultOfferedService("Wiper Blade Replacement", catRoutineMaintenance);
-        createDefaultOfferedService("Battery Replacement", catRoutineMaintenance);
-        createDefaultOfferedService("Fluid Change", catRoutineMaintenance);
 
-        //Tire Services
+        // Tire Services
         createDefaultOfferedService("New Tires", catTireServices);
         createDefaultOfferedService("Tire Rotation", catTireServices);
         createDefaultOfferedService("Alignment", catTireServices);
         createDefaultOfferedService("Flat Tire Repair", catTireServices);
-        createDefaultOfferedService("Tire Pressure Monitoring System", catTireServices);
-        createDefaultOfferedService("Wheel Balance", catTireServices);
 
-        //Repair Services
+        // Repair Services
         createDefaultOfferedService("Heating and Cooling", catRepairServices);
         createDefaultOfferedService("Belts and Hoses", catRepairServices);
         createDefaultOfferedService("Steering and Suspension", catRepairServices);
 
-        //Other/Not Sure - no services to include, but does need to a descriptor for car owner clarity
+        // Other/Not Sure - no services to include, but does need to a descriptor for car owner clarity
         createDefaultOfferedService("Other/Not Sure", catOther);
     }
 
