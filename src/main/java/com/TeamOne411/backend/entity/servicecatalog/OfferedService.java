@@ -1,7 +1,6 @@
 package com.TeamOne411.backend.entity.servicecatalog;
 
 import com.TeamOne411.backend.entity.AbstractEntity;
-import com.TeamOne411.backend.entity.Garage;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -35,12 +34,12 @@ public class OfferedService extends AbstractEntity {
         this.serviceName = serviceName;
     }
 
-    public void setDuration(Duration duration) {
-        this.duration = duration;
-    }
-
     public Duration getDuration() {
         return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
     }
 
     public BigDecimal getPrice() {
