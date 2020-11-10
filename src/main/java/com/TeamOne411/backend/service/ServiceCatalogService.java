@@ -17,8 +17,8 @@ import java.util.List;
 @Service
 public class ServiceCatalogService {
 
-    private OfferedServiceRepository offeredServiceRepository;
-    private ServiceCategoryRepository serviceCategoryRepository;
+    private final OfferedServiceRepository offeredServiceRepository;
+    private final ServiceCategoryRepository serviceCategoryRepository;
 
     public ServiceCatalogService(OfferedServiceRepository offeredServiceRepository, ServiceCategoryRepository serviceCategoryRepository) {
         this.offeredServiceRepository = offeredServiceRepository;

@@ -15,6 +15,7 @@ import com.vaadin.flow.shared.Registration;
 /**
  * This class is a dialog that wraps GarageServiceForm.
  */
+@SuppressWarnings("rawtypes")
 public class GarageServiceEditorDialog extends Dialog {
     private final ServiceCatalogService serviceCatalogService;
     private final Garage garage;
@@ -74,6 +75,7 @@ public class GarageServiceEditorDialog extends Dialog {
         container.add(new H3(title), garageServiceForm);
         add(container);
     }
+
 
     /**
      * Fired when cancel button in child form is clicked. Closes the dialog.

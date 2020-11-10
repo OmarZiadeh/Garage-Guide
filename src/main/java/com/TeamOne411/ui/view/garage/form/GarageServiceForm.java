@@ -26,14 +26,15 @@ import java.util.Locale;
 /**
  * This class is a VerticalLayout for adding/editing offered services for a garage
  */
+@SuppressWarnings("FieldCanBeLocal")
 public class GarageServiceForm extends VerticalLayout {
     Binder<OfferedService> binder = new BeanValidationBinder<>(OfferedService.class);
-    private TextField serviceName = new TextField("Service name");
-    private TextField price = new TextField("Price");
-    private ComboBox<Duration> duration = new ComboBox<>("Duration");
-    private ComboBox<ServiceCategory> serviceCategory = new ComboBox<>("Category");
-    private Button saveButton = new Button("Save");
-    private Button cancelButton = new Button("Cancel");
+    private final TextField serviceName = new TextField("Service name");
+    private final TextField price = new TextField("Price");
+    private final ComboBox<Duration> duration = new ComboBox<>("Duration");
+    private final ComboBox<ServiceCategory> serviceCategory = new ComboBox<>("Category");
+    private final Button saveButton = new Button("Save");
+    private final Button cancelButton = new Button("Cancel");
     private OfferedService offeredService = new OfferedService();
 
     /**
@@ -109,6 +110,9 @@ public class GarageServiceForm extends VerticalLayout {
         return getEventBus().addListener(eventType, listener);
     }
 
+    /**
+     * Converts the price to a two digit format
+     */
     private static class PriceConverter extends StringToBigDecimalConverter {
 
         public PriceConverter() {
