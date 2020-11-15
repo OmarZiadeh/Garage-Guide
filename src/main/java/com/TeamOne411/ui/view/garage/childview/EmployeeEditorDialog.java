@@ -2,9 +2,10 @@ package com.TeamOne411.ui.view.garage.childview;
 
 import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.users.GarageEmployee;
-import com.TeamOne411.backend.service.EmailExistsException;
+import com.TeamOne411.backend.service.exceptions.EmailExistsException;
 import com.TeamOne411.backend.service.UserDetailsService;
-import com.TeamOne411.backend.service.UsernameExistsException;
+import com.TeamOne411.backend.service.exceptions.PhoneNumberExistsException;
+import com.TeamOne411.backend.service.exceptions.UsernameExistsException;
 import com.TeamOne411.ui.view.registration.subform.GarageAdminRegisterForm;
 import com.TeamOne411.ui.view.registration.subform.GarageEmployeeRegisterForm;
 import com.vaadin.flow.component.ComponentEvent;
@@ -116,6 +117,9 @@ public class EmployeeEditorDialog extends Dialog {
                 } catch (UsernameExistsException usernameEx) {
                     // todo display error
                     // todo delete garage just created
+                // redundant but necessary catch clause
+                } catch (PhoneNumberExistsException e) {
+                    e.printStackTrace();
                 }
             } else {
                 userDetailsService.updateUser(employee);

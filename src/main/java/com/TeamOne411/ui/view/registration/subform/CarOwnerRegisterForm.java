@@ -32,6 +32,8 @@ public class CarOwnerRegisterForm extends VerticalLayout{
     private PasswordField password = new PasswordField("Password");
     private TextField firstName = new TextField("First name");
     private TextField lastName = new TextField("Last name");
+    private TextField phoneNumber = new TextField("Phone number");
+    private TextField address = new TextField("Address");
     private TextField email = new TextField("Email Address");
     private Button backButton = new Button("Back To User Selection", new Icon(VaadinIcon.ARROW_LEFT));
     //edited below from "Enter Garage Info". Car owner will enter vehicle info from homepage
@@ -54,7 +56,7 @@ public class CarOwnerRegisterForm extends VerticalLayout{
         addClassName("car-owner-view");
         setSizeFull();
         setAlignItems(FlexComponent.Alignment.CENTER);
-        setJustifyContentMode(JustifyContentMode.CENTER);
+        //setJustifyContentMode(JustifyContentMode.CENTER);
         nextButton.setIconAfterText(true);
         nextButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
@@ -63,6 +65,9 @@ public class CarOwnerRegisterForm extends VerticalLayout{
         // set button click listeners
         backButton.addClickListener(e -> fireEvent(new BackEvent(this)));
         nextButton.addClickListener(e -> validateAndFireNext());
+
+        phoneNumber.setValueChangeMode(ValueChangeMode.LAZY);
+        phoneNumber.setPlaceholder("555-555-5555");
 
         // hook up username field to validator
         username.setValueChangeMode(ValueChangeMode.LAZY);
@@ -82,12 +87,13 @@ public class CarOwnerRegisterForm extends VerticalLayout{
 
         add(
                 new H3("Let's start with your information."),
-                //new H5("We'll ask for details about your garage on the next page"),
                 username,
                 password,
                 confirmPassword,
                 firstName,
                 lastName,
+                phoneNumber,
+                address,
                 email,
                 new HorizontalLayout(backButton, nextButton)
         );
@@ -129,11 +135,23 @@ public class CarOwnerRegisterForm extends VerticalLayout{
         return !email.isInvalid();
     }
 
+    private boolean validatePhoneNumberField() {
+        // check to make sure the email doesn't already exist
+        if (userDetailsService.isCarOwnerPhoneExisting(email.getValue())){
+            phoneNumber.setErrorMessage("An account with this phone number already exists!");
+            phoneNumber.setInvalid(true);
+            return false;
+        }
+
+        return !phoneNumber.isInvalid();
+    }
+
     private void validateAndFireNext() {
         binder.validate();
         if (!validateUsername()) return;
         if (!validatePasswordFields()) return;
         if (!validateEmailField()) return;
+        if (!validatePhoneNumberField()) return;
         if (!binder.isValid()) return;
         fireEvent(new NextEvent(this));
     }

@@ -4,10 +4,10 @@ import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.users.CarOwner;
 import com.TeamOne411.backend.entity.users.GarageEmployee;
 import com.TeamOne411.backend.service.*;
-import com.TeamOne411.ui.view.registration.subform.CarOwnerRegisterForm;
-import com.TeamOne411.ui.view.registration.subform.GarageAdminRegisterForm;
-import com.TeamOne411.ui.view.registration.subform.GarageCreateForm;
-import com.TeamOne411.ui.view.registration.subform.GarageEmployeeConfirmationView;
+import com.TeamOne411.backend.service.exceptions.EmailExistsException;
+import com.TeamOne411.backend.service.exceptions.PhoneNumberExistsException;
+import com.TeamOne411.backend.service.exceptions.UsernameExistsException;
+import com.TeamOne411.ui.view.registration.subform.*;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H1;
@@ -19,6 +19,7 @@ import com.vaadin.flow.router.Route;
 public class RegisterView extends VerticalLayout {
     private GarageAdminRegisterForm garageAdminRegisterForm;
     private CarOwnerRegisterForm carOwnerRegisterForm;
+    private CarOwnerConfirmationView carOwnerConfirmView;
     private GarageCreateForm garageCreateForm = new GarageCreateForm();
     private GarageEmployeeConfirmationView garageConfirmView;
     private H3 userTypePrompt = new H3("I am a...");
@@ -43,6 +44,7 @@ public class RegisterView extends VerticalLayout {
         this.garageConfirmView = new GarageEmployeeConfirmationView();
 
         this.carOwnerRegisterForm = new CarOwnerRegisterForm(userDetailsService);
+        this.carOwnerConfirmView = new CarOwnerConfirmationView();
 
         // initial view setup
         addClassName("register-view");
@@ -59,6 +61,8 @@ public class RegisterView extends VerticalLayout {
         });
         carOwnerRegisterForm.addListener(CarOwnerRegisterForm.BackEvent.class, this::backClick);
         carOwnerRegisterForm.addListener(CarOwnerRegisterForm.NextEvent.class, this::nextClick);
+        carOwnerConfirmView.addListener(CarOwnerConfirmationView.BackEvent.class, this::backClick);
+        carOwnerConfirmView.addListener(CarOwnerConfirmationView.NextEvent.class, this::onComplete);
 
         // add listener to the select button for garage admin
         // todo can we animate the sub forms as they come in and out?
@@ -84,6 +88,7 @@ public class RegisterView extends VerticalLayout {
                 userTypePrompt,
                 carOwnerSelectButton,
                 carOwnerRegisterForm,
+                carOwnerConfirmView,
                 garageAdminSelectButton,
                 garageAdminRegisterForm,
                 garageCreateForm,
@@ -96,7 +101,7 @@ public class RegisterView extends VerticalLayout {
 
         switch (state) {
             case CAR_OWNER_INFO:
-                return reverse ? RegistrationState.USER_TYPE_SELECTION : RegistrationState.CAR_OWNER_INFO;
+                return reverse ? RegistrationState.USER_TYPE_SELECTION : RegistrationState.CAR_OWNER_CONFIRMATION;
             case GARAGE_ADMIN_INFO:
                 return reverse ? RegistrationState.USER_TYPE_SELECTION : RegistrationState.GARAGE_INFO;
             case GARAGE_INFO:
@@ -122,6 +127,7 @@ public class RegisterView extends VerticalLayout {
 
         // form and subview visibilities
         carOwnerRegisterForm.setVisible(state == RegistrationState.CAR_OWNER_INFO);
+        carOwnerConfirmView.setVisible(state == RegistrationState.CAR_OWNER_CONFIRMATION);
         garageAdminRegisterForm.setVisible(state == RegistrationState.GARAGE_ADMIN_INFO);
         garageCreateForm.setVisible(state == RegistrationState.GARAGE_INFO);
         garageConfirmView.setVisible(state == RegistrationState.GARAGE_CONFIRMATION);
@@ -133,6 +139,9 @@ public class RegisterView extends VerticalLayout {
 
         if (state == RegistrationState.GARAGE_CONFIRMATION) {
             garageConfirmView.setEntitiesForConfirmation(garageAdminRegisterForm.getValidGarageEmployee(), garageCreateForm.getValidGarage());
+        }
+        else if (state == RegistrationState.CAR_OWNER_CONFIRMATION) {
+            carOwnerConfirmView.setEntitiesForConfirmation(carOwnerRegisterForm.getValidCarOwner());
         }
     }
 
@@ -151,8 +160,21 @@ public class RegisterView extends VerticalLayout {
             // todo once car owner form is done:
             // get carOwner
             CarOwner carOwner = carOwnerRegisterForm.getValidCarOwner();
-            // pass to carOwnerService for saving
-            // redirect to car owner's home screen
+            if (carOwner != null) {
+                try {
+                    userDetailsService.registerNewUser(carOwner);
+                    getUI().ifPresent(ui -> ui.navigate("login"));
+                } catch (EmailExistsException emailEx) {
+                    // todo display error
+                } catch (UsernameExistsException usernameEx) {
+                    // todo display error
+                } catch (PhoneNumberExistsException phoneNumberEx){
+                    // todo display error
+                }
+            } else {
+                // todo display error
+            }
+
         } else if (path == RegistrationPath.GARAGE_ADMIN) {
             // get the employee and the garage from their forms
             GarageEmployee garageEmployee = garageAdminRegisterForm.getValidGarageEmployee();
@@ -167,7 +189,6 @@ public class RegisterView extends VerticalLayout {
 
                 try {
                     userDetailsService.registerNewUser(garageEmployee);
-                    // todo autologin user
                     getUI().ifPresent(ui -> ui.navigate("login"));
                 } catch (EmailExistsException emailEx) {
                     // todo display error
@@ -175,6 +196,9 @@ public class RegisterView extends VerticalLayout {
                 } catch (UsernameExistsException usernameEx) {
                     // todo display error
                     // todo delete garage just created
+                // redundant but necessary catch clause
+                } catch (PhoneNumberExistsException e) {
+                    e.printStackTrace();
                 }
             } else {
                 // todo display error
@@ -185,6 +209,7 @@ public class RegisterView extends VerticalLayout {
     private enum RegistrationState {
         USER_TYPE_SELECTION,
         CAR_OWNER_INFO,
+        CAR_OWNER_CONFIRMATION,
         GARAGE_ADMIN_INFO,
         GARAGE_INFO,
         GARAGE_CONFIRMATION,
