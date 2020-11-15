@@ -13,6 +13,7 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 import java.text.DecimalFormat;
+import java.time.Duration;
 import java.util.Comparator;
 
 /**
@@ -23,8 +24,10 @@ public class ServicesSandboxView extends VerticalLayout {
     private Grid<OfferedService> grid = new Grid<>(OfferedService.class);
     private ServiceCatalogService serviceCatalogService;
     private GarageService garageService;
-    private OfferedServiceEditorForm serviceEditorForm = new OfferedServiceEditorForm();
+    private OfferedServiceEditorForm serviceEditorForm = new OfferedServiceEditorForm(this);
     private Button addServiceButton = new Button("Add Service");
+    private Garage garage;
+    private Duration duration;
 
     /**
      * The constructor for the sandbox view. Does initial layout setup, grid configuration, and event listener attachment
@@ -42,8 +45,7 @@ public class ServicesSandboxView extends VerticalLayout {
         //configure the service-catalog-grid
         grid.addClassName("service-catalog-grid");
         grid.setHeightByRows(true);
-        //TODO add serviceDescription back in if we decide to keep it
-        grid.setColumns("serviceName"); //, "serviceDescription");
+        grid.setColumns("serviceName");
 
         grid.addColumn(offeredService -> {
             ServiceCategory serviceCategory = offeredService.getServiceCategory();
@@ -56,16 +58,18 @@ public class ServicesSandboxView extends VerticalLayout {
         decimalFormat.setMinimumFractionDigits(2);
 
         grid.addColumn(offeredService -> decimalFormat.format(offeredService.getPrice()))
-                .setHeader("Price").setComparator(Comparator.comparing(OfferedService::getPrice))
+                .setHeader("$ Price").setComparator(Comparator.comparing(OfferedService::getPrice))
                 .setKey("price");
 
-        //TODO add duration in once CRUD operations for duration are completed
-        //grid.addColumn(OfferedService::getDuration).setHeader("Duration").setSortable(true).setKey("duration");
+        grid.addColumn(offeredService -> {
+            duration = offeredService.getDuration();
+            return duration.toMinutes();
+        }).setHeader("Duration in Minutes").setSortable(true).setKey("duration");
 
         //add garage
         grid.addColumn(offeredService -> {
-            Garage garage = offeredService.getServiceCategory().getGarage();
-            return garage == null ? "[None]" : garage.getCompanyName();
+            garage = offeredService.getServiceCategory().getGarage();
+            return garage.getCompanyName();
         }).setSortable(true).setHeader("Garage");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
 
@@ -103,7 +107,10 @@ public class ServicesSandboxView extends VerticalLayout {
 
         // pass down garages to the form for the garage combobox
         updateGarageCombobox();
+    }
 
+    public void setGarage(Garage garage){
+        this.garage = garage;
         // pass down categories to the form for the categories combobox
         updateCategoriesCombobox();
     }
@@ -113,7 +120,7 @@ public class ServicesSandboxView extends VerticalLayout {
     }
 
     private void updateCategoriesCombobox() {
-        serviceEditorForm.setServiceCategories(serviceCatalogService.findAllServiceCategories());
+        serviceEditorForm.setServiceCategories(serviceCatalogService.findCategoriesByGarage(garage));
     }
 
     /**
@@ -150,7 +157,7 @@ public class ServicesSandboxView extends VerticalLayout {
     }
 
     /**
-     * Toggles the form visibility and sets initializes form fields if passed a OfferedService instance
+     * Toggles the form visibility and initializes form fields if passed a OfferedService instance
      *
      * @param offeredService the OfferedService instance to edit, or null if none is selected
      */
@@ -168,7 +175,7 @@ public class ServicesSandboxView extends VerticalLayout {
      * Clears and hides the editor form
      */
     private void closeOfferedServiceEditorForm() {
-        serviceEditorForm.setOfferedService(new OfferedService());
+        serviceEditorForm.clearOfferedService(new OfferedService());
         serviceEditorForm.setVisible(false);
         removeClassName("editing-Service");
         addServiceButton.setVisible(true);

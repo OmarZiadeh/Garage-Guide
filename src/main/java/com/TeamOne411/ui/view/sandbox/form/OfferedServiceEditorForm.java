@@ -3,9 +3,9 @@ package com.TeamOne411.ui.view.sandbox.form;
 import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.servicecatalog.OfferedService;
 import com.TeamOne411.backend.entity.servicecatalog.ServiceCategory;
+import com.TeamOne411.ui.view.sandbox.childview.ServicesSandboxView;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -22,15 +22,15 @@ import com.vaadin.flow.shared.Registration;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.time.Duration;
 import java.util.List;
 import java.util.Locale;
 
 public class OfferedServiceEditorForm extends FormLayout {
     private TextField serviceName = new TextField("Service name");
-    //private TextField description = new TextField("Description");
-    private ComboBox<Garage> garage = new ComboBox<>("Garage");
-    private TextField price = new TextField("Price");
-    //private TextField duration = new TextField("Duration");
+    private ComboBox<Garage> garageComboBox = new ComboBox<>("Garage");
+    private TextField price = new TextField("$ Price");
+    private ComboBox<Duration> duration = new ComboBox<>("Duration");
     private ComboBox<ServiceCategory> serviceCategory = new ComboBox<>("Category");
 
     private Button save = new Button("Save");
@@ -58,32 +58,38 @@ public class OfferedServiceEditorForm extends FormLayout {
     Binder<OfferedService> binder = new BeanValidationBinder<>(OfferedService.class);
     private OfferedService offeredService = new OfferedService();
 
-    public OfferedServiceEditorForm() {
+    public OfferedServiceEditorForm(ServicesSandboxView servicesSandboxView) {
         addClassName("offered-service-form");
         binder.forField(price).withConverter(new PriceConverter()).bind("price");
         binder.bindInstanceFields(this);
-        garage.setItemLabelGenerator(Garage::getCompanyName);
+        garageComboBox.setItemLabelGenerator(Garage::getCompanyName);
         serviceCategory.setItemLabelGenerator(ServiceCategory::getCategoryName);
+        duration.setItems((Duration.ofMinutes(0)), Duration.ofMinutes(30), Duration.ofMinutes(60), Duration.ofMinutes(90), Duration.ofMinutes(120),
+                Duration.ofMinutes(150), Duration.ofMinutes(180));
         add(serviceName,
-                //description,
-                garage,
+                garageComboBox,
                 price,
-                //duration
+                duration,
                 serviceCategory,
                 createButtonsLayout());
+        garageComboBox.addValueChangeListener(comboBoxGarageComponentValueChangeEvent -> servicesSandboxView.setGarage(garageComboBox.getValue()));
     }
 
-
     public void setGarages(List<Garage> garages) {
-        this.garage.setItems(garages);
+        this.garageComboBox.setItems(garages);
     }
 
     public void setServiceCategories(List<ServiceCategory> categories) {
         this.serviceCategory.setItems(categories);
     }
 
-
     public void setOfferedService(OfferedService offeredService) {
+        this.offeredService = offeredService;
+        garageComboBox.setValue(offeredService.getServiceCategory().getGarage());
+        binder.readBean(offeredService);
+    }
+
+    public void clearOfferedService(OfferedService offeredService) {
         this.offeredService = offeredService;
         binder.readBean(offeredService);
     }
@@ -120,7 +126,6 @@ public class OfferedServiceEditorForm extends FormLayout {
             super(source, false);
             this.offeredService = offeredService;
         }
-
         public OfferedService getOfferedService() {
             return offeredService;
         }

@@ -7,6 +7,8 @@ import com.TeamOne411.backend.repository.OfferedServiceRepository;
 import com.TeamOne411.backend.repository.ServiceCategoryRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.Duration;
 import java.util.List;
 
 /**
@@ -15,8 +17,8 @@ import java.util.List;
 @Service
 public class ServiceCatalogService {
 
-    private OfferedServiceRepository offeredServiceRepository;
-    private ServiceCategoryRepository serviceCategoryRepository;
+    private final OfferedServiceRepository offeredServiceRepository;
+    private final ServiceCategoryRepository serviceCategoryRepository;
 
     public ServiceCatalogService(OfferedServiceRepository offeredServiceRepository, ServiceCategoryRepository serviceCategoryRepository) {
         this.offeredServiceRepository = offeredServiceRepository;
@@ -24,7 +26,15 @@ public class ServiceCatalogService {
     }
 
     public List<OfferedService> findAllOfferedServices() {
-        return (offeredServiceRepository.findAll());
+        return offeredServiceRepository.findAll();
+    }
+
+    public List<OfferedService> findByServiceCategory_Garage(Garage garage) {
+        return offeredServiceRepository.findByServiceCategory_Garage(garage);
+    }
+
+    public List<OfferedService> findByServiceCategory(ServiceCategory serviceCategory) {
+        return offeredServiceRepository.findByServiceCategory(serviceCategory);
     }
 
     public void saveOfferedService(OfferedService offeredService) {
@@ -39,11 +49,10 @@ public class ServiceCatalogService {
         return (serviceCategoryRepository.findAll());
     }
 
-    /*
-        public List<ServiceCategory> findCategoriesByGarage(Garage garage) {
-            return serviceCategoryRepository.findCategoriesByGarage(garage);
-        }
-    */
+    public List<ServiceCategory> findCategoriesByGarage(Garage garage) {
+        return serviceCategoryRepository.findCategoriesByGarage(garage);
+    }
+
     public void saveServiceCategory(ServiceCategory serviceCategory) {
         serviceCategoryRepository.save(serviceCategory);
     }
@@ -59,48 +68,31 @@ public class ServiceCatalogService {
      */
     public void initializeDefaultServices(Garage garage) {
 
-        //These are the default Categories that are enabled for a garage
+        // These are the default Categories that are enabled for a garage
         ServiceCategory catRoutineMaintenance = createDefaultServiceCategory("Routine Maintenance", garage);
-        ServiceCategory catTires = createDefaultServiceCategory("Tires", garage);
-        ServiceCategory catBatteries = createDefaultServiceCategory("Batteries", garage);
-        ServiceCategory catShocksStruts = createDefaultServiceCategory("Shocks & Struts", garage);
-        ServiceCategory catOther = createDefaultServiceCategory("Other/Not Sure", garage);
+        ServiceCategory catTireServices = createDefaultServiceCategory("Tire Services", garage);
+        ServiceCategory catRepairServices = createDefaultServiceCategory("Repair Services", garage);
+        ServiceCategory catOther = createDefaultServiceCategory("Other", garage);
 
-        //These are the default Services that are enabled for a garage
-        //Routine Maintenance
+        // These are the default Services that are enabled for a garage
+        // Routine Maintenance
         createDefaultOfferedService("Oil Change", catRoutineMaintenance);
         createDefaultOfferedService("Brake Replacement", catRoutineMaintenance);
         createDefaultOfferedService("Headlight Replacement", catRoutineMaintenance);
         createDefaultOfferedService("Wiper Blade Replacement", catRoutineMaintenance);
-        createDefaultOfferedService("Power Steering and Suspension", catRoutineMaintenance);
-        createDefaultOfferedService("Check: Fluids", catRoutineMaintenance);
-        createDefaultOfferedService("Check: Brakes", catRoutineMaintenance);
-        createDefaultOfferedService("Check: Belts & Hoses", catRoutineMaintenance);
-        createDefaultOfferedService("Check: Vehicle Health", catRoutineMaintenance);
-        createDefaultOfferedService("Check: Air & Cabin Filters", catRoutineMaintenance);
-        createDefaultOfferedService("Check: Alternators & Starters", catRoutineMaintenance);
 
-        //Tires
-        createDefaultOfferedService("New Tires", catTires);
-        createDefaultOfferedService("Alignment", catTires);
-        createDefaultOfferedService("Flat Repair", catTires);
-        createDefaultOfferedService("TPMS Service", catTires);
-        createDefaultOfferedService("Wheel Balance", catTires);
-        createDefaultOfferedService("Tire Rotation", catTires);
-        createDefaultOfferedService("Seasonal Changeover", catTires);
-        createDefaultOfferedService("Check: Pre-Trip Safety", catTires);
+        // Tire Services
+        createDefaultOfferedService("New Tires", catTireServices);
+        createDefaultOfferedService("Tire Rotation", catTireServices);
+        createDefaultOfferedService("Alignment", catTireServices);
+        createDefaultOfferedService("Flat Tire Repair", catTireServices);
 
-        //Batteries
-        createDefaultOfferedService("Battery Check", catBatteries);
-        createDefaultOfferedService("Battery Installation", catBatteries);
+        // Repair Services
+        createDefaultOfferedService("Heating and Cooling", catRepairServices);
+        createDefaultOfferedService("Belts and Hoses", catRepairServices);
+        createDefaultOfferedService("Steering and Suspension", catRepairServices);
 
-        //Shocks & Struts
-        createDefaultOfferedService("Struts & Shocks Consultation", catShocksStruts);
-
-        //consultation differs from check in restoration/upgrade preference vs current safety status - Hope
-        createDefaultOfferedService("Check: Struts & Suspension", catShocksStruts);
-
-        //Other/Not Sure - no services to include, but does need to a descriptor for car owner clarity
+        // Other/Not Sure - no services to include, but does need to a descriptor for car owner clarity
         createDefaultOfferedService("Other/Not Sure", catOther);
     }
 
@@ -129,6 +121,8 @@ public class ServiceCatalogService {
         OfferedService service = new OfferedService();
         service.setServiceName(name);
         service.setServiceCategory(category);
+        service.setDuration(Duration.ofMinutes(30));
+        service.setPrice(BigDecimal.ZERO);
         offeredServiceRepository.save(service);
     }
 }
