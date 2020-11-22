@@ -62,7 +62,7 @@ public class ServiceCatalogService {
     }
 
     /**
-     * This class assigns the default categories and services to a garage when a garage is first created
+     * This method assigns the default categories and services to a garage when a garage is first created
      *
      * @param garage The new garage that default categories and services should be assigned to
      */
