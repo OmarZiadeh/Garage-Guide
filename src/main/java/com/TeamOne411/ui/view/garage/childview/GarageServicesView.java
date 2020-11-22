@@ -21,7 +21,8 @@ import java.util.Comparator;
 import java.util.Optional;
 
 /**
- * This class is a Vertical layout that shows a list of employees for a given garage and controls to add new or edit them.
+ * This class is a Vertical layout that shows a list of offered services for a given garage and
+ * controls to add new, edit or delete them.
  */
 public class GarageServicesView extends VerticalLayout {
     ServiceCatalogService serviceCatalogService;
