@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 /**
- * Back-end service interface for setting the Garage Schedule
+ * Back-end service interface for managing the Garage Schedule
  */
 @Service
 public class GarageScheduleService {
@@ -21,6 +21,10 @@ public class GarageScheduleService {
 
     public void saveGarageSchedule(GarageSchedule garageSchedule){
         garageScheduleRepository.save(garageSchedule);
+    }
+
+    public GarageSchedule findByGarage(Garage garage){
+        return garageScheduleRepository.findByGarage(garage);
     }
 
     /**
