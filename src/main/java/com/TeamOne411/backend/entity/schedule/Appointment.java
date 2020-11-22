@@ -2,10 +2,7 @@ package com.TeamOne411.backend.entity.schedule;
 
 import com.TeamOne411.backend.entity.AbstractEntity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -22,14 +19,17 @@ public class Appointment extends AbstractEntity {
     private LocalDateTime startDateTime;
 
     @NotNull
-    private Duration duration;
+    private Duration estimatedDuration;
 
     @NotNull
     private String status = new String("Not Started");
 
     @Column(name = "estimated_completion", columnDefinition = "TIMESTAMP")
     private LocalDateTime estimatedCompletion;
+
     private String statusComments;
+
+    //TODO Add attribute & relationship to Vehicle
 
     public GarageSchedule getGarageSchedule() {
         return garageSchedule;
@@ -47,12 +47,12 @@ public class Appointment extends AbstractEntity {
         this.startDateTime = startDateTime;
     }
 
-    public Duration getDuration() {
-        return duration;
+    public Duration getEstimatedDuration() {
+        return estimatedDuration;
     }
 
-    public void setDuration(Duration duration) {
-        this.duration = duration;
+    public void setEstimatedDuration(Duration duration) {
+        this.estimatedDuration = duration;
     }
 
     public String getStatus() {
