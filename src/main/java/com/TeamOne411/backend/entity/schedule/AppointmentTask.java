@@ -10,6 +10,10 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.Duration;
 
+/**
+ This entity defines the service that is to be performed (or was performed) for a particular appointment.
+ Allows the Garage employee to specify price, duration and service name if different from the standard offered service
+ */
 @Entity
 public class AppointmentTask extends AbstractEntity {
 

@@ -7,6 +7,9 @@ import javax.validation.constraints.NotNull;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
+/**
+ This entity defines an appointment that has been scheduled with the garage
+ */
 @Entity
 public class Appointment extends AbstractEntity {
     @NotNull

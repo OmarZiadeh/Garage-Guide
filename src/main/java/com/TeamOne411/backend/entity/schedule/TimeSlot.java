@@ -9,6 +9,9 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
+/**
+ This entity is an appointment time slot for the Garage. It indicates if the slot is filled by an appointment or not
+ */
 @Entity
 public class TimeSlot extends AbstractEntity {
     @NotNull

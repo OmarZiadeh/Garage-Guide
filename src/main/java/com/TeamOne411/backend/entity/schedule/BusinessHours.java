@@ -9,6 +9,9 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import java.time.LocalTime;
 
+/**
+This entity defines the opening and closing times for the business for a particular day of the week
+ */
 @Entity
 public class BusinessHours extends AbstractEntity {
     @NotNull
