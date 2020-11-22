@@ -71,9 +71,9 @@ public class GarageEmployeeHomeView extends VerticalLayout {
             tabsToPages.put(employeesTab, employeesPage);
 
             /*
-            Third Tab - Garage Services
+            Third Tab - Garage Offered Services
              */
-            Tab servicesTab = new Tab("Services");
+            Tab servicesTab = new Tab("Service Catalog");
             GarageServicesView servicesView = new GarageServicesView(serviceCatalogService, myGarage);
             Div servicesPage = new Div(servicesView);
             servicesTab.add(servicesPage);
