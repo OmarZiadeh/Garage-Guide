@@ -1,6 +1,7 @@
 package com.TeamOne411.backend.entity.schedule;
 
 import com.TeamOne411.backend.entity.AbstractEntity;
+import com.TeamOne411.backend.entity.Garage;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,7 +16,7 @@ This entity defines the opening and closing times for the business for a particu
 @Entity
 public class BusinessHours extends AbstractEntity {
     @NotNull
-    private String dayOfWeek;
+    private String dayOfTheWeek;
 
     @NotNull
     private Boolean isOpen = Boolean.FALSE;
@@ -28,23 +29,23 @@ public class BusinessHours extends AbstractEntity {
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "garage_schedule_id")
-    private GarageSchedule garageSchedule;
+    @JoinColumn(name = "garage_id")
+    private Garage garage;
 
-    public GarageSchedule getGarageSchedule() {
-        return garageSchedule;
+    public Garage getGarage() {
+        return garage;
     }
 
-    public void setGarageSchedule(GarageSchedule garageSchedule) {
-        this.garageSchedule = garageSchedule;
+    public void setGarage(Garage garage) {
+        this.garage = garage;
     }
 
-    public String getDayOfWeek() {
-        return dayOfWeek;
+    public String getDayOfTheWeek() {
+        return dayOfTheWeek;
     }
 
-    public void setDayOfWeek(String dayOfWeek) {
-        this.dayOfWeek = dayOfWeek;
+    public void setDayOfTheWeek(String dayOfTheWeek) {
+        this.dayOfTheWeek = dayOfTheWeek;
     }
 
     public Boolean getOpen() {

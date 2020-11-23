@@ -8,10 +8,10 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 /**
- This entity defines the schedule for the Garage - the start and end dates for when the Garage will accept appointments
+ This entity defines the calendar for the Garage - the start and end dates for when the Garage will accept appointments
  */
 @Entity
-public class GarageSchedule extends AbstractEntity {
+public class GarageCalendar extends AbstractEntity {
     @NotNull
     @OneToOne
     @JoinColumn(name = "garage_id", referencedColumnName = "id")

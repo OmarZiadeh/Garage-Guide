@@ -1,6 +1,7 @@
 package com.TeamOne411.backend.entity.schedule;
 
 import com.TeamOne411.backend.entity.AbstractEntity;
+import com.TeamOne411.backend.entity.Garage;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -14,8 +15,8 @@ import java.time.LocalDateTime;
 public class Appointment extends AbstractEntity {
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "garage_schedule_id")
-    private GarageSchedule garageSchedule;
+    @JoinColumn(name = "garage_id")
+    private Garage garage;
 
     @NotNull
     @Column(name = "start_date_time", columnDefinition = "TIMESTAMP")
@@ -34,12 +35,12 @@ public class Appointment extends AbstractEntity {
 
     //TODO Add attribute & relationship to Vehicle
 
-    public GarageSchedule getGarageSchedule() {
-        return garageSchedule;
+    public Garage getGarage() {
+        return garage;
     }
 
-    public void setGarageSchedule(GarageSchedule garageSchedule) {
-        this.garageSchedule = garageSchedule;
+    public void setGarage(Garage garage) {
+        this.garage = garage;
     }
 
     public LocalDateTime getStartDateTime() {

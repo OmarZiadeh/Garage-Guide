@@ -1,7 +1,7 @@
 package com.TeamOne411.backend.service;
 
+import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.schedule.BusinessHours;
-import com.TeamOne411.backend.entity.schedule.GarageSchedule;
 import com.TeamOne411.backend.repository.BusinessHoursRepository;
 import org.springframework.stereotype.Service;
 
@@ -22,35 +22,39 @@ public class BusinessHoursService {
         businessHoursRepository.save(businessHours);
     }
 
-    public List<BusinessHours> findAll() {
-        return (businessHoursRepository.findAll());
+    public void deleteBusinessHours(BusinessHours businessHours){
+        businessHoursRepository.delete(businessHours);
+    }
+
+    public List<BusinessHours> findByGarage(Garage garage) {
+        return (businessHoursRepository.findByGarage(garage));
     }
 
     /**
      * This method assigns a business hours placeholder for each day of the week
      *
-     * @param garageSchedule The garageSchedule the business hours should be associated with
+     * @param garage The garageSchedule the business hours should be associated with
      */
-    public void initializeBusinessHours(GarageSchedule garageSchedule){
-        createBusinessDay(garageSchedule, "MONDAY");
-        createBusinessDay(garageSchedule, "TUESDAY");
-        createBusinessDay(garageSchedule, "WEDNESDAY");
-        createBusinessDay(garageSchedule, "THURSDAY");
-        createBusinessDay(garageSchedule, "FRIDAY");
-        createBusinessDay(garageSchedule, "SATURDAY");
-        createBusinessDay(garageSchedule, "SUNDAY");
+    public void initializeBusinessHours(Garage garage){
+        createBusinessDay(garage, "MONDAY");
+        createBusinessDay(garage, "TUESDAY");
+        createBusinessDay(garage, "WEDNESDAY");
+        createBusinessDay(garage, "THURSDAY");
+        createBusinessDay(garage, "FRIDAY");
+        createBusinessDay(garage, "SATURDAY");
+        createBusinessDay(garage, "SUNDAY");
     }
 
     /**
      * This method creates the business hours placeholder
      *
-     * @param garageSchedule The garageSchedule the business hours should be associated with
+     * @param garage The garage the business hours should be associated with
      * @param name The name for the day of the week
      */
-    public void createBusinessDay(GarageSchedule garageSchedule, String name){
+    public void createBusinessDay(Garage garage, String name){
         BusinessHours businessHours = new BusinessHours();
-        businessHours.setGarageSchedule(garageSchedule);
-        businessHours.setDayOfWeek(name);
+        businessHours.setGarage(garage);
+        businessHours.setDayOfTheWeek(name);
         businessHoursRepository.save(businessHours);
     }
 }

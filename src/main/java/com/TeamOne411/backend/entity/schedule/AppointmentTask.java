@@ -12,7 +12,7 @@ import java.time.Duration;
 
 /**
  This entity defines the service that is to be performed (or was performed) for a particular appointment.
- Allows the Garage employee to specify price, duration and service name if different from the standard offered service
+ Allows the Garage employee to specify price and/or duration if different from the standard offered service
  */
 @Entity
 public class AppointmentTask extends AbstractEntity {
@@ -32,9 +32,6 @@ public class AppointmentTask extends AbstractEntity {
 
     @NotNull
     private BigDecimal price;
-
-    @NotNull
-    private String serviceName;
 
     private String appointmentComments;
 
@@ -68,14 +65,6 @@ public class AppointmentTask extends AbstractEntity {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
-    }
-
-    public String getServiceName() {
-        return serviceName;
-    }
-
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
     }
 
     public String getAppointmentComments() {
