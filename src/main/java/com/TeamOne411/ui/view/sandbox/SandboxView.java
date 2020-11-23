@@ -6,7 +6,7 @@ import com.TeamOne411.backend.service.GarageService;
 import com.TeamOne411.backend.service.ServiceCatalogService;
 import com.TeamOne411.backend.service.api.car.ApiCarService;
 import com.TeamOne411.ui.MainLayout;
-import com.TeamOne411.ui.view.registration.subform.CarAddForm;
+import com.TeamOne411.ui.view.registration.subform.VehicleAddForm;
 import com.TeamOne411.ui.view.sandbox.childview.*;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
@@ -74,7 +74,7 @@ public class SandboxView extends VerticalLayout {
         Fourth Tab - Car Add Form
          */
         Tab carAddFormTab = new Tab("Car add");
-        CarAddForm carAddSandboxView = new CarAddForm(apiCarService);
+        VehicleAddForm carAddSandboxView = new VehicleAddForm(apiCarService);
         Div carAddFormPage = new Div(carAddSandboxView);
         carAddFormPage.setSizeFull();
         tabs.add(carAddFormTab);

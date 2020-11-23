@@ -1,6 +1,6 @@
 package com.TeamOne411.ui.view.registration.subform;
 
-import com.TeamOne411.backend.entity.Car;
+import com.TeamOne411.backend.entity.Vehicle;
 import com.TeamOne411.backend.service.api.car.ApiCarService;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class CarAddForm extends VerticalLayout {
+public class VehicleAddForm extends VerticalLayout {
 
     //these need to be lists but vehicle API needs work
     private ComboBox<String> make = new ComboBox<String>("Make");
@@ -39,11 +39,11 @@ public class CarAddForm extends VerticalLayout {
     private Button nextButton = new Button("Confirm Details", new Icon(VaadinIcon.ARROW_RIGHT));
     private ShortcutRegistration enterKeyRegistration;
 
-    Binder<Car> binder = new BeanValidationBinder<>(Car.class);
-    private Car car = new Car();
+    Binder<Vehicle> binder = new BeanValidationBinder<>(Vehicle.class);
+    private Vehicle car = new Vehicle();
     private ApiCarService apiCarService;
 
-    public CarAddForm(ApiCarService apiCarService) {
+    public VehicleAddForm(ApiCarService apiCarService) {
         this.apiCarService = apiCarService;
         // initial view setup
         addClassName("car-add-view");
@@ -82,7 +82,7 @@ public class CarAddForm extends VerticalLayout {
     private void validateAndFireNext() {
         binder.validate();
         if (!binder.isValid()) return;
-        fireEvent(new CarAddForm.NextEvent(this));
+        fireEvent(new VehicleAddForm.NextEvent(this));
     }
 
     public void fillMakeComboBox(){
@@ -103,7 +103,7 @@ public class CarAddForm extends VerticalLayout {
         this.year.setItems(years);
     }
 
-    public Car getValidCar() {
+    public Vehicle getValidCar() {
         try {
             binder.writeBean(car);
             return car;
@@ -122,14 +122,14 @@ public class CarAddForm extends VerticalLayout {
 
 
     // Button event definitions begin
-    public static class BackEvent extends ComponentEvent<CarAddForm> {
-        BackEvent(CarAddForm source) {
+    public static class BackEvent extends ComponentEvent<VehicleAddForm> {
+        BackEvent(VehicleAddForm source) {
             super(source, false);
         }
     }
 
-    public static class NextEvent extends ComponentEvent<CarAddForm> {
-        NextEvent(CarAddForm source) {
+    public static class NextEvent extends ComponentEvent<VehicleAddForm> {
+        NextEvent(VehicleAddForm source) {
             super(source, false);
         }
     }
