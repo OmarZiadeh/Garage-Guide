@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class ApiCarService {
+public class ApiVehicleService {
     private RestTemplate restTemplate = new RestTemplate();
     private String baseUri = "https://vpic.nhtsa.dot.gov/api/";
 
@@ -17,9 +17,9 @@ public class ApiCarService {
     public List<String> getAllMakes() throws URISyntaxException {
 
         URI fullUri = new URI(baseUri + "vehicles/GetMakesForVehicleType/car?format=json");
-        ApiCarResponse carsResponse = restTemplate.getForObject(fullUri, ApiCarResponse.class);
+        ApiVehicleResponse carsResponse = restTemplate.getForObject(fullUri, ApiVehicleResponse.class);
 
-        List<ApiCar> cars = carsResponse.getResults();
+        List<ApiVehicle> cars = carsResponse.getResults();
 
         return cars.stream().map(c->c.getMakeName()).collect(Collectors.toList());
     }

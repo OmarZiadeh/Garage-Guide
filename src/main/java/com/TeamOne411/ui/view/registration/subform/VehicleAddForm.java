@@ -1,7 +1,7 @@
 package com.TeamOne411.ui.view.registration.subform;
 
 import com.TeamOne411.backend.entity.Vehicle;
-import com.TeamOne411.backend.service.api.car.ApiCarService;
+import com.TeamOne411.backend.service.api.car.ApiVehicleService;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Key;
@@ -41,10 +41,10 @@ public class VehicleAddForm extends VerticalLayout {
 
     Binder<Vehicle> binder = new BeanValidationBinder<>(Vehicle.class);
     private Vehicle car = new Vehicle();
-    private ApiCarService apiCarService;
+    private ApiVehicleService apiVehicleService;
 
-    public VehicleAddForm(ApiCarService apiCarService) {
-        this.apiCarService = apiCarService;
+    public VehicleAddForm(ApiVehicleService apiVehicleService) {
+        this.apiVehicleService = apiVehicleService;
         // initial view setup
         addClassName("car-add-view");
         setSizeFull();
@@ -87,7 +87,7 @@ public class VehicleAddForm extends VerticalLayout {
 
     public void fillMakeComboBox(){
         try {
-            this.make.setItems(apiCarService.getAllMakes());
+            this.make.setItems(apiVehicleService.getAllMakes());
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }

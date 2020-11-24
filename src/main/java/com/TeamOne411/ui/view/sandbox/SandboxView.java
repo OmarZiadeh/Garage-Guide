@@ -4,7 +4,7 @@ import com.TeamOne411.backend.service.CarOwnerService;
 import com.TeamOne411.backend.service.GarageEmployeeService;
 import com.TeamOne411.backend.service.GarageService;
 import com.TeamOne411.backend.service.ServiceCatalogService;
-import com.TeamOne411.backend.service.api.car.ApiCarService;
+import com.TeamOne411.backend.service.api.car.ApiVehicleService;
 import com.TeamOne411.ui.MainLayout;
 import com.TeamOne411.ui.view.registration.subform.VehicleAddForm;
 import com.TeamOne411.ui.view.sandbox.childview.*;
@@ -28,7 +28,7 @@ public class SandboxView extends VerticalLayout {
                        GarageEmployeeService garageEmployeeService,
                        CarOwnerService carOwnerService,
                        ServiceCatalogService serviceCatalogService,
-                       ApiCarService apiCarService) {
+                       ApiVehicleService apiVehicleService) {
         Tabs tabs = new Tabs();
         Div pages = new Div();
         Map<Tab, Component> tabsToPages = new HashMap<>();
@@ -74,7 +74,7 @@ public class SandboxView extends VerticalLayout {
         Fourth Tab - Car Add Form
          */
         Tab carAddFormTab = new Tab("Car add");
-        VehicleAddForm carAddSandboxView = new VehicleAddForm(apiCarService);
+        VehicleAddForm carAddSandboxView = new VehicleAddForm(apiVehicleService);
         Div carAddFormPage = new Div(carAddSandboxView);
         carAddFormPage.setSizeFull();
         tabs.add(carAddFormTab);

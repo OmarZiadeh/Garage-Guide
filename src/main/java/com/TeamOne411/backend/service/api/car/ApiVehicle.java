@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import java.io.Serializable;
 
 //@JsonIgnoreProperties(ignoreUnknown = true)
-public class ApiCar implements Serializable {
+public class ApiVehicle implements Serializable {
 
     @JsonAlias({"Make_ID", "MakeId"})
     private int makeId;
