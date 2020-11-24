@@ -2,8 +2,7 @@ package com.TeamOne411.backend.entity.users;
 
 import com.TeamOne411.backend.entity.Garage;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -20,6 +19,8 @@ public class CarOwner extends User {
     @NotNull
     @NotEmpty(message = "Address can't be empty.")
     private String address = "";
+
+
 
     @ManyToMany()
     private List<Garage> preferredGarages = new LinkedList<>();
