@@ -22,8 +22,8 @@ public class BusinessHoursService {
         businessHoursRepository.save(businessHours);
     }
 
-    public void deleteBusinessHours(BusinessHours businessHours){
-        businessHoursRepository.delete(businessHours);
+    public void deleteBusinessHours(List<BusinessHours> businessHours){
+        businessHoursRepository.deleteAll(businessHours);
     }
 
     public List<BusinessHours> findByGarage(Garage garage) {
