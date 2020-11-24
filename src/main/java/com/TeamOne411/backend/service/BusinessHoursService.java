@@ -36,13 +36,13 @@ public class BusinessHoursService {
      * @param garage The garageSchedule the business hours should be associated with
      */
     public void initializeBusinessHours(Garage garage){
-        createBusinessDay(garage, "MONDAY");
-        createBusinessDay(garage, "TUESDAY");
-        createBusinessDay(garage, "WEDNESDAY");
-        createBusinessDay(garage, "THURSDAY");
-        createBusinessDay(garage, "FRIDAY");
-        createBusinessDay(garage, "SATURDAY");
-        createBusinessDay(garage, "SUNDAY");
+        createBusinessDay(garage, "Monday", 1);
+        createBusinessDay(garage, "Tuesday", 2);
+        createBusinessDay(garage, "Wednesday", 3);
+        createBusinessDay(garage, "Thursday", 4);
+        createBusinessDay(garage, "Friday", 5);
+        createBusinessDay(garage, "Saturday", 6);
+        createBusinessDay(garage, "Sunday", 7);
     }
 
     /**
@@ -51,10 +51,11 @@ public class BusinessHoursService {
      * @param garage The garage the business hours should be associated with
      * @param name The name for the day of the week
      */
-    public void createBusinessDay(Garage garage, String name){
+    public void createBusinessDay(Garage garage, String name, int number){
         BusinessHours businessHours = new BusinessHours();
         businessHours.setGarage(garage);
         businessHours.setDayOfTheWeek(name);
+        businessHours.setDayNumber(number);
         businessHoursRepository.save(businessHours);
     }
 }

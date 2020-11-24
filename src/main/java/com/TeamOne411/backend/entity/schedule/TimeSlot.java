@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -21,8 +22,12 @@ public class TimeSlot extends AbstractEntity {
     private Garage garage;
 
     @NotNull
-    @Column(name = "start_date_time", columnDefinition = "TIMESTAMP")
-    private LocalDateTime startDateTime;
+    @Column(name = "start_date", columnDefinition = "DATE")
+    private LocalDate startDate;
+
+    @NotNull
+    @Column(name = "start_time", columnDefinition = "TIME")
+    private LocalDate startTime;
 
     @NotNull
     private Boolean isFilled = Boolean.FALSE;
@@ -35,12 +40,12 @@ public class TimeSlot extends AbstractEntity {
         this.garage = garage;
     }
 
-    public LocalDateTime getStartDateTime() {
-        return startDateTime;
+    public LocalDate getStartDate() {
+        return startDate;
     }
 
-    public void setStartDateTime(LocalDateTime startDateTime) {
-        this.startDateTime = startDateTime;
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
     }
 
     public Boolean getFilled() {
@@ -49,5 +54,13 @@ public class TimeSlot extends AbstractEntity {
 
     public void setFilled(Boolean filled) {
         isFilled = filled;
+    }
+
+    public LocalDate getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDate startTime) {
+        this.startTime = startTime;
     }
 }

@@ -6,7 +6,8 @@ import com.TeamOne411.backend.entity.Garage;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 /**
  This entity defines an appointment that has been scheduled with the garage
@@ -19,8 +20,12 @@ public class Appointment extends AbstractEntity {
     private Garage garage;
 
     @NotNull
-    @Column(name = "start_date_time", columnDefinition = "TIMESTAMP")
-    private LocalDateTime startDateTime;
+    @Column(name = "appointment_date", columnDefinition = "DATE")
+    private LocalDate appointmentDate;
+
+    @NotNull
+    @Column(name = "appointment_time", columnDefinition = "TIME")
+    private LocalTime appointmentTime;
 
     @NotNull
     private Duration estimatedDuration;
@@ -28,8 +33,8 @@ public class Appointment extends AbstractEntity {
     @NotNull
     private String status = new String("Not Started");
 
-    @Column(name = "estimated_completion", columnDefinition = "TIMESTAMP")
-    private LocalDateTime estimatedCompletion;
+    @Column(name = "estimated_completion_time", columnDefinition = "TIME")
+    private LocalTime estimatedCompletionTime;
 
     private String statusComments;
 
@@ -41,14 +46,6 @@ public class Appointment extends AbstractEntity {
 
     public void setGarage(Garage garage) {
         this.garage = garage;
-    }
-
-    public LocalDateTime getStartDateTime() {
-        return startDateTime;
-    }
-
-    public void setStartDateTime(LocalDateTime startDateTime) {
-        this.startDateTime = startDateTime;
     }
 
     public Duration getEstimatedDuration() {
@@ -67,19 +64,35 @@ public class Appointment extends AbstractEntity {
         this.status = status;
     }
 
-    public LocalDateTime getEstimatedCompletion() {
-        return estimatedCompletion;
-    }
-
-    public void setEstimatedCompletion(LocalDateTime estimatedCompletion) {
-        this.estimatedCompletion = estimatedCompletion;
-    }
-
     public String getStatusComments() {
         return statusComments;
     }
 
     public void setStatusComments(String statusComments) {
         this.statusComments = statusComments;
+    }
+
+    public LocalDate getAppointmentDate() {
+        return appointmentDate;
+    }
+
+    public void setAppointmentDate(LocalDate appointmentDate) {
+        this.appointmentDate = appointmentDate;
+    }
+
+    public LocalTime getAppointmentTime() {
+        return appointmentTime;
+    }
+
+    public void setAppointmentTime(LocalTime appointmentTime) {
+        this.appointmentTime = appointmentTime;
+    }
+
+    public LocalTime getEstimatedCompletionTime() {
+        return estimatedCompletionTime;
+    }
+
+    public void setEstimatedCompletionTime(LocalTime estimatedCompletionTime) {
+        this.estimatedCompletionTime = estimatedCompletionTime;
     }
 }

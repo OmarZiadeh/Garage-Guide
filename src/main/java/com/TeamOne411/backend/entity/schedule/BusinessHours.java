@@ -19,6 +19,9 @@ public class BusinessHours extends AbstractEntity {
     private String dayOfTheWeek;
 
     @NotNull
+    private int dayNumber;
+
+    @NotNull
     private Boolean isOpen = Boolean.FALSE;
 
     @Column(name = "open_time", columnDefinition = "TIME")
@@ -70,5 +73,13 @@ public class BusinessHours extends AbstractEntity {
 
     public void setCloseTime(LocalTime closeTime) {
         this.closeTime = closeTime;
+    }
+
+    public int getDayNumber() {
+        return dayNumber;
+    }
+
+    public void setDayNumber(int dayNumber) {
+        this.dayNumber = dayNumber;
     }
 }
