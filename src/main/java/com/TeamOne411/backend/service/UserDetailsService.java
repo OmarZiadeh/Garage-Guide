@@ -1,8 +1,12 @@
 package com.TeamOne411.backend.service;
 
 import com.TeamOne411.backend.entity.users.*;
+import com.TeamOne411.backend.repository.CarOwnerRepository;
 import com.TeamOne411.backend.repository.RoleRepository;
 import com.TeamOne411.backend.repository.UserRepository;
+import com.TeamOne411.backend.service.exceptions.EmailExistsException;
+import com.TeamOne411.backend.service.exceptions.PhoneNumberExistsException;
+import com.TeamOne411.backend.service.exceptions.UsernameExistsException;
 import com.TeamOne411.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -20,6 +24,9 @@ public class UserDetailsService implements org.springframework.security.core.use
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CarOwnerRepository carOwnerRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -55,6 +62,11 @@ public class UserDetailsService implements org.springframework.security.core.use
         return  userRepository.findByEmail(email) != null;
     }
 
+    public boolean isCarOwnerPhoneExisting(String phone){
+        //if phone does not exist, return false
+        return carOwnerRepository.findByPhoneNumber(phone) != null;
+    }
+
     private Collection<? extends GrantedAuthority> getAuthorities(
             Collection<Role> roles) {
 
@@ -82,7 +94,7 @@ public class UserDetailsService implements org.springframework.security.core.use
         return authorities;
     }
 
-    public User registerNewUser(User user) throws EmailExistsException, UsernameExistsException {
+    public User registerNewUser(User user) throws EmailExistsException, UsernameExistsException, PhoneNumberExistsException {
         // check for unique email address
         if (isEmailExisting(user.getEmail())) {
             throw new EmailExistsException(
@@ -103,6 +115,12 @@ public class UserDetailsService implements org.springframework.security.core.use
         // set roles based on user type
         if (user instanceof CarOwner) {
             user.setRoles(new LinkedList<Role>(Arrays.asList(roleRepository.findByName("ROLE_CAR_OWNER"))));
+
+            // check for unique car owner phone number
+            if (isCarOwnerPhoneExisting(((CarOwner) user).getPhoneNumber())) {
+                throw new PhoneNumberExistsException(
+                        "There is already an account with that phone number:" + ((CarOwner) user).getPhoneNumber());
+            }
         }
 
         if (user instanceof GarageEmployee) {

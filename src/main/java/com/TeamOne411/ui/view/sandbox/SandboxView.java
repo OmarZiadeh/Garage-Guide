@@ -4,7 +4,9 @@ import com.TeamOne411.backend.service.CarOwnerService;
 import com.TeamOne411.backend.service.GarageEmployeeService;
 import com.TeamOne411.backend.service.GarageService;
 import com.TeamOne411.backend.service.ServiceCatalogService;
+import com.TeamOne411.backend.service.api.car.ApiVehicleService;
 import com.TeamOne411.ui.MainLayout;
+import com.TeamOne411.ui.view.registration.subform.VehicleAddForm;
 import com.TeamOne411.ui.view.sandbox.childview.*;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
@@ -25,7 +27,8 @@ public class SandboxView extends VerticalLayout {
     public SandboxView(GarageService garageService,
                        GarageEmployeeService garageEmployeeService,
                        CarOwnerService carOwnerService,
-                        ServiceCatalogService serviceCatalogService) {
+                       ServiceCatalogService serviceCatalogService,
+                       ApiVehicleService apiVehicleService) {
         Tabs tabs = new Tabs();
         Div pages = new Div();
         Map<Tab, Component> tabsToPages = new HashMap<>();
@@ -68,7 +71,19 @@ public class SandboxView extends VerticalLayout {
         tabsToPages.put(carOwnersTab, carOwnersPage);
 
         /*
-        Forth Tab - Service Categories
+        Fourth Tab - Car Add Form
+         */
+        Tab carAddFormTab = new Tab("Car add");
+        VehicleAddForm carAddSandboxView = new VehicleAddForm(apiVehicleService);
+        Div carAddFormPage = new Div(carAddSandboxView);
+        carAddFormPage.setSizeFull();
+        tabs.add(carAddFormTab);
+        pages.add(carAddFormPage);
+        carAddFormPage.setVisible(false);
+        tabsToPages.put(carAddFormTab, carAddFormPage);
+
+        /*
+        Fifth Tab - Service Categories
          */
         Tab categoriesTab = new Tab("Categories");
         CategoriesSandboxView categoriesSandboxView = new CategoriesSandboxView(serviceCatalogService, garageService);
@@ -80,7 +95,7 @@ public class SandboxView extends VerticalLayout {
         tabsToPages.put(categoriesTab, categoriesPage);
 
         /*
-        Fifth Tab - Offered Services
+        Sixth Tab - Offered Services
          */
         Tab servicesTab = new Tab("Services");
         ServicesSandboxView servicesSandboxView = new ServicesSandboxView(serviceCatalogService, garageService);
