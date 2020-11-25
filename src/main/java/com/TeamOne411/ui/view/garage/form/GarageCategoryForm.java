@@ -30,7 +30,7 @@ public class GarageCategoryForm extends VerticalLayout {
     /**
      * Constructor for the form
      * @param serviceCatalogService the service class for the serviceCategory repository
-     * @param garage                the garage the serviceCategory is associated with
+     * @param garage                the service class for the garage repository
      */
     public GarageCategoryForm(ServiceCatalogService serviceCatalogService, Garage garage) {
         this.serviceCatalogService = serviceCatalogService;
