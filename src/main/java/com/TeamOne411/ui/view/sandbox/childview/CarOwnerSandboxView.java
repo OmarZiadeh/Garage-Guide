@@ -6,7 +6,6 @@ import com.TeamOne411.ui.view.sandbox.form.CarOwnerEditorForm;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 /**
@@ -31,7 +30,6 @@ public class CarOwnerSandboxView extends VerticalLayout {
 
         // configure the carOwner grid
         grid.addClassName("car-owner-grid");
-        grid.setHeightByRows(true);
         grid.setColumns("username", "firstName", "lastName", "email", "phoneNumber", "address");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
 
@@ -62,7 +60,7 @@ public class CarOwnerSandboxView extends VerticalLayout {
         carOwnerContent.setSizeFull();
 
         // add the components to this layout
-        add(new H1("Car Owners"), addButton, carOwnerContent);
+        add(addButton, carOwnerContent);
 
         // fetch the list for the grid
         updateCarOwnerList();

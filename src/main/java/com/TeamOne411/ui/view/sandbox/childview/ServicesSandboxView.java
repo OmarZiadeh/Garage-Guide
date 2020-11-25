@@ -9,7 +9,6 @@ import com.TeamOne411.ui.view.sandbox.form.OfferedServiceEditorForm;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 import java.text.DecimalFormat;
@@ -18,7 +17,8 @@ import java.util.Comparator;
 
 /**
  * The ServicesSandboxView is a God-mode ServiceCatalog editor for testing purposes.
- * This should either be deleted as the application evolves or turned into an Admin screen meant only for technical support, well hidden behind authentication.
+ * This should either be deleted as the application evolves or turned into an Admin screen
+ * meant only for technical support, well hidden behind authentication.
  */
 public class ServicesSandboxView extends VerticalLayout {
     private Grid<OfferedService> grid = new Grid<>(OfferedService.class);
@@ -44,7 +44,6 @@ public class ServicesSandboxView extends VerticalLayout {
 
         //configure the service-catalog-grid
         grid.addClassName("service-catalog-grid");
-        grid.setHeightByRows(true);
         grid.setColumns("serviceName");
 
         grid.addColumn(offeredService -> {
@@ -100,7 +99,7 @@ public class ServicesSandboxView extends VerticalLayout {
         offeredServiceContent.setSizeFull();
 
         // add the components to this layout
-        add(new H1("Services"), addServiceButton, offeredServiceContent);
+        add(addServiceButton, offeredServiceContent);
 
         // fetch the list for the grid
         updateOfferedServicesList();
