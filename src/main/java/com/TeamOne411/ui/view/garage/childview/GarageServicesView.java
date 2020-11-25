@@ -42,15 +42,14 @@ public class GarageServicesView extends VerticalLayout {
 
         // configure the service grid
         grid.addClassName("garage-service-grid");
-        grid.setHeightByRows(true);
-        grid.setMaxHeight("25vh");
+        grid.setMaxHeight("50vh");
         grid.setColumns("serviceName");
 
         // Format Service Category
         grid.addColumn(offeredService -> {
             ServiceCategory serviceCategory = offeredService.getServiceCategory();
             return serviceCategory.getCategoryName();
-        }).setSortable(true).setHeader("Category").setKey("serviceCategory").setFooter("");
+        }).setSortable(true).setHeader("Category").setKey("serviceCategory");
 
         // Format price
         final DecimalFormat decimalFormat = new DecimalFormat();
