@@ -10,4 +10,5 @@ import java.util.List;
 public interface OfferedServiceRepository extends JpaRepository<OfferedService, Long> {
     List<OfferedService> findByServiceCategory_Garage(Garage garage);
     List<OfferedService> findByServiceCategory(ServiceCategory serviceCategory);
+
 }
