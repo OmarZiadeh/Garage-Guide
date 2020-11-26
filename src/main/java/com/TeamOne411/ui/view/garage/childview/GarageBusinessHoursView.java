@@ -3,7 +3,6 @@ package com.TeamOne411.ui.view.garage.childview;
 import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.schedule.BusinessHours;
 import com.TeamOne411.backend.service.BusinessHoursService;
-import com.TeamOne411.backend.service.GarageCalendarService;
 import com.TeamOne411.ui.view.garage.form.GarageBizHoursDialog;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.button.Button;
@@ -19,17 +18,15 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 public class GarageBusinessHoursView extends HorizontalLayout {
     private final Grid<BusinessHours> grid = new Grid<>(BusinessHours.class);
     BusinessHoursService businessHoursService;
-    GarageCalendarService garageScheduleService;
     Garage garage;
     GarageBizHoursDialog garageBizHoursDialog;
-    //this is here for trouble shooting purposes only
+    //this delete button is here for trouble shooting purposes only.
+    //We don't want users to actually delete the hours, just set them to "Closed" if hours aren't needed on certain days
  //   Button deleteHoursButton = new Button("Delete Business Hours");
 
     public GarageBusinessHoursView(BusinessHoursService businessHoursService,
-                                   GarageCalendarService garageScheduleService,
                                    Garage garage) {
         this.businessHoursService = businessHoursService;
-        this.garageScheduleService = garageScheduleService;
         this.garage = garage;
 
         // Sets the initial business hours for a garage the first time the first admin logs in
@@ -41,7 +38,7 @@ public class GarageBusinessHoursView extends HorizontalLayout {
        // deleteHoursButton.addClickListener(e -> deleteHours());
 
         grid.addClassName("garage-business-hours-grid");
-        grid.setWidth("45%");
+        grid.setWidth("50%");
         grid.setHeightByRows(true);
         grid.removeAllColumns();
 
@@ -54,7 +51,7 @@ public class GarageBusinessHoursView extends HorizontalLayout {
         grid.addComponentColumn(this::createUpdateButton).setHeader("Update").setTextAlign(ColumnTextAlign.CENTER);
 
         // add the components to the vertical layout
-        add(grid); //deleteHoursButton
+        add(grid);                                      //deleteHoursButton
         updateBusinessHoursList();
     }
 
@@ -65,6 +62,7 @@ public class GarageBusinessHoursView extends HorizontalLayout {
         grid.setItems(businessHoursService.findByGarage(garage));
     }
 
+    //keep for troubleshooting
 /*
     private void deleteHours(){
         businessHoursService.deleteBusinessHours(businessHoursService.findByGarage(garage));

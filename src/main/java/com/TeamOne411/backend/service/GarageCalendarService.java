@@ -34,7 +34,7 @@ public class GarageCalendarService {
     /**
      * This method creates the initial schedule for the garage
      */
-    public void initializeGarageSchedule(Garage garage){
+    public void initializeGarageCalendar(Garage garage){
         GarageCalendar garageCalendar = new GarageCalendar();
         garageCalendar.setGarage(garage);
         garageCalendar.setCalendarStartDate(LocalDate.now());
