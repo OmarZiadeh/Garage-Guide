@@ -4,23 +4,26 @@ import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.schedule.BusinessHours;
 import com.TeamOne411.backend.service.BusinessHoursService;
 import com.TeamOne411.backend.service.GarageCalendarService;
+import com.TeamOne411.ui.view.garage.form.GarageBizHoursDialog;
+import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.timepicker.TimePicker;
-
-import java.time.Duration;
 
 /**
  * This class is a Vertical layout that controls the business hours for a given garage.
  */
-public class GarageBusinessHoursView extends VerticalLayout {
+public class GarageBusinessHoursView extends HorizontalLayout {
     private final Grid<BusinessHours> grid = new Grid<>(BusinessHours.class);
     BusinessHoursService businessHoursService;
     GarageCalendarService garageScheduleService;
     Garage garage;
+    GarageBizHoursDialog garageBizHoursDialog;
+    //this is here for trouble shooting purposes only
+ //   Button deleteHoursButton = new Button("Delete Business Hours");
 
     public GarageBusinessHoursView(BusinessHoursService businessHoursService,
                                    GarageCalendarService garageScheduleService,
@@ -29,60 +32,29 @@ public class GarageBusinessHoursView extends VerticalLayout {
         this.garageScheduleService = garageScheduleService;
         this.garage = garage;
 
-        Button setHoursButton = new Button("Set Business Hours");
-        setHoursButton.setEnabled(businessHoursService.findByGarage(garage) == null);
-
-        /* TODO: Add later once solution is determined for how booked appointments will be handled
-        Button updateHoursButton = new Button("Update Business Hours");
-        updateHoursButton.setEnabled(garageScheduleService.findByGarage(garage) != null);
-        updateHoursButton.addClickListener(e -> updateHours());
-         */
-
-        Button deleteHoursButton = new Button("Delete Business Hours");
-        deleteHoursButton.setEnabled(businessHoursService.findByGarage(garage) != null);
+        // Sets the initial business hours for a garage the first time the first admin logs in
+        if(businessHoursService.findByGarage(garage).isEmpty()) {
+            businessHoursService.initializeBusinessHours(garage);
+        }
 
         // Button listeners
-        setHoursButton.addClickListener(e -> {
-            setInitialHours();
-            setHoursButton.setEnabled(false);
-            deleteHoursButton.setEnabled(true);
-        });
-        deleteHoursButton.addClickListener(e -> {
-            deleteHours();
-            deleteHoursButton.setEnabled(false);
-            setHoursButton.setEnabled(true);
-        });
-
-        /* TODO: To be added later
-        Button extendCalendarButton = new Button("Extend Appointment Calendar");
-        extendCalendarButton.setEnabled(false);
-        extendCalendarButton.addClickListener(e -> showExtendCalendarDialog());
-         */
+       // deleteHoursButton.addClickListener(e -> deleteHours());
 
         grid.addClassName("garage-business-hours-grid");
-
-        //TODO: Determine appropriate row height
+        grid.setWidth("45%");
         grid.setHeightByRows(true);
-        grid.setWidth("75%");
         grid.removeAllColumns();
 
-        //TODO: Fix string formatting
-        grid.addColumn(BusinessHours::getDayOfTheWeek).setHeader("Day")
-                .setSortable(false).setKey("dayOfTheWeek");
-
-        // create the open or closed ComboBox component
-        grid.addComponentColumn(this::createComboBox).setHeader("Open/Closed");
-        //Add action listener for Open condition
-
-        // create the open time TimePicker component
-        grid.addComponentColumn(this::createOpenTimePicker).setHeader("Open Time");
-
-        // create the close time TimePicker component
-        grid.addComponentColumn(this::createCloseTimePicker).setHeader("Close Time");
+        grid.addColumn(BusinessHours::getDayOfTheWeek).setHeader("Day").setKey("dayOfTheWeek").setSortable(false);
+        grid.addColumn(businessHours -> convertBoolean(businessHours.getOpen()))
+                .setHeader("Open").setKey("isOpen");
+        //TODO fix date formatting to show AM/PM (unless we're good with 24 hours?)
+        grid.addColumn(BusinessHours::getOpenTime).setHeader("Opening Time").setKey("openTime").setSortable(false);
+        grid.addColumn(BusinessHours::getCloseTime).setHeader("Closing Time").setKey("closeTime").setSortable(false);
+        grid.addComponentColumn(this::createUpdateButton).setHeader("Update").setTextAlign(ColumnTextAlign.CENTER);
 
         // add the components to the vertical layout
-        add(new HorizontalLayout(setHoursButton, deleteHoursButton), // updateHoursButton, extendCalendarButton),
-                grid);
+        add(grid); //deleteHoursButton
         updateBusinessHoursList();
     }
 
@@ -93,52 +65,54 @@ public class GarageBusinessHoursView extends VerticalLayout {
         grid.setItems(businessHoursService.findByGarage(garage));
     }
 
-    /**
-     * Creates the open/closed combo box
-     * @param businessHours the BusinessHours object the combo box is associated with
-     * @return the ComboBox object
-     */
-    private ComboBox<String> createComboBox(BusinessHours businessHours){
-        ComboBox<String> openClosedComboBox = new ComboBox<>();
-        openClosedComboBox.setItems("Open", "Closed");
-        if(businessHours.getOpen()){
-            openClosedComboBox.setValue("Open");
-        }
-        else
-            openClosedComboBox.setValue("Closed");
-
-        return openClosedComboBox;
-    }
-
-    /**
-     * Creates the TimePicker object for the opening time
-     * @param businessHours the BusinessHours object the time picker is associated with
-     * @return the TimePicker object
-     */
-    private TimePicker createOpenTimePicker(BusinessHours businessHours){
-        TimePicker openTime = new TimePicker();
-        openTime.setStep(Duration.ofMinutes(30));
-        return openTime;
-    }
-
-    /**
-     * Creates the TimePicker object for the closing time
-     * @param businessHours the BusinessHours object the time picker is associated with
-     * @return the TimePicker object
-     */
-    private TimePicker createCloseTimePicker(BusinessHours businessHours){
-        TimePicker closeTime = new TimePicker();
-        closeTime.setStep(Duration.ofMinutes(30));
-        return closeTime;
-    }
-
-    private void setInitialHours(){
-        businessHoursService.initializeBusinessHours(garage);
-        updateBusinessHoursList();
-    }
-
+/*
     private void deleteHours(){
         businessHoursService.deleteBusinessHours(businessHoursService.findByGarage(garage));
+        updateBusinessHoursList();
+        deleteHoursButton.setEnabled(false);
+    }
+*/
+
+    /**
+     * Converts the isOpen Boolean so it displays as something logical to the customer
+     * instead of "true" or "false"
+     * @param isOpen boolean indicating if the garage is open that day of the week
+     * @return string conversion of the boolean
+     */
+    private String convertBoolean(Boolean isOpen){
+        return isOpen ? "Yes" : "No";
+    }
+
+    /**
+     * Creates the update icon button for each row in the grid
+     * @param businessHours the businessHours instance the icon button is associated with
+     * @return the icon button to be returned
+     */
+    private Button createUpdateButton(BusinessHours businessHours) {
+        Button updateButton = new Button(VaadinIcon.EDIT.create(), buttonClickEvent ->
+                showBusinessHoursDialog(businessHours));
+        updateButton.addThemeVariants(ButtonVariant.LUMO_SMALL);
+        return updateButton;
+    }
+
+    /**
+     * Creates and opens a new GarageBizHoursDialog instance for updating the Business Hours
+     */
+    private void showBusinessHoursDialog(BusinessHours businessHours) {
+        garageBizHoursDialog = new GarageBizHoursDialog(businessHoursService, businessHours);
+        garageBizHoursDialog.setWidth("25%");
+        garageBizHoursDialog.setHeight("auto");
+        garageBizHoursDialog.addListener(GarageBizHoursDialog.SaveSuccessEvent.class,
+                this::onSave);
+        garageBizHoursDialog.open();
+    }
+
+    /**
+     * Fired when the GarageBizHoursForm has been exited. Refreshes the business hours grid.
+     * @param event the event that fired this method
+     */
+    private void onSave(ComponentEvent<GarageBizHoursDialog> event) {
+        garageBizHoursDialog.close();
         updateBusinessHoursList();
     }
 }
