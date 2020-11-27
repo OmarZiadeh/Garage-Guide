@@ -1,7 +1,6 @@
 package com.TeamOne411.ui.view.garage.form;
 
 import com.TeamOne411.backend.entity.schedule.BusinessHours;
-import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
@@ -16,7 +15,6 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.shared.Registration;
 
 import java.time.Duration;
-import java.time.LocalTime;
 
 public class GarageBizHoursForm extends VerticalLayout {
     Binder<BusinessHours> binder = new BeanValidationBinder<>(BusinessHours.class);
