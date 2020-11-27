@@ -31,14 +31,4 @@ public class GarageCalendarService {
         return garageCalendarRepository.findByGarage(garage);
     }
 
-    /**
-     * This method creates the initial schedule for the garage
-     */
-    public void initializeGarageCalendar(Garage garage){
-        GarageCalendar garageCalendar = new GarageCalendar();
-        garageCalendar.setGarage(garage);
-        garageCalendar.setCalendarStartDate(LocalDate.now());
-        garageCalendar.setCalendarEndDate(LocalDate.now().plusDays(2));
-        garageCalendarRepository.save(garageCalendar);
-    }
 }

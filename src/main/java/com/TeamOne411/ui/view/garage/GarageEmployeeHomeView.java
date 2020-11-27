@@ -35,7 +35,8 @@ public class GarageEmployeeHomeView extends VerticalLayout {
 
     public GarageEmployeeHomeView(UserDetailsService userDetailsService, GarageEmployeeService garageEmployeeService,
                                   ServiceCatalogService serviceCatalogService,
-                                  BusinessHoursService businessHoursService) {
+                                  BusinessHoursService businessHoursService,
+                                  GarageCalendarService garageCalendarService) {
         userDetails = userDetailsService.getLoggedInUserDetails();
         loggedInEmployee = (GarageEmployee) userDetails.getUser();
         myGarage = loggedInEmployee.getGarage();
@@ -87,7 +88,8 @@ public class GarageEmployeeHomeView extends VerticalLayout {
             Tab businessHoursTab = new Tab("Business Hours");
             GarageBusinessHoursView businessHoursView = new GarageBusinessHoursView(
                             businessHoursService,
-                            myGarage);
+                            garageCalendarService,
+                            myGarage );
             Div businessHoursPage = new Div(businessHoursView);
             businessHoursTab.add(businessHoursPage);
             tabs.add(businessHoursTab);
