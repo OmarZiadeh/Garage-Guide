@@ -21,7 +21,8 @@ import java.util.Comparator;
 import java.util.Optional;
 
 /**
- * This class is a Vertical layout that shows a list of employees for a given garage and controls to add new or edit them.
+ * This class is a Vertical layout that shows a list of offered services for a given garage and
+ * controls to add new, edit or delete them.
  */
 public class GarageServicesView extends VerticalLayout {
     ServiceCatalogService serviceCatalogService;
@@ -32,24 +33,26 @@ public class GarageServicesView extends VerticalLayout {
     private GarageServiceEditorDialog garageServiceEditorDialog;
     private GarageCategoryEditorDialog garageCategoryEditorDialog;
 
-    public GarageServicesView(
-            ServiceCatalogService serviceCatalogService,
-            Garage garage
-    ) {
+    public GarageServicesView(ServiceCatalogService serviceCatalogService, Garage garage) {
         this.serviceCatalogService = serviceCatalogService;
         this.garage = garage;
 
+        // Sets the initial categories and services for a garage the first time the first admin logs in
+        if(serviceCatalogService.findByServiceCategory_Garage(garage).isEmpty() &&
+                serviceCatalogService.findCategoriesByGarage(garage).isEmpty()){
+            serviceCatalogService.initializeDefaultServices(garage);
+        }
+
         // configure the service grid
         grid.addClassName("garage-service-grid");
-        grid.setHeightByRows(true);
-        grid.setMaxHeight("25vh");
+        grid.setMaxHeight("50vh");
         grid.setColumns("serviceName");
 
         // Format Service Category
         grid.addColumn(offeredService -> {
             ServiceCategory serviceCategory = offeredService.getServiceCategory();
             return serviceCategory.getCategoryName();
-        }).setSortable(true).setHeader("Category").setKey("serviceCategory").setFooter("");
+        }).setSortable(true).setHeader("Category").setKey("serviceCategory");
 
         // Format price
         final DecimalFormat decimalFormat = new DecimalFormat();

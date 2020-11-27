@@ -60,11 +60,12 @@ public class OfferedServiceEditorForm extends FormLayout {
 
     public OfferedServiceEditorForm(ServicesSandboxView servicesSandboxView) {
         addClassName("offered-service-form");
-        binder.forField(price).withConverter(new PriceConverter()).bind("price");
+        binder.forField(price).withNullRepresentation("").withConverter(new PriceConverter()).bind("price");
         binder.bindInstanceFields(this);
         garageComboBox.setItemLabelGenerator(Garage::getCompanyName);
         serviceCategory.setItemLabelGenerator(ServiceCategory::getCategoryName);
-        duration.setItems((Duration.ofMinutes(0)), Duration.ofMinutes(30), Duration.ofMinutes(60), Duration.ofMinutes(90), Duration.ofMinutes(120),
+        duration.setItems((Duration.ofMinutes(0)), Duration.ofMinutes(30), Duration.ofMinutes(60),
+                Duration.ofMinutes(90), Duration.ofMinutes(120),
                 Duration.ofMinutes(150), Duration.ofMinutes(180));
         add(serviceName,
                 garageComboBox,
@@ -72,7 +73,8 @@ public class OfferedServiceEditorForm extends FormLayout {
                 duration,
                 serviceCategory,
                 createButtonsLayout());
-        garageComboBox.addValueChangeListener(comboBoxGarageComponentValueChangeEvent -> servicesSandboxView.setGarage(garageComboBox.getValue()));
+        garageComboBox.addValueChangeListener(comboBoxGarageComponentValueChangeEvent ->
+                servicesSandboxView.setGarage(garageComboBox.getValue()));
     }
 
     public void setGarages(List<Garage> garages) {

@@ -53,7 +53,7 @@ public class GarageServiceForm extends VerticalLayout {
         setAlignItems(Alignment.CENTER);
 
         // format Price
-        binder.forField(price).withConverter(new PriceConverter()).bind("price");
+        binder.forField(price).withNullRepresentation("").withConverter(new PriceConverter()).bind("price");
         price.setWidth("100%");
         binder.bindInstanceFields(this);
 
@@ -68,7 +68,8 @@ public class GarageServiceForm extends VerticalLayout {
 
         // format Duration
         // TODO fix duration formatting and add 30 minutes increments up to 10 hours
-        duration.setItems((Duration.ofMinutes(0)), Duration.ofMinutes(30), Duration.ofMinutes(60), Duration.ofMinutes(90), Duration.ofMinutes(120),
+        duration.setItems((Duration.ofMinutes(0)), Duration.ofMinutes(30), Duration.ofMinutes(60),
+                Duration.ofMinutes(90), Duration.ofMinutes(120),
                 Duration.ofMinutes(150), Duration.ofMinutes(180));
         duration.setWidth("100%");
 

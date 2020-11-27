@@ -1,20 +1,15 @@
 package com.TeamOne411.ui.view.sandbox.childview;
 
 import com.TeamOne411.backend.entity.Garage;
-import com.TeamOne411.backend.entity.servicecatalog.OfferedService;
 import com.TeamOne411.backend.entity.servicecatalog.ServiceCategory;
 import com.TeamOne411.backend.service.GarageService;
 import com.TeamOne411.backend.service.ServiceCatalogService;
 import com.TeamOne411.ui.view.sandbox.form.CategoryEditorForm;
-import com.TeamOne411.ui.view.sandbox.form.OfferedServiceEditorForm;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
-import java.text.DecimalFormat;
-import java.util.Comparator;
 
 /**
  * The CategoriesSandboxView is a God-mode ServiceCatalog editor for testing purposes.
@@ -41,7 +36,6 @@ public class CategoriesSandboxView extends VerticalLayout{
 
         //configure the categories-grid
         grid.addClassName("categories-grid");
-        grid.setHeightByRows(true);
         grid.setColumns("categoryName");
 
         //add garage
@@ -80,7 +74,7 @@ public class CategoriesSandboxView extends VerticalLayout{
         serviceCategoriesContent.setSizeFull();
 
         // add the components to this layout
-        add(new H1("Categories"), addCategoryButton, serviceCategoriesContent);
+        add(addCategoryButton, serviceCategoriesContent);
 
         // fetch the list for the grid
         updateCategoriesList();
