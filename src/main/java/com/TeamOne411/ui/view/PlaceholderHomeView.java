@@ -6,6 +6,7 @@ import com.TeamOne411.backend.entity.users.User;
 import com.TeamOne411.backend.service.UserDetailsService;
 import com.TeamOne411.security.SecurityUtils;
 import com.TeamOne411.ui.MainLayout;
+import com.TeamOne411.ui.view.carowner.CarOwnerHomeView;
 import com.TeamOne411.ui.view.garage.GarageEmployeeHomeView;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.html.H1;
@@ -39,7 +40,7 @@ public class PlaceholderHomeView extends VerticalLayout implements BeforeEnterOb
             if (loggedInUser instanceof GarageEmployee) {
                 beforeEnterEvent.rerouteTo(GarageEmployeeHomeView.class);
             } else if (loggedInUser instanceof CarOwner) {
-                // todo placeholder for reroute
+                beforeEnterEvent.rerouteTo(CarOwnerHomeView.class);
             }
         }
     }

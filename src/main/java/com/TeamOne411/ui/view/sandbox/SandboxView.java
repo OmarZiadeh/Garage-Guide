@@ -6,7 +6,7 @@ import com.TeamOne411.backend.service.GarageService;
 import com.TeamOne411.backend.service.ServiceCatalogService;
 import com.TeamOne411.backend.service.api.car.ApiVehicleService;
 import com.TeamOne411.ui.MainLayout;
-import com.TeamOne411.ui.view.registration.subform.VehicleAddForm;
+import com.TeamOne411.ui.view.carowner.childview.VehicleAddForm;
 import com.TeamOne411.ui.view.sandbox.childview.*;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
