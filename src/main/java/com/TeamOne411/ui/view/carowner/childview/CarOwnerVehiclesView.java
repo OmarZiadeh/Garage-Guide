@@ -2,6 +2,7 @@ package com.TeamOne411.ui.view.carowner.childview;
 
 
 import com.TeamOne411.backend.entity.Vehicle;
+import com.TeamOne411.backend.entity.users.CarOwner;
 import com.TeamOne411.backend.service.VehicleService;
 import com.TeamOne411.backend.service.UserDetailsService;
 import com.vaadin.flow.component.ComponentEvent;
@@ -21,11 +22,14 @@ public class CarOwnerVehiclesView extends VerticalLayout {
 
     private Grid<Vehicle> grid = new Grid<>(Vehicle.class);
     private VehicleService vehicleService;
+    private CarOwner loggedInCarOwner;
 
     public CarOwnerVehiclesView(
-            VehicleService vehicleService
+            VehicleService vehicleService,
+            CarOwner loggedInCarOwner
     ) {
         this.vehicleService = vehicleService;
+        this.loggedInCarOwner = loggedInCarOwner;
 
         // configure the Vehicle grid
         grid.addClassName("vehicle-grid");
@@ -62,7 +66,7 @@ public class CarOwnerVehiclesView extends VerticalLayout {
      * Calls the VehicleService to refresh the list of Vehicles. Call this anytime the Vehicles may have been edited.
      */
     private void updateVehicleList() {
-        grid.setItems(VehicleService.findBy(employer));
+        grid.setItems(vehicleService.findByCarOwner(loggedInCarOwner));
     }
 
     /**

@@ -6,7 +6,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 @Entity
-public class Car extends AbstractEntity {
+public class Vehicle extends AbstractEntity {
 
     //Make Model and Year might change based off of how it is selected in form
     @NotNull

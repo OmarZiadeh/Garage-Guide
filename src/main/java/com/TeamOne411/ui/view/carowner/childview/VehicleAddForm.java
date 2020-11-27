@@ -1,7 +1,7 @@
-package com.TeamOne411.ui.view.registration.subform;
+package com.TeamOne411.ui.view.carowner.childview;
 
-import com.TeamOne411.backend.entity.Car;
-import com.TeamOne411.backend.service.api.car.ApiCarService;
+import com.TeamOne411.backend.entity.Vehicle;
+import com.TeamOne411.backend.service.api.car.ApiVehicleService;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Key;
@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class CarAddForm extends VerticalLayout {
+public class VehicleAddForm extends VerticalLayout {
 
     //these need to be lists but vehicle API needs work
     private ComboBox<String> make = new ComboBox<String>("Make");
@@ -39,12 +39,12 @@ public class CarAddForm extends VerticalLayout {
     private Button nextButton = new Button("Confirm Details", new Icon(VaadinIcon.ARROW_RIGHT));
     private ShortcutRegistration enterKeyRegistration;
 
-    Binder<Car> binder = new BeanValidationBinder<>(Car.class);
-    private Car car = new Car();
-    private ApiCarService apiCarService;
+    Binder<Vehicle> binder = new BeanValidationBinder<>(Vehicle.class);
+    private Vehicle vehicle = new Vehicle();
+    private ApiVehicleService apiVehicleService;
 
-    public CarAddForm(ApiCarService apiCarService) {
-        this.apiCarService = apiCarService;
+    public VehicleAddForm(ApiVehicleService apiVehicleService) {
+        this.apiVehicleService = apiVehicleService;
         // initial view setup
         addClassName("car-add-view");
         setSizeFull();
@@ -69,7 +69,6 @@ public class CarAddForm extends VerticalLayout {
         add(
                 new H3("Tell us about your car"),
                 new H5("You're almost done"),
-                //incorrect components causing error, temporary
                 make,
                 model,
                 year,
@@ -82,12 +81,12 @@ public class CarAddForm extends VerticalLayout {
     private void validateAndFireNext() {
         binder.validate();
         if (!binder.isValid()) return;
-        fireEvent(new CarAddForm.NextEvent(this));
+        fireEvent(new VehicleAddForm.NextEvent(this));
     }
 
     public void fillMakeComboBox(){
         try {
-            this.make.setItems(apiCarService.getAllMakes());
+            this.make.setItems(apiVehicleService.getAllMakes());
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -103,10 +102,10 @@ public class CarAddForm extends VerticalLayout {
         this.year.setItems(years);
     }
 
-    public Car getValidCar() {
+    public Vehicle getValidCar() {
         try {
-            binder.writeBean(car);
-            return car;
+            binder.writeBean(vehicle);
+            return vehicle;
         } catch (ValidationException e) {
             e.printStackTrace();
         }
@@ -122,14 +121,14 @@ public class CarAddForm extends VerticalLayout {
 
 
     // Button event definitions begin
-    public static class BackEvent extends ComponentEvent<CarAddForm> {
-        BackEvent(CarAddForm source) {
+    public static class BackEvent extends ComponentEvent<VehicleAddForm> {
+        BackEvent(VehicleAddForm source) {
             super(source, false);
         }
     }
 
-    public static class NextEvent extends ComponentEvent<CarAddForm> {
-        NextEvent(CarAddForm source) {
+    public static class NextEvent extends ComponentEvent<VehicleAddForm> {
+        NextEvent(VehicleAddForm source) {
             super(source, false);
         }
     }
