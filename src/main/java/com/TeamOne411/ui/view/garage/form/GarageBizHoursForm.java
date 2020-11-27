@@ -1,10 +1,10 @@
 package com.TeamOne411.ui.view.garage.form;
 
 import com.TeamOne411.backend.entity.schedule.BusinessHours;
+import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
@@ -16,6 +16,7 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.shared.Registration;
 
 import java.time.Duration;
+import java.time.LocalTime;
 
 public class GarageBizHoursForm extends VerticalLayout {
     Binder<BusinessHours> binder = new BeanValidationBinder<>(BusinessHours.class);
@@ -45,8 +46,6 @@ public class GarageBizHoursForm extends VerticalLayout {
 
         isOpen.setRequired(true);
         isOpen.setItems("Open", "Closed");
-        //TODO Need to fine a way to preset the radio button value. The one below does not work.
-        //isOpen.setValue(businessHours.getOpen() ? "Open" : "Closed");
         isOpen.addValueChangeListener(e ->
                 {
                     businessHours.setOpen(isOpen.getValue().equals("Open"));
@@ -62,6 +61,9 @@ public class GarageBizHoursForm extends VerticalLayout {
                         closeTime.setEnabled(false);
                     }
                 });
+
+        openTime.addValueChangeListener(e -> closeTime.setMinTime(openTime.getValue().plusMinutes(30)));
+        closeTime.addValueChangeListener(e -> openTime.setMaxTime(closeTime.getValue().minusMinutes(30)));
 
         // set button click listeners
         saveButton.addClickListener(e -> fireEvent(new GarageBizHoursForm.SaveEvent(this)));
@@ -82,6 +84,7 @@ public class GarageBizHoursForm extends VerticalLayout {
     public void prefillForm(BusinessHours businessHours) {
         this.businessHours = businessHours;
         binder.readBean(businessHours);
+        isOpen.setValue(businessHours.getOpen() ? "Open" : "Closed");
     }
 
     /**
@@ -104,6 +107,7 @@ public class GarageBizHoursForm extends VerticalLayout {
                                                                   ComponentEventListener<T> listener) {
         return getEventBus().addListener(eventType, listener);
     }
+
 
     /**
      * Event to emit when save button is clicked
