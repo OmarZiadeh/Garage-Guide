@@ -1,3 +1,6 @@
+
+//temporary commenting of class to commit car owner home view
+/*
 package com.TeamOne411.ui.view.carowner.childview;
 
 
@@ -15,9 +18,11 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 import java.util.Optional;
 
+*/
 /**
  * This class is a Vertical layout that shows a list of Vehicles and gives the ability to add/edit/delete them.
- */
+ *//*
+
 public class CarOwnerVehiclesView extends VerticalLayout {
 
     private Grid<Vehicle> grid = new Grid<>(Vehicle.class);
@@ -62,16 +67,20 @@ public class CarOwnerVehiclesView extends VerticalLayout {
         updateVehicleList();
     }
 
-    /**
+    */
+/**
      * Calls the VehicleService to refresh the list of Vehicles. Call this anytime the Vehicles may have been edited.
-     */
+     *//*
+
     private void updateVehicleList() {
         grid.setItems(vehicleService.findByCarOwner(loggedInCarOwner));
     }
 
-    /**
+    */
+/**
      * Creates and opens a new VehicleEditorDialog instance not in edit mode (to register new Vehicle)
-     */
+     *//*
+
     private void showNewVehicleDialog() {
         VehicleEditorDialog = new VehicleEditorDialog(userDetailsService, employer);
 
@@ -83,9 +92,11 @@ public class CarOwnerVehiclesView extends VerticalLayout {
         VehicleEditorDialog.open();
     }
 
-    /**
+    */
+/**
      * Gets the selected Vehicle from the grid, passes it to a new VehicleEditorDialog instance and opens it in Edit Mode.
-     */
+     *//*
+
     private void showEditVehicleDialog() {
         Optional<Vehicle> selectedVehicle = grid.getSelectedItems().stream().findFirst();
 
@@ -101,9 +112,11 @@ public class CarOwnerVehiclesView extends VerticalLayout {
         }
     }
 
-    /**
+    */
+/**
      * Fired on deleteVehicleButton click. Shows a confirm dialog and then deletes the selected Vehicle.
-     */
+     *//*
+
     private void deleteVehicleClick() {
         Optional<Vehicle> selectedVehicle = grid.getSelectedItems().stream().findFirst();
 
@@ -123,10 +136,12 @@ public class CarOwnerVehiclesView extends VerticalLayout {
         }
     }
 
-    /**
+    */
+/**
      * Fired when delete confirm dialog is confirmed by user. Deletes  Vehicle.
      * @param Vehicle The Vehicle to delete.
-     */
+     *//*
+
     private void onDeleteConfirm(Vehicle Vehicle) {
         if (Vehicle != null) {
             VehicleService.delete(Vehicle);
@@ -134,10 +149,12 @@ public class CarOwnerVehiclesView extends VerticalLayout {
         }
     }
 
-    /**
+    */
+/**
      * Fired when a new Vehicle is successfully registered using the Vehicle editor dialog.
      * @param event the event that fired this method
-     */
+     *//*
+
     private void onVehicleRegisteredSuccess(ComponentEvent<VehicleEditorDialog> event) {
         Vehicle newVehicle = event.getSource().getVehicle();
         VehicleEditorDialog.close();
@@ -147,10 +164,12 @@ public class CarOwnerVehiclesView extends VerticalLayout {
         }
     }
 
-    /**
+    */
+/**
      * Fired when an existing Vehicle is successfully edited using the Vehicle editor dialog.
      * @param event the event that fired this method
-     */
+     *//*
+
     private void onVehicleEditedSuccess(ComponentEvent<VehicleEditorDialog> event) {
         Vehicle editedVehicle = event.getSource().getVehicle();
         VehicleEditorDialog.close();
@@ -160,10 +179,12 @@ public class CarOwnerVehiclesView extends VerticalLayout {
         }
     }
 
-    /**
+    */
+/**
      * This method includes some common functionality when any change to Vehicles occurs
      * @param successMessage the message text to display to the user in a notification
-     */
+     *//*
+
     private void VehicleUpdates(String successMessage) {
         updateVehicleList();
 
@@ -176,3 +197,4 @@ public class CarOwnerVehiclesView extends VerticalLayout {
         notification.open();
     }
 }
+*/

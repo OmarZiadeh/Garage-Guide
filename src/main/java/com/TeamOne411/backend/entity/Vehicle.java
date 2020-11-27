@@ -1,6 +1,10 @@
 package com.TeamOne411.backend.entity;
 
+import com.TeamOne411.backend.entity.users.CarOwner;
+
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -26,6 +30,11 @@ public class Vehicle extends AbstractEntity {
     @NotEmpty(message = "VIN can't be empty.")
     @Pattern(regexp = "^\\d{1}\\D{4}\\d{2}\\D{4}\\d{6}$", message = "Invalid VIN, must be 17 digits with correct format")
     private String vin = "";
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "car_owner_id")
+    private CarOwner carOwner;
 
 
     public String getModel() {

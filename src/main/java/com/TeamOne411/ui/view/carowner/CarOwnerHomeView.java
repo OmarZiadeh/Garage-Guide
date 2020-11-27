@@ -6,7 +6,7 @@ import com.TeamOne411.backend.service.UserDetailsService;
 import com.TeamOne411.backend.service.VehicleService;
 import com.TeamOne411.ui.MainLayout;
 import com.TeamOne411.ui.view.carowner.childview.CarOwnerAppointmentsView;
-import com.TeamOne411.ui.view.carowner.childview.CarOwnerVehiclesView;
+//import com.TeamOne411.ui.view.carowner.childview.CarOwnerVehiclesView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
@@ -23,7 +23,7 @@ import java.util.Map;
 /**
  * TODO: docs
  */
-@Route(value = "garage", layout = MainLayout.class)
+@Route(value = "carOwner", layout = MainLayout.class)
 @Secured("ROLE_CAR_OWNER")
 @PageTitle("Garage Guide")
 public class CarOwnerHomeView extends VerticalLayout {
@@ -52,14 +52,14 @@ public class CarOwnerHomeView extends VerticalLayout {
 
         /*
         Second Tab - Vehicles
-         */
+         *//*
         Tab vehiclesTab = new Tab("Vehicles");
         CarOwnerVehiclesView vehicleView = new CarOwnerVehiclesView(vehicleService, loggedInCarOwner);
         Div vehiclesPage = new Div(vehicleView);
         vehiclesTab.add(vehiclesPage);
         tabs.add(vehiclesTab);
         pages.add(vehiclesPage);
-        tabsToPages.put(vehiclesTab, vehiclesPage);
+        tabsToPages.put(vehiclesTab, vehiclesPage);*/
 
 
 
