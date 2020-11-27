@@ -23,4 +23,13 @@ public class ApiVehicleService {
 
         return cars.stream().map(c->c.getMakeName()).collect(Collectors.toList());
     }
+    public List<String> getAllModels() throws URISyntaxException {
+
+        URI fullUri = new URI(baseUri + "vehicles/GetMakesForVehicleType/car?format=json");
+        ApiVehicleResponse carsResponse = restTemplate.getForObject(fullUri, ApiVehicleResponse.class);
+
+        List<ApiVehicle> cars = carsResponse.getResults();
+
+        return cars.stream().map(c->c.getModelName()).collect(Collectors.toList());
+    }
 }
