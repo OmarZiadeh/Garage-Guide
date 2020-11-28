@@ -6,6 +6,7 @@ import com.TeamOne411.backend.entity.schedule.GarageCalendar;
 import com.TeamOne411.backend.entity.schedule.TimeSlot;
 import com.TeamOne411.backend.repository.GarageCalendarRepository;
 import com.TeamOne411.backend.repository.TimeSlotRepository;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -36,7 +37,6 @@ public class GarageCalendarService {
         timeSlotRepository.save(timeSlot);
     }
 
-
     public void deleteTimeSlots(List<TimeSlot> timeSlots){
         timeSlotRepository.deleteAll(timeSlots);
     }
@@ -45,9 +45,11 @@ public class GarageCalendarService {
         return timeSlotRepository.findTimeSlotsByGarage(garage);
     }
 
+    @Async("threadPoolTaskExecutor")
     public void deleteGarageCalendar(GarageCalendar garageCalendar) {
         deleteTimeSlots(findTimeSlotsByGarage(garageCalendar.getGarage()));
         garageCalendarRepository.delete(garageCalendar);
+        System.out.println("Calendar & TimeSlot deletion complete");
     }
 
     public GarageCalendar findByGarage(Garage garage) {
@@ -57,6 +59,7 @@ public class GarageCalendarService {
     /**
      * This generates the available appointment time slots for a garage
      */
+    @Async("threadPoolTaskExecutor")
     public void generateTimeSlots(GarageCalendar garageCalendar, BusinessHoursService businessHoursService) {
         for (LocalDate date = garageCalendar.getCalendarStartDate();
              date.isBefore(garageCalendar.getCalendarEndDate().plusDays(1));
@@ -77,5 +80,6 @@ public class GarageCalendarService {
                 }
             }
         }
+        System.out.println("TimeSlot creation complete");
     }
 }
