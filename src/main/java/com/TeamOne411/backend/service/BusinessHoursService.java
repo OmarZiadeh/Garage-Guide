@@ -2,6 +2,7 @@ package com.TeamOne411.backend.service;
 
 import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.schedule.BusinessHours;
+import com.TeamOne411.backend.entity.schedule.GarageCalendar;
 import com.TeamOne411.backend.repository.BusinessHoursRepository;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,10 @@ public class BusinessHoursService {
 
     public List<BusinessHours> findByGarage(Garage garage) {
         return (businessHoursRepository.findByGarage(garage));
+    }
+
+    public BusinessHours findByDayNumberAndGarage(int dayNumber, Garage garage) {
+        return businessHoursRepository.findByDayNumberAndGarage(dayNumber, garage);
     }
 
     /**

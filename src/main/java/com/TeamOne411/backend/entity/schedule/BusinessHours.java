@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
+import java.time.Duration;
 import java.time.LocalTime;
 
 /**
@@ -81,5 +82,9 @@ public class BusinessHours extends AbstractEntity {
 
     public void setDayNumber(int dayNumber) {
         this.dayNumber = dayNumber;
+    }
+
+    public long subtractTimes(){
+        return Duration.between(openTime, closeTime).toMinutes();
     }
 }

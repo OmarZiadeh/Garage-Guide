@@ -37,6 +37,8 @@ public class GarageBusinessHoursView extends SplitLayout {
     VerticalLayout bizHours;
     VerticalLayout appointmentCalendar;
     VerticalLayout datesClosed;
+    LocalDate previousStartDate;
+    LocalDate previousEndDate;
 
     // TODO: remove this later. Keep temporarily for troubleshooting
     Button deleteButton = new Button("Delete Calendar");
@@ -85,9 +87,11 @@ public class GarageBusinessHoursView extends SplitLayout {
 
         // appointment calendar DatePicker setups
         setDateAttributes(startDate);
-        startDate.setValue(garageCalendar.getCalendarStartDate());
-        setDateAttributes(startDate);
-        endDate.setValue(garageCalendar.getCalendarEndDate());
+        setDateAttributes(endDate);
+        previousStartDate = garageCalendar.getCalendarStartDate();
+        startDate.setValue(previousStartDate);
+        previousEndDate = garageCalendar.getCalendarEndDate();
+        endDate.setValue(previousEndDate);
 
         if(startDate.getValue() == null){
             startDate.setMin(LocalDate.now());
@@ -194,6 +198,8 @@ public class GarageBusinessHoursView extends SplitLayout {
         endDate.setValue(null);
         deleteButton.setEnabled(false);
         saveCalendar.setEnabled(false);
+        previousStartDate = null;
+        previousEndDate = null;
     }
 
     /**
@@ -203,6 +209,11 @@ public class GarageBusinessHoursView extends SplitLayout {
         garageCalendarService.saveGarageCalendar(garageCalendar);
         saveCalendar.setEnabled(false);
         deleteButton.setEnabled(true);
+
+        if(previousStartDate == null){
+            garageCalendarService.generateTimeSlots(garageCalendar, businessHoursService);
+        }
+        //TODO add logic for updating time slots if an existing calendar was revised
     }
 
     /**
