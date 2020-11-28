@@ -22,7 +22,7 @@ import com.vaadin.flow.component.splitlayout.SplitLayout;
 import java.time.LocalDate;
 
 /**
- * This class is a splite layout that controls the business hours and appointment calendar for the garage
+ * This class is a split layout that controls the business hours and appointment calendar for the garage
  */
 public class GarageBusinessHoursView extends SplitLayout {
     private final Grid<BusinessHours> grid = new Grid<>(BusinessHours.class);
@@ -31,17 +31,14 @@ public class GarageBusinessHoursView extends SplitLayout {
     GarageCalendar garageCalendar;
     Garage garage;
     GarageBizHoursDialog garageBizHoursDialog;
-    Button saveCalendar = new Button();
+    Button saveCalendar = new Button("Generate Calendar");
     DatePicker startDate = new DatePicker("Start Date");
-    DatePicker endDate = new DatePicker("End Date");
     VerticalLayout bizHours;
     VerticalLayout appointmentCalendar;
     VerticalLayout datesClosed;
-    LocalDate previousStartDate;
-    LocalDate previousEndDate;
 
     // TODO: remove this later. Keep temporarily for troubleshooting
-    Button deleteButton = new Button("Delete Calendar");
+    //Button deleteButton = new Button("Delete Calendar");
 
     public GarageBusinessHoursView(BusinessHoursService businessHoursService,
                                    GarageCalendarService garageCalendarService,
@@ -59,13 +56,12 @@ public class GarageBusinessHoursView extends SplitLayout {
         if(garageCalendarService.findByGarage(garage) == null){
             garageCalendar = new GarageCalendar();
             garageCalendar.setGarage(garage);
-            saveCalendar.setText("Generate Calendar");
             // TODO remove later
-            deleteButton.setEnabled(false);
+            //deleteButton.setEnabled(false);
         }
         else {
             garageCalendar = garageCalendarService.findByGarage(garage);
-            saveCalendar.setText("Update Calendar");
+            startDate.setEnabled(false);
         }
 
         // business hours grid setup
@@ -86,38 +82,26 @@ public class GarageBusinessHoursView extends SplitLayout {
         saveCalendar.setEnabled(false);
 
         // appointment calendar DatePicker setups
-        setDateAttributes(startDate);
-        setDateAttributes(endDate);
-        previousStartDate = garageCalendar.getCalendarStartDate();
-        startDate.setValue(previousStartDate);
-        previousEndDate = garageCalendar.getCalendarEndDate();
-        endDate.setValue(previousEndDate);
-
+        startDate.setRequired(true);
+        startDate.setRequiredIndicatorVisible(true);
+        startDate.setValue(garageCalendar.getCalendarStartDate());
         if(startDate.getValue() == null){
             startDate.setMin(LocalDate.now());
-            endDate.setMin(LocalDate.now().plusDays(1));
+            //Do not allow calendar to start later than 6 months out
+            startDate.setMax(LocalDate.now().plusMonths(6));
         }
 
         // startDate listener
         startDate.addValueChangeListener(e -> {
-            // do not allow a null value to be set on the garageCalendar instance, otherwise set what has been provided
+            // do not allow a null value to be set on the garageCalendar instance, otherwise set what was specified
             if(startDate.getValue() != null) {
                 garageCalendar.setCalendarStartDate(startDate.getValue());
-                endDate.setMin(startDate.getValue().plusDays(1));
-                if(endDate.getValue() != null){
-                    saveCalendar.setEnabled(true);
-                }
-            }
-        });
-        // endDate listener
-        endDate.addValueChangeListener(e -> {
-            // do not allow a null value to be set on the garageCalendar instance, otherwise set what has been provided
-            if(endDate.getValue() != null) {
-                garageCalendar.setCalendarEndDate(endDate.getValue());
-                startDate.setMax(endDate.getValue().minusDays(1));
-                if(startDate.getValue() != null){
-                    saveCalendar.setEnabled(true);
-                }
+
+                //set the calendar end date to be 3 months from the specified start date
+                //TODO adjust end value to 3 months (temporarily set to 2 weeks for testing)
+                //TODO enable a rolling update to extend the end date by 1 day daily
+                garageCalendar.setCalendarEndDate(startDate.getValue().plusWeeks(2));
+                saveCalendar.setEnabled(true);
             }
         });
 
@@ -125,7 +109,7 @@ public class GarageBusinessHoursView extends SplitLayout {
         saveCalendar.addClickListener(e -> saveCalendar());
 
         // TODO: remove this later. Keep temporarily for troubleshooting
-        deleteButton.addClickListener(e -> delete());
+    //    deleteButton.addClickListener(e -> delete());
 
         // create the layout for the business hours elements
         bizHours = new VerticalLayout(
@@ -139,9 +123,8 @@ public class GarageBusinessHoursView extends SplitLayout {
         appointmentCalendar = new VerticalLayout(
                 new H4("Appointment Calendar Setup"),
                 startDate,
-                endDate,
-                saveCalendar,
-                deleteButton);
+                saveCalendar);
+            //    deleteButton);
         appointmentCalendar.setClassName("appointment-calendar");
         setLayoutAttributes(appointmentCalendar);
 
@@ -173,15 +156,6 @@ public class GarageBusinessHoursView extends SplitLayout {
     }
 
     /**
-     * Sets common attributes for the appointment calendar DatePicker objects
-     */
-    private void setDateAttributes(DatePicker datePicker){
-        datePicker.setRequired(true);
-        datePicker.setRequiredIndicatorVisible(true);
-        datePicker.setMax(LocalDate.now().plusYears(1));
-    }
-
-    /**
      * Sets common attributes for the layouts
      */
     private void setLayoutAttributes(VerticalLayout verticalLayout){
@@ -191,29 +165,25 @@ public class GarageBusinessHoursView extends SplitLayout {
         verticalLayout.setSpacing(false);
     }
 
-    // TODO: remove this later. Keep temporarily for troubleshooting
+    // TODO: remove this method later. Keep temporarily for troubleshooting
     private void delete(){
         garageCalendarService.deleteGarageCalendar(garageCalendarService.findByGarage(garage));
         startDate.setValue(null);
-        endDate.setValue(null);
-        deleteButton.setEnabled(false);
         saveCalendar.setEnabled(false);
-        previousStartDate = null;
-        previousEndDate = null;
     }
 
     /**
-     * Saves the new/updated garageCalendar to the database
+     * Saves the new/updated garageCalendar to the database and generates available timeSlots
      */
     private void saveCalendar() {
         garageCalendarService.saveGarageCalendar(garageCalendar);
+        // disable the calendar setup so the user cannot make additional changes
         saveCalendar.setEnabled(false);
-        deleteButton.setEnabled(true);
+        startDate.setEnabled(false);
 
-        if(previousStartDate == null){
-            garageCalendarService.generateTimeSlots(garageCalendar, businessHoursService);
-        }
-        //TODO add logic for updating time slots if an existing calendar was revised
+        // generate appointment time slots via async thread
+        garageCalendarService.generateTimeSlots(garageCalendar, businessHoursService);
+     //   deleteButton.setEnabled(true);
     }
 
     /**
