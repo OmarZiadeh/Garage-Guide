@@ -9,7 +9,6 @@ import java.time.LocalDate;
 
 /**
  This entity defines the calendar for the Garage - the start and end dates for when the Garage will accept appointments
- TODO Add attributes for managing dates that the Garage will not be open on an exception basis (ie Holidays)
  */
 @Entity
 public class GarageCalendar extends AbstractEntity {
