@@ -50,10 +50,6 @@ public class GarageCalendarService {
         timeSlotRepository.save(timeSlot);
     }
 
-    public void deleteTimeSlots(List<TimeSlot> timeSlots){
-        timeSlotRepository.deleteAll(timeSlots);
-    }
-
     public GarageCalendar findCalendarByGarage(Garage garage) {
         return garageCalendarRepository.findCalendarByGarage(garage);
     }
@@ -62,20 +58,12 @@ public class GarageCalendarService {
         return timeSlotRepository.findTimeSlotsByGarage(garage);
     }
 
-    public List<ClosedDate> findClosedDatesByGarageOrderByNotOpenDate(Garage garage){
+    public List<ClosedDate> findClosedDatesByGarage(Garage garage){
         return closedDateRepository.findClosedDatesByGarageOrderByNotOpenDate(garage);
     }
 
-    public ClosedDate findClosedDateByGarageAndNotOpenDateEquals(Garage garage, LocalDate localDate){
+    public ClosedDate findClosedDateByGarage(Garage garage, LocalDate localDate){
         return closedDateRepository.findClosedDateByGarageAndNotOpenDateEquals(garage, localDate);
-    }
-
-    @Async("threadPoolTaskExecutor")
-    public void deleteGarageCalendar(GarageCalendar garageCalendar) {
-        System.out.println("Calendar & TimeSlot deletion thread started");
-        deleteTimeSlots(findTimeSlotsByGarage(garageCalendar.getGarage()));
-        garageCalendarRepository.delete(garageCalendar);
-        System.out.println("Calendar & TimeSlot deletion complete");
     }
 
     /**
@@ -88,7 +76,7 @@ public class GarageCalendarService {
              date.isBefore(garageCalendar.getCalendarEndDate().plusDays(1));
              date = date.plusDays(1)) {
 
-            ClosedDate closedDate = findClosedDateByGarageAndNotOpenDateEquals(garageCalendar.getGarage(), date);
+            ClosedDate closedDate = findClosedDateByGarage(garageCalendar.getGarage(), date);
             if(closedDate == null){
                 BusinessHours businessHours = businessHoursService.findByDayNumberAndGarage(date.getDayOfWeek().getValue(),
                         garageCalendar.getGarage());
@@ -101,7 +89,7 @@ public class GarageCalendarService {
                         timeSlot.setGarage(garageCalendar.getGarage());
                         timeSlot.setStartDate(date);
                         timeSlot.setStartTime(time);
-                        timeSlotRepository.save(timeSlot);
+                        saveTimeSlot(timeSlot);
                     }
                 }
             }

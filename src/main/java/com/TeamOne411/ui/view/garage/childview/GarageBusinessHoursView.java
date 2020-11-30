@@ -29,23 +29,17 @@ import java.time.LocalDate;
  */
 public class GarageBusinessHoursView extends SplitLayout {
     private final Grid<BusinessHours> bizHoursGrid = new Grid<>(BusinessHours.class);
-    BusinessHoursService businessHoursService;
-    GarageCalendarService garageCalendarService;
-    GarageCalendar garageCalendar;
-    Garage garage;
-    GarageBizHoursDialog garageBizHoursDialog;
-    Button saveCalendar = new Button("Generate Calendar");
-    DatePicker startDate = new DatePicker("Calendar Start Date");
-    VerticalLayout bizHours;
-    VerticalLayout appointmentCalendar;
-    VerticalLayout exceptionDates;
-    Button saveExceptionDate = new Button("Add Closed Date");
-    DatePicker exceptionDatePicker = new DatePicker("Garage Will Be Closed On");
-    ClosedDate closedDate;
-    private final Grid<ClosedDate> exceptionDatesGrid = new Grid<>(ClosedDate.class);
-
-    // TODO: remove this later. Keep temporarily for troubleshooting
-    Button deleteButton = new Button("Delete Calendar");
+    private final Grid<ClosedDate> excDatesGrid = new Grid<>(ClosedDate.class);
+    private final BusinessHoursService businessHoursService;
+    private final GarageCalendarService garageCalendarService;
+    private final GarageCalendar garageCalendar;
+    private final Garage garage;
+    private final Button saveCalButton = new Button("Generate Calendar");
+    private final DatePicker startDatePicker = new DatePicker("Calendar Start Date");
+    private final Button saveExcDateButton = new Button("Add Closed Date");
+    private final DatePicker excDatePicker = new DatePicker("Garage Will Be Closed On");
+    private GarageBizHoursDialog garageBizHoursDialog;
+    private ClosedDate closedDate;
 
     public GarageBusinessHoursView(BusinessHoursService businessHoursService,
                                    GarageCalendarService garageCalendarService,
@@ -55,127 +49,118 @@ public class GarageBusinessHoursView extends SplitLayout {
         this.garageCalendarService = garageCalendarService;
 
         // Sets the initial business hours for a garage the first time the first admin for the garage logs in
-        if(businessHoursService.findByGarage(garage).isEmpty()) {
+        if (businessHoursService.findByGarage(garage).isEmpty()) {
             businessHoursService.initializeBusinessHours(garage);
         }
 
-        // Checks if a garageCalendar exists already, creates one if it doesn't exist
-        if(garageCalendarService.findCalendarByGarage(garage) != null){
+        // Checks if a garageCalendar exists already, sets the calendar if one does exist
+        // otherwise creates a new garageCalendar instance if one doesn't exist
+        if (garageCalendarService.findCalendarByGarage(garage) != null) {
             garageCalendar = garageCalendarService.findCalendarByGarage(garage);
-            startDate.setEnabled(false);
-        }
-        else {
+            startDatePicker.setEnabled(false);
+        } else {
             garageCalendar = new GarageCalendar();
             garageCalendar.setGarage(garage);
-            startDate.setAutoOpen(true);
-            // TODO remove later
-            deleteButton.setEnabled(false);
         }
-        // TODO remove later
-        deleteButton.setVisible(false);
 
-        //BUSINESS HOURS
-        // business hours grid setup
+        // BUSINESS HOURS
+        // setup the business hours grid
         bizHoursGrid.addClassName("garage-business-hours-grid");
         bizHoursGrid.removeAllColumns();
         bizHoursGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
-        bizHoursGrid.addColumn(BusinessHours::getDayOfTheWeek).setHeader("Day").setKey("dayOfTheWeek").setSortable(false);
-        bizHoursGrid.addColumn(businessHours -> convertBoolean(businessHours.getOpen())).setHeader("Open").setKey("isOpen");
+        bizHoursGrid.addColumn(BusinessHours::getDayOfTheWeek).setHeader("Day")
+                .setKey("dayOfTheWeek").setSortable(false);
+        bizHoursGrid.addColumn(businessHours -> convertBoolean(businessHours.getOpen()))
+                .setHeader("Open").setKey("isOpen");
         //TODO fix date formatting to show AM/PM (unless we're good with 24 hours?)
-        bizHoursGrid.addColumn(BusinessHours::getOpenTime).setHeader("Opening Time").setKey("openTime").setSortable(false);
-        bizHoursGrid.addColumn(BusinessHours::getCloseTime).setHeader("Closing Time").setKey("closeTime").setSortable(false);
-        bizHoursGrid.addComponentColumn(this::createUpdateButton).setHeader("Update").setTextAlign(ColumnTextAlign.CENTER);
+        bizHoursGrid.addColumn(BusinessHours::getOpenTime).setHeader("Opening Time")
+                .setKey("openTime").setSortable(false);
+        bizHoursGrid.addColumn(BusinessHours::getCloseTime).setHeader("Closing Time")
+                .setKey("closeTime").setSortable(false);
+        bizHoursGrid.addComponentColumn(this::createUpdateButton).setHeader("Update")
+                .setTextAlign(ColumnTextAlign.CENTER);
 
         // APPOINTMENT CALENDAR SETUP
         // disable saveCalendar button until calendar changes have been made
-        saveCalendar.setEnabled(false);
+        saveCalButton.setEnabled(false);
 
-        // appointment calendar DatePicker setups
-        startDate.setRequired(true);
-        startDate.setRequiredIndicatorVisible(true);
-        startDate.setValue(garageCalendar.getCalendarStartDate());
-        if(startDate.getValue() == null){
-            startDate.setMin(LocalDate.now());
-
-            //Do not allow calendar to start later than 6 months out
-            startDate.setMax(LocalDate.now().plusMonths(6));
+        // setup appointment calendar datepicker
+        startDatePicker.setRequired(true);
+        startDatePicker.setRequiredIndicatorVisible(true);
+        startDatePicker.setValue(garageCalendar.getCalendarStartDate());
+        if (startDatePicker.getValue() == null) {
+            startDatePicker.setMin(LocalDate.now());
+            startDatePicker.setMax(LocalDate.now().plusMonths(6));
         }
 
-        // startDate listener
-        startDate.addValueChangeListener(e -> {
-            // do not allow a null value to be set on the garageCalendar instance, otherwise set what was specified
-            if(startDate.getValue() != null) {
-                garageCalendar.setCalendarStartDate(startDate.getValue());
-                //set the calendar end date to be 3 months from the specified start date
-                //TODO adjust end value to 3 months (temporarily set to 2 weeks for testing)
-                //TODO enable a rolling update to extend the end date by 1 day daily
-                garageCalendar.setCalendarEndDate(startDate.getValue().plusWeeks(2));
-                saveCalendar.setEnabled(true);
-            }
-        });
-
-        // save calendar button listener
-        saveCalendar.addClickListener(e -> saveCalendar());
-        // TODO: remove this later. Keep temporarily for troubleshooting
-        deleteButton.addClickListener(e -> delete());
-
-        // CLOSED/EXCEPTION DATES
-        // set attributes for exceptionsDatesGrid
-        exceptionDatesGrid.addClassName("garage-closed-dates-grid");
-        exceptionDatesGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
-        exceptionDatesGrid.setHeightByRows(true);
-        exceptionDatesGrid.removeAllColumns();
-        exceptionDatesGrid.addColumn(ClosedDate::getNotOpenDate).setHeader("Closed Date").setKey("notOpenDate");
-        exceptionDatesGrid.addComponentColumn(this::exceptionUpdateButton)
+        // CLOSED DATES
+        // setup exceptionsDatesGrid
+        excDatesGrid.addClassName("garage-closed-dates-grid");
+        excDatesGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+        excDatesGrid.setHeightByRows(true);
+        excDatesGrid.removeAllColumns();
+        excDatesGrid.addColumn(ClosedDate::getNotOpenDate).setHeader("Closed Date").setKey("notOpenDate");
+        excDatesGrid.addComponentColumn(this::exceptionUpdateButton)
                 .setHeader("Update").setTextAlign(ColumnTextAlign.CENTER);
-        exceptionDatesGrid.addComponentColumn(this::exceptionDeleteButton).setHeader("Delete")
+        excDatesGrid.addComponentColumn(this::exceptionDeleteButton).setHeader("Delete")
                 .setTextAlign(ColumnTextAlign.CENTER);
 
-        // attributes for exception button and date picker
-        exceptionDatePicker.setMin(LocalDate.now());
-        saveExceptionDate.setEnabled(false);
-        // exception date listeners
-        exceptionDatePicker.addValueChangeListener(e -> saveExceptionDate.setEnabled(true));
-        saveExceptionDate.addClickListener(e -> saveDate());
+        // set attributes for exception date picker and exception save button
+        excDatePicker.setMin(LocalDate.now());
+        saveExcDateButton.setEnabled(false);
+
+        // LISTENERS
+        startDatePicker.addValueChangeListener(e -> {
+            // do not allow a null value to be set on the garageCalendar instance, otherwise set what was specified
+            if (startDatePicker.getValue() != null) {
+                garageCalendar.setCalendarStartDate(startDatePicker.getValue());
+                //set the calendar end date to be 3 months from the specified start date
+                //TODO adjust end value to 3 months (temporarily set to 2 weeks for testing)
+                //TODO enable a rolling update to extend the end date by 1 day daily (ICEBOX)
+                garageCalendar.setCalendarEndDate(startDatePicker.getValue().plusWeeks(2));
+                saveCalButton.setEnabled(true);
+            }
+        });
+        saveCalButton.addClickListener(e -> saveCalendar());
+        excDatePicker.addValueChangeListener(e -> saveExcDateButton.setEnabled(true));
+        saveExcDateButton.addClickListener(e -> saveDate());
 
         // LAYOUTS
         // create the layout for the business hours elements
-        bizHours = new VerticalLayout(
+        VerticalLayout bizHoursLayout = new VerticalLayout(
                 new H4("Daily Business Hours"),
                 bizHoursGrid
         );
-        bizHours.setClassName("biz-hours");
-        setLayoutAttributes(bizHours);
+        bizHoursLayout.setClassName("biz-hours");
+        setLayoutAttributes(bizHoursLayout);
 
         // create the layout for the appointment calendar elements
-        appointmentCalendar = new VerticalLayout(
+        VerticalLayout apptCalLayout = new VerticalLayout(
                 new H4("Appointment Calendar Setup"),
-                startDate,
-                saveCalendar,
-                //TODO: remove this later. Keep temporarily for troubleshooting
-                deleteButton
+                startDatePicker,
+                saveCalButton
         );
-        appointmentCalendar.setClassName("appointment-calendar");
-        setLayoutAttributes(appointmentCalendar);
+        apptCalLayout.setClassName("appointment-calendar");
+        setLayoutAttributes(apptCalLayout);
 
         // create the layout for exception dates
-        exceptionDates = new VerticalLayout(
+        VerticalLayout excDatesLayout = new VerticalLayout(
                 new H4("Holidays/Dates Closed"),
-                exceptionDatePicker,
-                saveExceptionDate,
-                exceptionDatesGrid
+                excDatePicker,
+                saveExcDateButton,
+                excDatesGrid
         );
-        setLayoutAttributes(exceptionDates);
+        setLayoutAttributes(excDatesLayout);
 
         // create a child SplitLayout for the appointmentCalendar and datesClosed layouts
         SplitLayout childLayout = new SplitLayout();
         childLayout.setOrientation(Orientation.HORIZONTAL);
-        childLayout.addToPrimary(exceptionDates);
-        childLayout.addToSecondary(appointmentCalendar);
+        childLayout.addToPrimary(excDatesLayout);
+        childLayout.addToSecondary(apptCalLayout);
         childLayout.setSplitterPosition(60);
 
         // add the bizHours and child splitLayout to the parent splitLayout
-        addToPrimary(bizHours);
+        addToPrimary(bizHoursLayout);
         addToSecondary(childLayout);
         setSplitterPosition(50);
 
@@ -196,25 +181,17 @@ public class GarageBusinessHoursView extends SplitLayout {
      * Refreshes the exception dates grid from the database
      */
     private void updateDatesClosedList() {
-        exceptionDatesGrid.setItems(garageCalendarService.findClosedDatesByGarageOrderByNotOpenDate(garage));
+        excDatesGrid.setItems(garageCalendarService.findClosedDatesByGarage(garage));
     }
 
     /**
      * Sets common attributes for the layouts
      */
-    private void setLayoutAttributes(VerticalLayout verticalLayout){
+    private void setLayoutAttributes(VerticalLayout verticalLayout) {
         verticalLayout.setAlignItems(FlexComponent.Alignment.CENTER);
         verticalLayout.getStyle().set("border", "1px solid #9E9E9E");
         verticalLayout.setPadding(false);
         verticalLayout.setSpacing(false);
-    }
-
-    // TODO: remove this method later. Keep temporarily for troubleshooting
-    private void delete(){
-        garageCalendarService.deleteGarageCalendar(garageCalendarService.findCalendarByGarage(garage));
-        startDate.setValue(null);
-        startDate.setEnabled(true);
-        saveCalendar.setEnabled(false);
     }
 
     /**
@@ -224,45 +201,44 @@ public class GarageBusinessHoursView extends SplitLayout {
         garageCalendarService.saveGarageCalendar(garageCalendar);
 
         // disable the calendar setup so the user cannot make changes (for now)
-        saveCalendar.setEnabled(false);
-        startDate.setEnabled(false);
+        saveCalButton.setEnabled(false);
+        startDatePicker.setEnabled(false);
 
         // generate appointment time slots via async thread
         garageCalendarService.generateTimeSlots(garageCalendar, businessHoursService);
-
-        //TODO: remove this later. keep temporarily for troubleshooting
-        deleteButton.setEnabled(true);
     }
 
     /**
      * Saves the closedDate to the database
      */
-    private void saveDate(){
-        if(closedDate == null){
+    private void saveDate() {
+        if (closedDate == null) {
             closedDate = new ClosedDate();
             closedDate.setGarage(garage);
         }
-        closedDate.setNotOpenDate(exceptionDatePicker.getValue());
+        closedDate.setNotOpenDate(excDatePicker.getValue());
         garageCalendarService.saveClosedDate(closedDate);
         closedDate = null;
-        exceptionDatePicker.setValue(null);
-        saveExceptionDate.setText("Add Closed Date");
-        saveExceptionDate.setEnabled(false);
+        excDatePicker.setValue(null);
+        saveExcDateButton.setText("Add Closed Date");
+        saveExcDateButton.setEnabled(false);
         updateDatesClosedList();
     }
 
     /**
      * Converts the isOpen Boolean so it displays as something logical to the customer
      * instead of "true" or "false"
+     *
      * @param isOpen boolean indicating if the garage is open that day of the week
      * @return string conversion of the boolean
      */
-    private String convertBoolean(Boolean isOpen){
+    private String convertBoolean(Boolean isOpen) {
         return isOpen ? "Yes" : "No";
     }
 
     /**
      * Creates the update icon button for each row in the grid
+     *
      * @param businessHours the businessHours instance the icon button is associated with
      * @return the icon button to be returned
      */
@@ -275,13 +251,14 @@ public class GarageBusinessHoursView extends SplitLayout {
 
     /**
      * Creates the update icon button for each row in the grid
+     *
      * @param closedDate the ClosedDate instance the icon button is associated with
      * @return the icon button to be returned
      */
     private Button exceptionUpdateButton(ClosedDate closedDate) {
         Button updateButton = new Button(VaadinIcon.EDIT.create(), buttonClickEvent -> {
-            exceptionDatePicker.setValue(closedDate.getNotOpenDate());
-            saveExceptionDate.setText("Update Closed Date");
+            excDatePicker.setValue(closedDate.getNotOpenDate());
+            saveExcDateButton.setText("Update Closed Date");
             this.closedDate = closedDate;
         });
         updateButton.addThemeVariants(ButtonVariant.LUMO_SMALL);
@@ -290,6 +267,7 @@ public class GarageBusinessHoursView extends SplitLayout {
 
     /**
      * Creates the delete icon button for each row in the grid
+     *
      * @param closedDate the ClosedDate instance the icon button is associated with
      * @return the icon button to be returned
      */
@@ -349,6 +327,7 @@ public class GarageBusinessHoursView extends SplitLayout {
 
     /**
      * Fired when the GarageBizHoursForm has been exited. Refreshes the business hours grid.
+     *
      * @param event the event that fired this method
      */
     private void onSave(ComponentEvent<GarageBizHoursDialog> event) {
