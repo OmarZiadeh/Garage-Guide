@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 /**
- This entity defines an appointment that has been scheduled with the garage
+ * This entity defines an appointment that has been scheduled with the garage
  */
 @Entity
 public class Appointment extends AbstractEntity {
@@ -38,7 +38,17 @@ public class Appointment extends AbstractEntity {
 
     private String statusComments;
 
+    private String carOwnerComments;
+
     //TODO Add attribute & relationship to Vehicle
+
+    public String getCarOwnerComments() {
+        return carOwnerComments;
+    }
+
+    public void setCarOwnerComments(String carOwnerComments) {
+        this.carOwnerComments = carOwnerComments;
+    }
 
     public Garage getGarage() {
         return garage;
