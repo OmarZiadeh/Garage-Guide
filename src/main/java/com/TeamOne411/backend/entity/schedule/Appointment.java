@@ -5,6 +5,7 @@ import com.TeamOne411.backend.entity.Garage;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -29,6 +30,9 @@ public class Appointment extends AbstractEntity {
 
     @NotNull
     private Duration estimatedDuration;
+
+    @NotNull
+    private BigDecimal estimatedTotalPrice;
 
     @NotNull
     private String status = new String("Not Started");
@@ -104,5 +108,13 @@ public class Appointment extends AbstractEntity {
 
     public void setEstimatedCompletionTime(LocalTime estimatedCompletionTime) {
         this.estimatedCompletionTime = estimatedCompletionTime;
+    }
+
+    public BigDecimal getEstimatedTotalPrice() {
+        return estimatedTotalPrice;
+    }
+
+    public void setEstimatedTotalPrice(BigDecimal estimatedTotalPrice) {
+        this.estimatedTotalPrice = estimatedTotalPrice;
     }
 }

@@ -54,8 +54,8 @@ public class GarageCalendarService {
         return garageCalendarRepository.findCalendarByGarage(garage);
     }
 
-    public List<TimeSlot> findTimeSlotsByGarage(Garage garage){
-        return timeSlotRepository.findTimeSlotsByGarage(garage);
+    public List<LocalTime> findStartTimeByGarageAndStartDate(Garage garage, LocalDate localDate){
+        return timeSlotRepository.findStartTimeByGarageAndStartDateEqualsAndIsFilledIsFalse(garage, localDate);
     }
 
     public List<ClosedDate> findClosedDatesByGarage(Garage garage){

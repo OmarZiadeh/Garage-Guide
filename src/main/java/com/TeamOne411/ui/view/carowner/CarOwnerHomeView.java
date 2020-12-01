@@ -2,8 +2,7 @@ package com.TeamOne411.ui.view.carowner;
 
 import com.TeamOne411.backend.entity.users.CarOwner;
 import com.TeamOne411.backend.entity.users.GGUserDetails;
-import com.TeamOne411.backend.service.UserDetailsService;
-import com.TeamOne411.backend.service.VehicleService;
+import com.TeamOne411.backend.service.*;
 import com.TeamOne411.ui.MainLayout;
 import com.TeamOne411.ui.view.carowner.childview.CarOwnerAppointmentsView;
 //import com.TeamOne411.ui.view.carowner.childview.CarOwnerVehiclesView;
@@ -30,7 +29,11 @@ public class CarOwnerHomeView extends VerticalLayout {
     private GGUserDetails userDetails;
     private CarOwner loggedInCarOwner;
 
-    public CarOwnerHomeView(UserDetailsService userDetailsService, VehicleService vehicleService) {
+    public CarOwnerHomeView(UserDetailsService userDetailsService, VehicleService vehicleService,
+                            AppointmentService appointmentService,
+                            GarageService garageService,
+                            ServiceCatalogService serviceCatalogService,
+                            GarageCalendarService garageCalendarService) {
         userDetails = userDetailsService.getLoggedInUserDetails();
         loggedInCarOwner = (CarOwner) userDetails.getUser();
         add(new H2("Welcome back " + loggedInCarOwner.getFirstName()));
@@ -43,7 +46,8 @@ public class CarOwnerHomeView extends VerticalLayout {
         First Tab - Appointments
          */
         Tab appointmentsTab = new Tab("Appointments");
-        CarOwnerAppointmentsView appointmentsView = new CarOwnerAppointmentsView();
+        CarOwnerAppointmentsView appointmentsView = new CarOwnerAppointmentsView(appointmentService,
+                garageService, serviceCatalogService, garageCalendarService);
         Div appointmentsPage = new Div(appointmentsView);
         appointmentsTab.add(appointmentsPage);
         tabs.add(appointmentsTab);

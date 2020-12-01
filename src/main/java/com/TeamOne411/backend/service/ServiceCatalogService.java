@@ -30,7 +30,7 @@ public class ServiceCatalogService {
     }
 
     public List<OfferedService> findByServiceCategory_Garage(Garage garage) {
-        return offeredServiceRepository.findByServiceCategory_Garage(garage);
+        return offeredServiceRepository.findByServiceCategory_GarageOrderByServiceCategory(garage);
     }
 
     public List<OfferedService> findByServiceCategory(ServiceCategory serviceCategory) {

@@ -115,9 +115,8 @@ public class GarageBusinessHoursView extends SplitLayout {
             if (startDatePicker.getValue() != null) {
                 garageCalendar.setCalendarStartDate(startDatePicker.getValue());
                 //set the calendar end date to be 3 months from the specified start date
-                //TODO adjust end value to 3 months (temporarily set to 2 weeks for testing)
                 //TODO enable a rolling update to extend the end date by 1 day daily (ICEBOX)
-                garageCalendar.setCalendarEndDate(startDatePicker.getValue().plusWeeks(2));
+                garageCalendar.setCalendarEndDate(startDatePicker.getValue().plusMonths(3));
                 saveCalButton.setEnabled(true);
             }
         });
