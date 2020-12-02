@@ -45,4 +45,10 @@ public class VehicleService {
         }
         vehicleRepository.save(vehicle);
     }
+
+    public void registerNewVehicle(Vehicle vehicle) {
+    }
+
+    public void updateVehicle(Vehicle vehicle) {
+    }
 }

@@ -1,6 +1,7 @@
 package com.TeamOne411.ui.view.carowner.childview;
 
 import com.TeamOne411.backend.entity.Vehicle;
+import com.TeamOne411.backend.entity.users.GarageEmployee;
 import com.TeamOne411.backend.service.api.car.ApiVehicleService;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -58,6 +59,7 @@ public class VehicleAddForm extends VerticalLayout {
 
         fillYearComboBox();
         fillMakeComboBox();
+        fillModelComboBox();
 
         // set button click listeners
         backButton.addClickListener(e -> fireEvent(new BackEvent(this)));
@@ -92,6 +94,14 @@ public class VehicleAddForm extends VerticalLayout {
         }
     }
 
+    public void fillModelComboBox(){
+        try {
+            this.make.setItems(apiVehicleService.getAllMakes());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void fillYearComboBox(){
         int year = Calendar.getInstance().get(Calendar.YEAR);
         List<String> years = new ArrayList<>();
@@ -117,6 +127,23 @@ public class VehicleAddForm extends VerticalLayout {
     public void setEnterShortcutRegistration(boolean addRegistration) {
         if (addRegistration) enterKeyRegistration = nextButton.addClickShortcut(Key.ENTER);
         else if (enterKeyRegistration != null) enterKeyRegistration.remove();
+    }
+
+    /**
+     * Fills all form controls with known details of an existing vehicle.
+     * @param vehicle the vehicle to fill details for
+     */
+    public void prefillForm(Vehicle vehicle) {
+        this.vehicle = vehicle;
+        binder.readBean(this.vehicle);
+
+        if (vehicle != null) {
+            make.setEnabled(false);
+            model.setEnabled(false);
+            year.setEnabled(false);
+            vin.setValue("xxxxxxxxx");
+            vin.setEnabled(false);
+        }
     }
 
 
