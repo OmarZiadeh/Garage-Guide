@@ -23,7 +23,6 @@ public class ApiVehicleService {
 
         return cars.stream().map(c->c.getMakeName()).collect(Collectors.toList());
     }
-
     public List<String> getAllModels() throws URISyntaxException {
 
         URI fullUri = new URI(baseUri + "vehicles/GetMakesForVehicleType/car?format=json");

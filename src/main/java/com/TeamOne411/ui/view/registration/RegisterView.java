@@ -29,17 +29,14 @@ public class RegisterView extends VerticalLayout {
     private RegistrationPath path;
     private GarageService garageService;
     private UserDetailsService userDetailsService;
-    private ServiceCatalogService serviceCatalogService;
 
     public RegisterView(
             GarageService garageService,
-            UserDetailsService userDetailsService,
-            ServiceCatalogService serviceCatalogService
+            UserDetailsService userDetailsService
     ) {
         // field assignments
         this.garageService = garageService;
         this.userDetailsService = userDetailsService;
-        this.serviceCatalogService = serviceCatalogService;
         this.garageAdminRegisterForm = new GarageAdminRegisterForm(userDetailsService);
         this.garageConfirmView = new GarageEmployeeConfirmationView();
 
@@ -184,7 +181,6 @@ public class RegisterView extends VerticalLayout {
             if (garageEmployee != null && garage != null) {
                 // save the garage first because the employee has dependency
                 garageService.save(garage);
-                serviceCatalogService.initializeDefaultServices(garage);
                 garageEmployee.setGarage(garage);
 
                 try {

@@ -37,13 +37,8 @@ public class Vehicle extends AbstractEntity {
     private CarOwner carOwner;
 
 
-
-    public CarOwner getCarOwner(){
+    public CarOwner getCarOwner() {
         return carOwner;
-    }
-
-    public void setCarOwner(CarOwner carOwner){
-        this.carOwner = carOwner;
     }
 
     public String getModel() {

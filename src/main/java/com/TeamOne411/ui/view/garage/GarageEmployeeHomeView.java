@@ -3,9 +3,7 @@ package com.TeamOne411.ui.view.garage;
 import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.users.GGUserDetails;
 import com.TeamOne411.backend.entity.users.GarageEmployee;
-import com.TeamOne411.backend.service.GarageEmployeeService;
-import com.TeamOne411.backend.service.ServiceCatalogService;
-import com.TeamOne411.backend.service.UserDetailsService;
+import com.TeamOne411.backend.service.*;
 import com.TeamOne411.ui.MainLayout;
 import com.TeamOne411.ui.view.garage.childview.GarageAppointmentsView;
 import com.TeamOne411.ui.view.garage.childview.GarageBusinessHoursView;
@@ -36,7 +34,8 @@ public class GarageEmployeeHomeView extends VerticalLayout {
     private Garage myGarage;
 
     public GarageEmployeeHomeView(UserDetailsService userDetailsService, GarageEmployeeService garageEmployeeService,
-                                  ServiceCatalogService serviceCatalogService) {
+                                  ServiceCatalogService serviceCatalogService,
+                                  BusinessHoursService businessHoursService) {
         userDetails = userDetailsService.getLoggedInUserDetails();
         loggedInEmployee = (GarageEmployee) userDetails.getUser();
         myGarage = loggedInEmployee.getGarage();
@@ -71,9 +70,9 @@ public class GarageEmployeeHomeView extends VerticalLayout {
             tabsToPages.put(employeesTab, employeesPage);
 
             /*
-            Third Tab - Garage Services
+            Third Tab - Garage Offered Services
              */
-            Tab servicesTab = new Tab("Services");
+            Tab servicesTab = new Tab("Service Catalog");
             GarageServicesView servicesView = new GarageServicesView(serviceCatalogService, myGarage);
             Div servicesPage = new Div(servicesView);
             servicesTab.add(servicesPage);
@@ -85,14 +84,16 @@ public class GarageEmployeeHomeView extends VerticalLayout {
             /*
             Fourth Tab - Business Hours (aka Schedule)
              */
-            Tab scheduleTab = new Tab("Business Hours");
-            GarageBusinessHoursView businessHoursView = new GarageBusinessHoursView();
-            Div schedulePage = new Div(businessHoursView);
-            scheduleTab.add(schedulePage);
-            tabs.add(scheduleTab);
-            pages.add(schedulePage);
-            schedulePage.setVisible(false);
-            tabsToPages.put(scheduleTab, schedulePage);
+            Tab businessHoursTab = new Tab("Business Hours");
+            GarageBusinessHoursView businessHoursView = new GarageBusinessHoursView(
+                            businessHoursService,
+                            myGarage);
+            Div businessHoursPage = new Div(businessHoursView);
+            businessHoursTab.add(businessHoursPage);
+            tabs.add(businessHoursTab);
+            pages.add(businessHoursPage);
+            businessHoursPage.setVisible(false);
+            tabsToPages.put(businessHoursTab, businessHoursPage);
         }
 
         // todo add more tabs here

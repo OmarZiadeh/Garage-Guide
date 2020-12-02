@@ -8,7 +8,6 @@ import com.TeamOne411.ui.view.sandbox.form.GarageEmployeeEditorForm;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 /**
@@ -36,7 +35,6 @@ public class GarageEmployeeSandboxView extends VerticalLayout {
 
         // configure the garageEmployee grid
         grid.addClassName("garage-employee-grid");
-        grid.setHeightByRows(true);
         grid.setColumns("username", "firstName", "lastName", "email");
         grid.addColumn(garageEmployee -> {
             Garage garage = garageEmployee.getGarage();
@@ -72,7 +70,7 @@ public class GarageEmployeeSandboxView extends VerticalLayout {
         garageEmployeeContent.setSizeFull();
 
         // add the components to this layout
-        add(new H1("Garage Employees"), addButton, garageEmployeeContent);
+        add(addButton, garageEmployeeContent);
 
         // fetch the list for the grid
         updateGarageEmployeeList();
