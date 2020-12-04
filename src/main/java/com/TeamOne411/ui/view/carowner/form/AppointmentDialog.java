@@ -23,8 +23,7 @@ public class AppointmentDialog extends Dialog {
                              ServiceCatalogService serviceCatalogService, GarageCalendarService garageCalendarService) {
         this.appointmentService = appointmentService;
 
-        appointmentForm = new AppointmentForm(appointmentService, garageService, serviceCatalogService,
-                garageCalendarService);
+        appointmentForm = new AppointmentForm(garageService, serviceCatalogService, garageCalendarService);
         appointmentForm.addListener(AppointmentForm.CancelEvent.class, this::onCancelClick);
         appointmentForm.addListener(AppointmentForm.SaveEvent.class, this::onSaveClick);
 
@@ -57,8 +56,11 @@ public class AppointmentDialog extends Dialog {
      */
     private void onSaveClick(ComponentEvent event) {
         // get the appointment and save it to the db
+
+        //TODO add sets here for estimatedDuration, estimatedTotalPrice, estimatedEndTime
         appointment = appointmentForm.getAppointment();
         appointmentService.saveAppointment(appointment);
+        //TODO add background task for filling timeslots and creating appointment tasks
 
         fireEvent(new AppointmentDialog.SaveSuccessEvent(this));
     }

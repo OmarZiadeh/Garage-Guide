@@ -65,6 +65,7 @@ public class CarOwnerAppointmentsView extends VerticalLayout {
         appointmentDialog = new AppointmentDialog(appointmentService, garageService, serviceCatalogService,
                 garageCalendarService);
         appointmentDialog.setWidth("50%");
+        appointmentDialog.setHeightFull();
         appointmentDialog.addListener(AppointmentDialog.SaveSuccessEvent.class,
                 this::onSave);
         appointmentDialog.open();
