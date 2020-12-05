@@ -10,10 +10,11 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.shared.Registration;
 
+@SuppressWarnings("rawtypes")
 public class GarageBizHoursDialog extends Dialog {
     private final GarageBizHoursForm garageBizHoursForm;
+    private final BusinessHoursService businessHoursService;
     private BusinessHours businessHours;
-    private BusinessHoursService businessHoursService;
 
     public GarageBizHoursDialog(BusinessHoursService businessHoursService, BusinessHours businessHours) {
         this.businessHours = businessHours;
@@ -60,6 +61,12 @@ public class GarageBizHoursDialog extends Dialog {
         fireEvent(new GarageBizHoursDialog.SaveSuccessEvent(this));
     }
 
+    @Override
+    public <T extends ComponentEvent<?>> Registration addListener(Class<T> eventType,
+                                                                  ComponentEventListener<T> listener) {
+        return getEventBus().addListener(eventType, listener);
+    }
+
     /**
      * Event to emit when business hours have been updated.
      */
@@ -67,12 +74,5 @@ public class GarageBizHoursDialog extends Dialog {
         SaveSuccessEvent(GarageBizHoursDialog source) {
             super(source, false);
         }
-    }
-
-
-    @Override
-    public <T extends ComponentEvent<?>> Registration addListener(Class<T> eventType,
-                                                                  ComponentEventListener<T> listener) {
-        return getEventBus().addListener(eventType, listener);
     }
 }
