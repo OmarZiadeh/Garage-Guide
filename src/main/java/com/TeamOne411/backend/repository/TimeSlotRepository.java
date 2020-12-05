@@ -11,7 +11,11 @@ import java.time.LocalTime;
 import java.util.List;
 
 public interface TimeSlotRepository extends JpaRepository<TimeSlot, Long> {
-    @Query("SELECT startTime FROM TimeSlot where garage = :garage and startDate = :start_date")
-    List<LocalTime> findStartTimeByGarageAndStartDateEqualsAndIsFilledIsFalse(@Param("garage") Garage garage,
-                                                                              @Param("start_date") LocalDate localDate);
+    @Query("SELECT startTime FROM TimeSlot where garage = :garage and startDate = :start_date and isFilled = false")
+    List<LocalTime> findStartTimesByGarageAndStartDateEqualsAndIsFilledIsFalse(@Param("garage") Garage garage,
+                                                                               @Param("start_date") LocalDate localDate);
+
+    TimeSlot findFirstByGarageAndStartDateAndIsFilledIsFalse(Garage garage, LocalDate localDate);
+    TimeSlot findTimeSlotByGarageAndStartDateAndStartTimeAndIsFilledIsFalse(Garage garage, LocalDate localDate,
+                                                                            LocalTime localTime);
 }

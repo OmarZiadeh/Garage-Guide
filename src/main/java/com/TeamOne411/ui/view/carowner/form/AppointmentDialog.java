@@ -1,11 +1,7 @@
 package com.TeamOne411.ui.view.carowner.form;
 
 
-import com.TeamOne411.backend.entity.schedule.Appointment;
-import com.TeamOne411.backend.service.AppointmentService;
-import com.TeamOne411.backend.service.GarageCalendarService;
-import com.TeamOne411.backend.service.GarageService;
-import com.TeamOne411.backend.service.ServiceCatalogService;
+import com.TeamOne411.backend.service.*;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -14,16 +10,14 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.shared.Registration;
 
+@SuppressWarnings("rawtypes")
 public class AppointmentDialog extends Dialog {
-    private AppointmentService appointmentService;
-    private AppointmentForm appointmentForm;
-    private Appointment appointment;
+    private final AppointmentForm appointmentForm;
 
     public AppointmentDialog(AppointmentService appointmentService, GarageService garageService,
                              ServiceCatalogService serviceCatalogService, GarageCalendarService garageCalendarService) {
-        this.appointmentService = appointmentService;
 
-        appointmentForm = new AppointmentForm(garageService, serviceCatalogService, garageCalendarService);
+        appointmentForm = new AppointmentForm(garageService, serviceCatalogService, garageCalendarService, appointmentService);
         appointmentForm.addListener(AppointmentForm.CancelEvent.class, this::onCancelClick);
         appointmentForm.addListener(AppointmentForm.SaveEvent.class, this::onSaveClick);
 
@@ -55,14 +49,16 @@ public class AppointmentDialog extends Dialog {
      * @param event event that occurred
      */
     private void onSaveClick(ComponentEvent event) {
-        // get the appointment and save it to the db
-
-        //TODO add sets here for estimatedDuration, estimatedTotalPrice, estimatedEndTime
-        appointment = appointmentForm.getAppointment();
-        appointmentService.saveAppointment(appointment);
-        //TODO add background task for filling timeslots and creating appointment tasks
+        //calls the appointment form to save the appointment
+        appointmentForm.completeAppointment();
 
         fireEvent(new AppointmentDialog.SaveSuccessEvent(this));
+    }
+
+    @Override
+    public <T extends ComponentEvent<?>> Registration addListener(Class<T> eventType,
+                                                                  ComponentEventListener<T> listener) {
+        return getEventBus().addListener(eventType, listener);
     }
 
     /**
@@ -72,11 +68,5 @@ public class AppointmentDialog extends Dialog {
         SaveSuccessEvent(AppointmentDialog source) {
             super(source, false);
         }
-    }
-
-    @Override
-    public <T extends ComponentEvent<?>> Registration addListener(Class<T> eventType,
-                                                                  ComponentEventListener<T> listener) {
-        return getEventBus().addListener(eventType, listener);
     }
 }

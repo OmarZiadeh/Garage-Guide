@@ -2,9 +2,9 @@ package com.TeamOne411.ui.view.carowner.form;
 
 import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.schedule.Appointment;
-import com.TeamOne411.backend.entity.schedule.AppointmentTask;
 import com.TeamOne411.backend.entity.servicecatalog.OfferedService;
 import com.TeamOne411.backend.entity.servicecatalog.ServiceCategory;
+import com.TeamOne411.backend.service.AppointmentService;
 import com.TeamOne411.backend.service.GarageCalendarService;
 import com.TeamOne411.backend.service.GarageService;
 import com.TeamOne411.backend.service.ServiceCatalogService;
@@ -25,9 +25,6 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.binder.BeanValidationBinder;
-import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.shared.Registration;
 
 
@@ -41,44 +38,44 @@ import java.util.Set;
 
 
 public class AppointmentForm extends VerticalLayout {
-    private ServiceCatalogService serviceCatalogService;
-    private GarageCalendarService garageCalendarService;
-    Binder<Appointment> binder = new BeanValidationBinder<>(Appointment.class);
-    private Appointment appointment = new Appointment();
-    private AppointmentTask appointmentTask = new AppointmentTask();
+    private final ServiceCatalogService serviceCatalogService;
+    private final GarageCalendarService garageCalendarService;
+    private final AppointmentService appointmentService;
+    private final Appointment appointment = new Appointment();
     private Duration estimatedDuration;
     private BigDecimal estimatedTotalPrice;
-    private LocalTime estimatedCompletionTime;
-    private TextField priceField = new TextField("Estimated PreTax Total");
-    private TextArea carOwnerComments = new TextArea("Is there anything else you'd like us to know?");
-    private FormLayout garageForm = new FormLayout();
-    private FormLayout confirmForm = new FormLayout();
-    private FormLayout appointmentTimeForm = new FormLayout();
-    private Accordion accordion = new Accordion();
+    private final TextField priceField = new TextField("Estimated PreTax Total");
+    private final TextArea carOwnerComments = new TextArea("Is there anything else you'd like us to know?");
     private final Button saveButton = new Button("Book Appointment");
-    private final Button cancelButton = new Button("Cancel");
     private final ComboBox<Garage> garage = new ComboBox<>("Select Garage");
     private final Grid<OfferedService> offeredServicesGrid = new Grid<>(OfferedService.class);
     private final DatePicker appointmentDate = new DatePicker("Desired Appointment Date");
     private final ComboBox<LocalTime> appointmentTime = new ComboBox<>("Select Available Time");
-    private final TextField vehicle = new TextField("Vehicle");
-    private final Checkbox confirmationCheckbox = new Checkbox("Everything Looks Good!");
+    private final Checkbox confirmationCheckbox = new Checkbox("Check Here If Everything Looks Good");
+    private final TextField confirmGarage = new TextField("Selected Garage");
+    private final TextField confirmDate = new TextField("Appointment Date");
+    private final TextField confirmTime = new TextField("Appointment Time");
 
     public AppointmentForm(GarageService garageService,
-                           ServiceCatalogService serviceCatalogService, GarageCalendarService garageCalendarService){
+                           ServiceCatalogService serviceCatalogService, GarageCalendarService garageCalendarService,
+                           AppointmentService appointmentService){
         this.serviceCatalogService = serviceCatalogService;
         this.garageCalendarService = garageCalendarService;
+        this.appointmentService = appointmentService;
 
         addClassName("appointment-form");
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
-        binder.bindInstanceFields(this);
+        Accordion accordion = new Accordion();
         accordion.setWidth("100%");
         saveButton.setEnabled(false);
         saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        Button cancelButton = new Button("Cancel");
         cancelButton.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
 
         // VEHICLE AND GARAGE INFO
+        FormLayout garageForm = new FormLayout();
+        TextField vehicle = new TextField("Vehicle");
         garageForm.add(vehicle, garage);
         vehicle.setPlaceholder("Placeholder");
         garage.setItemLabelGenerator(Garage::getCompanyName);
@@ -93,6 +90,7 @@ public class AppointmentForm extends VerticalLayout {
         accordion.add("Services Required", offeredServicesGrid);
 
         // APPOINTMENT DATE AND TIME
+        FormLayout appointmentTimeForm = new FormLayout();
         appointmentTimeForm.add(appointmentDate, appointmentTime);
         appointmentDate.setMin(LocalDate.now());
         appointmentDate.setRequired(true);
@@ -103,14 +101,29 @@ public class AppointmentForm extends VerticalLayout {
         accordion.add("Appointment Date and Time", appointmentTimeForm);
 
         // CONFIRM DETAILS
-        confirmForm.add(priceField, carOwnerComments, confirmationCheckbox);
+        FormLayout confirmForm = new FormLayout();
+        confirmForm.add(confirmGarage, priceField, confirmDate, confirmTime, carOwnerComments, confirmationCheckbox);
+        confirmGarage.setReadOnly(true);
+        confirmDate.setReadOnly(true);
+        confirmTime.setReadOnly(true);
         priceField.setReadOnly(true);
-        accordion.add("Confirmation", confirmForm);
+        carOwnerComments.setPlaceholder("Add Your Comments Here");
+        accordion.add("Confirm Appointment", confirmForm);
 
         // CLICK LISTENERS
-        garage.addValueChangeListener(e -> setOfferedServicesGrid());
+        garage.addValueChangeListener(e -> {
+            setOfferedServicesGrid();
+            confirmGarage.setValue(String.valueOf(garage.getValue().getCompanyName()));
+        });
         offeredServicesGrid.asMultiSelect().addValueChangeListener(e -> totalPrice());
-        appointmentDate.addValueChangeListener(e -> setAppointmentTime());
+        appointmentDate.addValueChangeListener(e -> {
+            setAppointmentTime();
+            confirmDate.setValue(String.valueOf(appointmentDate.getValue()));
+        });
+        appointmentTime.addValueChangeListener(e -> {
+            confirmTime.setValue(String.valueOf(appointmentTime.getValue()));
+            confirmationCheckbox.setAutofocus(true);
+        });
         confirmationCheckbox.addValueChangeListener(e -> {
             if(confirmationCheckbox.getValue()){
                 checkFormCompletion();
@@ -151,10 +164,22 @@ public class AppointmentForm extends VerticalLayout {
     private void totalPrice(){
         Set<OfferedService> offeredServiceSet = offeredServicesGrid.asMultiSelect().getSelectedItems();
         BigDecimal calcTotal = new BigDecimal(0);
+        Duration durationTotal = Duration.ZERO;
         for(OfferedService os : offeredServiceSet){
             calcTotal = calcTotal.add(os.getPrice());
+            durationTotal = durationTotal.plus(os.getDuration());
         }
         priceField.setValue(calcTotal.toString());
+        estimatedTotalPrice = calcTotal;
+        estimatedDuration = durationTotal;
+    }
+
+    /**
+     * Gets the set of selected services
+     * @return Set of selected services
+     */
+    public Set<OfferedService> getSelectedServices(){
+        return offeredServicesGrid.getSelectedItems();
     }
 
     /**
@@ -193,22 +218,28 @@ public class AppointmentForm extends VerticalLayout {
         // set the time slots once the user has picked a desired appointment date
         appointmentTime.setEnabled(true);
         appointmentTime.setItems(garageCalendarService
-                .findStartTimeByGarageAndStartDate(garage.getValue(), appointmentDate.getValue()));
+                .findStartTimesByGarageAndDate(garage.getValue(), appointmentDate.getValue()));
     }
 
     /**
-     * Attempts to return an appointment instance from the values of the form controls.
-     *
-     * @return an appointment instance
+     * Saves the appointment and starts async processes
      */
-    public Appointment getAppointment() {
-        try {
-            binder.writeBean(appointment);
-            return appointment;
-        } catch (ValidationException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public void completeAppointment() {
+        //set appointment values
+        appointment.setAppointmentDate(appointmentDate.getValue());
+        appointment.setAppointmentTime(appointmentTime.getValue());
+        appointment.setGarage(garage.getValue());
+        appointment.setCarOwnerComments(carOwnerComments.getValue());
+        appointment.setEstimatedCompletionTime(appointmentTime.getValue().plusHours(estimatedDuration.toHours()));
+        appointment.setEstimatedDuration(estimatedDuration);
+        appointment.setEstimatedTotalPrice(estimatedTotalPrice);
+
+        // save the appointment to the db
+        appointmentService.saveAppointment(appointment);
+
+        // create the appointment tasks via async background process & fill time slots
+        appointmentService.createAppointmentTasks(appointment, offeredServicesGrid.getSelectedItems());
+        garageCalendarService.fillTimeSlots(appointment);
     }
 
     @Override

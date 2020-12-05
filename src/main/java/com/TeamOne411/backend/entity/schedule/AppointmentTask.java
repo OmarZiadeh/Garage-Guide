@@ -33,7 +33,7 @@ public class AppointmentTask extends AbstractEntity {
     @NotNull
     private BigDecimal price;
 
-    private String appointmentComments;
+    private String garageComments;
 
     public Appointment getAppointment() {
         return appointment;
@@ -67,11 +67,11 @@ public class AppointmentTask extends AbstractEntity {
         this.price = price;
     }
 
-    public String getAppointmentComments() {
-        return appointmentComments;
+    public String getGarageComments() {
+        return garageComments;
     }
 
-    public void setAppointmentComments(String appointmentComments) {
-        this.appointmentComments = appointmentComments;
+    public void setGarageComments(String appointmentComments) {
+        this.garageComments = appointmentComments;
     }
 }

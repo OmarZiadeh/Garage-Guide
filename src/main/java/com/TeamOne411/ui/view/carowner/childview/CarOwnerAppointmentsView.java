@@ -1,9 +1,6 @@
 package com.TeamOne411.ui.view.carowner.childview;
 
-import com.TeamOne411.backend.service.AppointmentService;
-import com.TeamOne411.backend.service.GarageCalendarService;
-import com.TeamOne411.backend.service.GarageService;
-import com.TeamOne411.backend.service.ServiceCatalogService;
+import com.TeamOne411.backend.service.*;
 import com.TeamOne411.ui.view.carowner.form.AppointmentDialog;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.button.Button;
@@ -14,7 +11,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 public class CarOwnerAppointmentsView extends VerticalLayout {
     private final AppointmentService appointmentService;
-    private final Button newAppointment = new Button ("Schedule New Appointment");
     private AppointmentDialog appointmentDialog;
 
     public CarOwnerAppointmentsView(AppointmentService appointmentService, GarageService garageService,
@@ -22,6 +18,7 @@ public class CarOwnerAppointmentsView extends VerticalLayout {
                                     GarageCalendarService garageCalendarService) {
         this.appointmentService = appointmentService;
 
+        Button newAppointment = new Button("Schedule New Appointment");
         newAppointment.addClickListener(e -> showAppointmentDialog(garageService, serviceCatalogService,
                 garageCalendarService));
 
