@@ -14,10 +14,10 @@ import com.vaadin.flow.shared.Registration;
 public class AppointmentDialog extends Dialog {
     private final AppointmentForm appointmentForm;
 
-    public AppointmentDialog(AppointmentService appointmentService, GarageService garageService,
-                             ServiceCatalogService serviceCatalogService, GarageCalendarService garageCalendarService) {
+    public AppointmentDialog(AppointmentService appointmentService, ServiceCatalogService serviceCatalogService,
+                             GarageCalendarService garageCalendarService) {
 
-        appointmentForm = new AppointmentForm(garageService, serviceCatalogService, garageCalendarService, appointmentService);
+        appointmentForm = new AppointmentForm(serviceCatalogService, garageCalendarService, appointmentService);
         appointmentForm.addListener(AppointmentForm.CancelEvent.class, this::onCancelClick);
         appointmentForm.addListener(AppointmentForm.SaveEvent.class, this::onSaveClick);
 

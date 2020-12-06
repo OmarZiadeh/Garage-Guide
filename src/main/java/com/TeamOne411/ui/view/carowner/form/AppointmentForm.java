@@ -8,6 +8,8 @@ import com.TeamOne411.backend.service.AppointmentService;
 import com.TeamOne411.backend.service.GarageCalendarService;
 import com.TeamOne411.backend.service.GarageService;
 import com.TeamOne411.backend.service.ServiceCatalogService;
+import com.TeamOne411.ui.utils.FormattingUtils;
+import com.TeamOne411.ui.utils.LocalTimeConverter;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.accordion.Accordion;
@@ -55,9 +57,9 @@ public class AppointmentForm extends VerticalLayout {
     private final TextField confirmGarage = new TextField("Selected Garage");
     private final TextField confirmDate = new TextField("Appointment Date");
     private final TextField confirmTime = new TextField("Appointment Time");
+    private final LocalTimeConverter localTimeConverter = new LocalTimeConverter();
 
-    public AppointmentForm(GarageService garageService,
-                           ServiceCatalogService serviceCatalogService, GarageCalendarService garageCalendarService,
+    public AppointmentForm(ServiceCatalogService serviceCatalogService, GarageCalendarService garageCalendarService,
                            AppointmentService appointmentService){
         this.serviceCatalogService = serviceCatalogService;
         this.garageCalendarService = garageCalendarService;
@@ -120,10 +122,8 @@ public class AppointmentForm extends VerticalLayout {
             setAppointmentTime();
             confirmDate.setValue(String.valueOf(appointmentDate.getValue()));
         });
-        appointmentTime.addValueChangeListener(e -> {
-            confirmTime.setValue(String.valueOf(appointmentTime.getValue()));
-            confirmationCheckbox.setAutofocus(true);
-        });
+        appointmentTime.addValueChangeListener(e ->
+            confirmTime.setValue(FormattingUtils.convertTime(appointmentTime.getValue())));
         confirmationCheckbox.addValueChangeListener(e -> {
             if(confirmationCheckbox.getValue()){
                 checkFormCompletion();
@@ -219,6 +219,7 @@ public class AppointmentForm extends VerticalLayout {
         appointmentTime.setEnabled(true);
         appointmentTime.setItems(garageCalendarService
                 .findStartTimesByGarageAndDate(garage.getValue(), appointmentDate.getValue()));
+        appointmentTime.setItemLabelGenerator(localTimeConverter::encode);
     }
 
     /**

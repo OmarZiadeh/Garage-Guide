@@ -16,6 +16,7 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.shared.Registration;
 
 import java.time.Duration;
+import java.util.Locale;
 
 public class GarageBizHoursForm extends VerticalLayout {
     @SuppressWarnings("FieldCanBeLocal")
@@ -39,7 +40,9 @@ public class GarageBizHoursForm extends VerticalLayout {
 
         // set field attributes
         dayOfTheWeek.setReadOnly(true);
+        openTime.setLocale(Locale.US);
         openTime.setStep(Duration.ofMinutes(30));
+        closeTime.setLocale(Locale.US);
         closeTime.setStep(Duration.ofMinutes(30));
         isOpen.setRequired(true);
         isOpen.setItems("Open", "Closed");

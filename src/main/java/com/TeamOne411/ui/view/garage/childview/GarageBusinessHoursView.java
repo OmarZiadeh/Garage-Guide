@@ -6,6 +6,7 @@ import com.TeamOne411.backend.entity.schedule.ClosedDate;
 import com.TeamOne411.backend.entity.schedule.GarageCalendar;
 import com.TeamOne411.backend.service.BusinessHoursService;
 import com.TeamOne411.backend.service.GarageCalendarService;
+import com.TeamOne411.ui.utils.FormattingUtils;
 import com.TeamOne411.ui.view.garage.form.GarageBizHoursDialog;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.button.Button;
@@ -72,11 +73,10 @@ public class GarageBusinessHoursView extends SplitLayout {
                 .setKey("dayOfTheWeek").setSortable(false);
         bizHoursGrid.addColumn(businessHours -> convertBoolean(businessHours.getOpen()))
                 .setHeader("Open").setKey("isOpen");
-        //TODO fix date formatting to show AM/PM (unless we're good with 24 hours?)
-        bizHoursGrid.addColumn(BusinessHours::getOpenTime).setHeader("Opening Time")
-                .setKey("openTime").setSortable(false);
-        bizHoursGrid.addColumn(BusinessHours::getCloseTime).setHeader("Closing Time")
-                .setKey("closeTime").setSortable(false);
+        bizHoursGrid.addColumn(businessHours -> FormattingUtils.convertTime(businessHours.getOpenTime()))
+                .setHeader("Opening Time").setKey("openTime").setSortable(false);
+        bizHoursGrid.addColumn(businessHours -> FormattingUtils.convertTime(businessHours.getCloseTime()))
+                .setHeader("Closing Time").setKey("closeTime").setSortable(false);
         bizHoursGrid.addComponentColumn(this::createUpdateButton).setHeader("Update")
                 .setTextAlign(ColumnTextAlign.CENTER);
 
@@ -223,6 +223,9 @@ public class GarageBusinessHoursView extends SplitLayout {
         saveExcDateButton.setEnabled(false);
         updateDatesClosedList();
     }
+
+
+
 
     /**
      * Converts the isOpen Boolean so it displays as something logical to the customer
