@@ -6,6 +6,7 @@ import java.util.Locale;
 
 /**
  * This class provides various methods for formatting various objects such as dates and times
+ * Class methods provided by Vaadin sample application
  */
 public class FormattingUtils {
 

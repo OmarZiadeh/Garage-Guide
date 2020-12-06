@@ -9,6 +9,7 @@ import java.util.Locale;
 
 /**
  * Converts the price to a two digit format
+ * Class methods provided by Vaadin sample application
  */
 public class PriceConverter extends StringToBigDecimalConverter {
 

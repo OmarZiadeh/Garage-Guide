@@ -13,6 +13,11 @@ import com.vaadin.flow.templatemodel.ModelEncoder;
 
 import static com.TeamOne411.ui.utils.FormattingUtils.HOUR_FORMATTER;
 
+/**
+ * This class converts a time value to/from a string value
+ * Class methods provided by Vaadin sample application
+ */
+
 public class LocalTimeConverter implements ModelEncoder<LocalTime, String>, Converter<String, LocalTime> {
 
     @Override
