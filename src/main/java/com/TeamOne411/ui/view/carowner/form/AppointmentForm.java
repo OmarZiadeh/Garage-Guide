@@ -6,12 +6,12 @@ import com.TeamOne411.backend.entity.servicecatalog.OfferedService;
 import com.TeamOne411.backend.entity.servicecatalog.ServiceCategory;
 import com.TeamOne411.backend.service.AppointmentService;
 import com.TeamOne411.backend.service.GarageCalendarService;
-import com.TeamOne411.backend.service.GarageService;
 import com.TeamOne411.backend.service.ServiceCatalogService;
 import com.TeamOne411.ui.utils.FormattingUtils;
 import com.TeamOne411.ui.utils.LocalTimeConverter;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -20,6 +20,8 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.H4;
+import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.html.NativeButton;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
@@ -44,9 +46,7 @@ public class AppointmentForm extends VerticalLayout {
     private final GarageCalendarService garageCalendarService;
     private final AppointmentService appointmentService;
     private final Appointment appointment = new Appointment();
-    private Duration estimatedDuration;
-    private BigDecimal estimatedTotalPrice;
-    private final TextField priceField = new TextField("Estimated PreTax Total");
+    private final Text confirmPrice = new Text("");
     private final TextArea carOwnerComments = new TextArea("Is there anything else you'd like us to know?");
     private final Button saveButton = new Button("Book Appointment");
     private final ComboBox<Garage> garage = new ComboBox<>("Select Garage");
@@ -54,13 +54,15 @@ public class AppointmentForm extends VerticalLayout {
     private final DatePicker appointmentDate = new DatePicker("Desired Appointment Date");
     private final ComboBox<LocalTime> appointmentTime = new ComboBox<>("Select Available Time");
     private final Checkbox confirmationCheckbox = new Checkbox("Check Here If Everything Looks Good");
-    private final TextField confirmGarage = new TextField("Selected Garage");
-    private final TextField confirmDate = new TextField("Appointment Date");
-    private final TextField confirmTime = new TextField("Appointment Time");
+    private final Text confirmGarage = new Text("");
+    private final Text confirmDate = new Text("");
+    private final Text confirmTime = new Text("");
     private final LocalTimeConverter localTimeConverter = new LocalTimeConverter();
+    private Duration estimatedDuration;
+    private BigDecimal estimatedTotalPrice;
 
     public AppointmentForm(ServiceCatalogService serviceCatalogService, GarageCalendarService garageCalendarService,
-                           AppointmentService appointmentService){
+                           AppointmentService appointmentService) {
         this.serviceCatalogService = serviceCatalogService;
         this.garageCalendarService = garageCalendarService;
         this.appointmentService = appointmentService;
@@ -103,29 +105,36 @@ public class AppointmentForm extends VerticalLayout {
         accordion.add("Appointment Date and Time", appointmentTimeForm);
 
         // CONFIRM DETAILS
-        FormLayout confirmForm = new FormLayout();
-        confirmForm.add(confirmGarage, priceField, confirmDate, confirmTime, carOwnerComments, confirmationCheckbox);
-        confirmGarage.setReadOnly(true);
-        confirmDate.setReadOnly(true);
-        confirmTime.setReadOnly(true);
-        priceField.setReadOnly(true);
+        VerticalLayout confirmForm = new VerticalLayout();
+        confirmForm.setJustifyContentMode(JustifyContentMode.CENTER);
+        confirmForm.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+        confirmForm.setWidth("100%");
+        confirmForm.add(
+                new H4("Please Confirm Your Appointment Information"),
+                new H5(confirmGarage),
+                new H5(confirmPrice),
+                new H5(confirmDate),
+                new H5(confirmTime),
+                confirmationCheckbox,
+                carOwnerComments);
+        carOwnerComments.setWidth("50%");
         carOwnerComments.setPlaceholder("Add Your Comments Here");
         accordion.add("Confirm Appointment", confirmForm);
 
         // CLICK LISTENERS
         garage.addValueChangeListener(e -> {
             setOfferedServicesGrid();
-            confirmGarage.setValue(String.valueOf(garage.getValue().getCompanyName()));
+            confirmGarage.setText("Selected Garage: " + garage.getValue().getCompanyName());
         });
         offeredServicesGrid.asMultiSelect().addValueChangeListener(e -> totalPrice());
         appointmentDate.addValueChangeListener(e -> {
             setAppointmentTime();
-            confirmDate.setValue(String.valueOf(appointmentDate.getValue()));
+            confirmDate.setText("Appointment Date: " + appointmentDate.getValue());
         });
         appointmentTime.addValueChangeListener(e ->
-            confirmTime.setValue(FormattingUtils.convertTime(appointmentTime.getValue())));
+                confirmTime.setText("Appointment Time: " + FormattingUtils.convertTime(appointmentTime.getValue())));
         confirmationCheckbox.addValueChangeListener(e -> {
-            if(confirmationCheckbox.getValue()){
+            if (confirmationCheckbox.getValue()) {
                 checkFormCompletion();
             } else {
                 saveButton.setEnabled(false);
@@ -141,7 +150,7 @@ public class AppointmentForm extends VerticalLayout {
     /**
      * Sets the offeredServicesGrid contents once a garage has been selected
      */
-    private void setOfferedServicesGrid(){
+    private void setOfferedServicesGrid() {
         offeredServicesGrid.setItems(serviceCatalogService.findByServiceCategory_Garage(garage.getValue()));
         offeredServicesGrid.setVisible(true);
         offeredServicesGrid.removeAllColumns();
@@ -161,24 +170,25 @@ public class AppointmentForm extends VerticalLayout {
     /**
      * Totals the price for the owner to view on the confirm form
      */
-    private void totalPrice(){
+    private void totalPrice() {
         Set<OfferedService> offeredServiceSet = offeredServicesGrid.asMultiSelect().getSelectedItems();
         BigDecimal calcTotal = new BigDecimal(0);
         Duration durationTotal = Duration.ZERO;
-        for(OfferedService os : offeredServiceSet){
+        for (OfferedService os : offeredServiceSet) {
             calcTotal = calcTotal.add(os.getPrice());
             durationTotal = durationTotal.plus(os.getDuration());
         }
-        priceField.setValue(calcTotal.toString());
+        confirmPrice.setText("Estimated Total: $" + calcTotal.toString());
         estimatedTotalPrice = calcTotal;
         estimatedDuration = durationTotal;
     }
 
     /**
      * Gets the set of selected services
+     *
      * @return Set of selected services
      */
-    public Set<OfferedService> getSelectedServices(){
+    public Set<OfferedService> getSelectedServices() {
         return offeredServicesGrid.getSelectedItems();
     }
 
@@ -186,19 +196,19 @@ public class AppointmentForm extends VerticalLayout {
      * Checks that the appointment form is complete before enabling the save button
      * User receives a notification if the form is not complete
      */
-    private void checkFormCompletion(){
-        if(garage.getValue() != null && appointmentDate.getValue() != null && appointmentTime.getValue() != null
-                && !offeredServicesGrid.asMultiSelect().isEmpty()){
+    private void checkFormCompletion() {
+        if (garage.getValue() != null && appointmentDate.getValue() != null && appointmentTime.getValue() != null
+                && !offeredServicesGrid.asMultiSelect().isEmpty()) {
             saveButton.setEnabled(true);
         } else {
             String message = "";
-            if(garage.getValue() == null)
+            if (garage.getValue() == null)
                 message = "a garage";
-            else if(appointmentDate.getValue() == null)
+            else if (appointmentDate.getValue() == null)
                 message = "an appointment Date and Time";
             else if (appointmentTime.getValue() == null)
                 message = "an appointmentTime";
-            else if (offeredServicesGrid.asMultiSelect().isEmpty()){
+            else if (offeredServicesGrid.asMultiSelect().isEmpty()) {
                 message = "a service required";
             }
             Notification notification = new Notification(
@@ -214,7 +224,7 @@ public class AppointmentForm extends VerticalLayout {
     /**
      * Sets the appointmentTime combobox once the user has selected an appointmentDate
      */
-    private void setAppointmentTime(){
+    private void setAppointmentTime() {
         // set the time slots once the user has picked a desired appointment date
         appointmentTime.setEnabled(true);
         appointmentTime.setItems(garageCalendarService
