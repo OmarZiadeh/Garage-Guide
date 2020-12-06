@@ -76,10 +76,10 @@ public class AppointmentForm extends VerticalLayout {
         // VEHICLE AND GARAGE INFO
         FormLayout garageForm = new FormLayout();
         TextField vehicle = new TextField("Vehicle");
-        garageForm.add(vehicle, garage);
         vehicle.setPlaceholder("Placeholder");
+        garageForm.add(vehicle, garage);
         garage.setItemLabelGenerator(Garage::getCompanyName);
-        garage.setItems(garageService.findAll());
+        garage.setItems(garageCalendarService.findAllByGarageExists());
         garage.setRequired(true);
         garage.setRequiredIndicatorVisible(true);
         accordion.add("Vehicle and Garage Information", garageForm);

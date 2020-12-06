@@ -102,6 +102,14 @@ public class GarageCalendarService {
     }
 
     /**
+     * Finds all garages if a garage calendar exists
+     */
+    public List<Garage> findAllByGarageExists(){
+        return garageCalendarRepository.findAllByGarageExists();
+    }
+
+
+    /**
      * This generates the available appointment time slots for a garage
      *
      * @param businessHoursService the business hours service for managing the business hours
