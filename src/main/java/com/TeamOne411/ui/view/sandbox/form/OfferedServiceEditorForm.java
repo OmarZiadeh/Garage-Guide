@@ -3,6 +3,7 @@ package com.TeamOne411.ui.view.sandbox.form;
 import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.servicecatalog.OfferedService;
 import com.TeamOne411.backend.entity.servicecatalog.ServiceCategory;
+import com.TeamOne411.ui.utils.PriceConverter;
 import com.TeamOne411.ui.view.sandbox.childview.ServicesSandboxView;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -16,49 +17,27 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
-import com.vaadin.flow.data.converter.StringToBigDecimalConverter;
 import com.vaadin.flow.shared.Registration;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.time.Duration;
 import java.util.List;
-import java.util.Locale;
 
+@SuppressWarnings("FieldCanBeLocal")
 public class OfferedServiceEditorForm extends FormLayout {
-    private TextField serviceName = new TextField("Service name");
-    private ComboBox<Garage> garageComboBox = new ComboBox<>("Garage");
-    private TextField price = new TextField("$ Price");
-    private ComboBox<Duration> duration = new ComboBox<>("Duration");
-    private ComboBox<ServiceCategory> serviceCategory = new ComboBox<>("Category");
-
-    private Button save = new Button("Save");
-    private Button delete = new Button("Delete");
-    private Button close = new Button("Cancel");
-
-    private static class PriceConverter extends StringToBigDecimalConverter {
-
-        public PriceConverter() {
-            super(BigDecimal.ZERO, "Cannot convert value to a number.");
-        }
-
-        @Override
-        protected NumberFormat getFormat(Locale locale) {
-            // Always display currency with two decimals
-            final NumberFormat format = super.getFormat(locale);
-            if (format instanceof DecimalFormat) {
-                format.setMaximumFractionDigits(2);
-                format.setMinimumFractionDigits(2);
-            }
-            return format;
-        }
-    }
-
     Binder<OfferedService> binder = new BeanValidationBinder<>(OfferedService.class);
+    private final TextField serviceName = new TextField("Service name");
+    private final ComboBox<Garage> garageComboBox = new ComboBox<>("Garage");
+    private final TextField price = new TextField("$ Price");
+    private final ComboBox<Duration> duration = new ComboBox<>("Duration");
+    private final ComboBox<ServiceCategory> serviceCategory = new ComboBox<>("Category");
+    private final Button save = new Button("Save");
+    private final Button delete = new Button("Delete");
+    private final Button close = new Button("Cancel");
     private OfferedService offeredService = new OfferedService();
 
     public OfferedServiceEditorForm(ServicesSandboxView servicesSandboxView) {
+
+        // SET FORM ATTRIBUTES
         addClassName("offered-service-form");
         binder.forField(price).withNullRepresentation("").withConverter(new PriceConverter()).bind("price");
         binder.bindInstanceFields(this);
@@ -67,14 +46,18 @@ public class OfferedServiceEditorForm extends FormLayout {
         duration.setItems((Duration.ofMinutes(0)), Duration.ofMinutes(30), Duration.ofMinutes(60),
                 Duration.ofMinutes(90), Duration.ofMinutes(120),
                 Duration.ofMinutes(150), Duration.ofMinutes(180));
+
+        // LISTENERS
+        garageComboBox.addValueChangeListener(comboBoxGarageComponentValueChangeEvent ->
+                servicesSandboxView.setGarage(garageComboBox.getValue()));
+
+        // ADD FIELDS TO FORM
         add(serviceName,
                 garageComboBox,
                 price,
                 duration,
                 serviceCategory,
                 createButtonsLayout());
-        garageComboBox.addValueChangeListener(comboBoxGarageComponentValueChangeEvent ->
-                servicesSandboxView.setGarage(garageComboBox.getValue()));
     }
 
     public void setGarages(List<Garage> garages) {
@@ -121,13 +104,19 @@ public class OfferedServiceEditorForm extends FormLayout {
         }
     }
 
+    public <T extends ComponentEvent<?>> Registration addListener(Class<T> eventType,
+                                                                  ComponentEventListener<T> listener) {
+        return getEventBus().addListener(eventType, listener);
+    }
+
     public static abstract class OfferedServiceFormEvent extends ComponentEvent<OfferedServiceEditorForm> {
-        private OfferedService offeredService;
+        private final OfferedService offeredService;
 
         protected OfferedServiceFormEvent(OfferedServiceEditorForm source, OfferedService offeredService) {
             super(source, false);
             this.offeredService = offeredService;
         }
+
         public OfferedService getOfferedService() {
             return offeredService;
         }
@@ -149,10 +138,5 @@ public class OfferedServiceEditorForm extends FormLayout {
         CloseEvent(OfferedServiceEditorForm source) {
             super(source, null);
         }
-    }
-
-    public <T extends ComponentEvent<?>> Registration addListener(Class<T> eventType,
-                                                                  ComponentEventListener<T> listener) {
-        return getEventBus().addListener(eventType, listener);
     }
 }
