@@ -35,7 +35,7 @@ public class Appointment extends AbstractEntity {
     private BigDecimal estimatedTotalPrice;
 
     @NotNull
-    private String status = ("Future");
+    private String status = ("Not Started");
 
     @Column(name = "estimated_completion_time", columnDefinition = "TIME")
     private LocalTime estimatedCompletionTime;
