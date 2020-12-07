@@ -67,12 +67,24 @@ public class AppointmentService {
         appointmentTaskRepository.save(appointmentTask);
     }
 
-    public void deleteAppointmentTask(AppointmentTask appointmentTask) {
-        appointmentTaskRepository.delete(appointmentTask);
+    /**
+     * Deletes all appointment tasks for a given appointment
+     * @param appointment the appointment to search by
+     */
+    public void deleteAppointmentTasks(Appointment appointment) {
+        List<AppointmentTask> appointmentTasks = findAllAppointmentTasksByAppointment(appointment);
+        for(AppointmentTask appointmentTask : appointmentTasks){
+            appointmentTaskRepository.delete(appointmentTask);
+        }
     }
 
-    public List<AppointmentTask> findAllAppointmentTasks() {
-        return (appointmentTaskRepository.findAll());
+    /**
+     * Finds all appointment tasks for a given appointment
+     * @param appointment the appointment to search by
+     * @return the list of appointment tasks
+     */
+    public List<AppointmentTask> findAllAppointmentTasksByAppointment(Appointment appointment) {
+        return (appointmentTaskRepository.findAllByAppointment(appointment));
     }
 
     /**
