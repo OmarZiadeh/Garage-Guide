@@ -55,8 +55,7 @@ public class AppointmentForm extends VerticalLayout {
     private final ComboBox<LocalTime> appointmentTime = new ComboBox<>("Select Appointment Time");
     private final Checkbox confirmationCheckbox = new Checkbox("Check Here If Everything Looks Good");
     private final Text confirmGarage = new Text("");
-    private final Text confirmDate = new Text("");
-    private final Text confirmTime = new Text("");
+    private final Text confirmDateTime = new Text("");
     private final LocalTimeConverter localTimeConverter = new LocalTimeConverter();
     private final LocalDateConverter localDateConverter = new LocalDateConverter();
     private Duration estimatedDuration;
@@ -85,8 +84,7 @@ public class AppointmentForm extends VerticalLayout {
         garageForm.add(vehicle, garage);
         garage.setItemLabelGenerator(Garage::getCompanyName);
         garage.setItems(garageCalendarService.findAllByGarageExists());
-        garage.setRequired(true);
-        garage.setRequiredIndicatorVisible(true);
+        setRequiredComboBoxValues(garage);
         accordion.add("Vehicle and Garage Information", garageForm);
 
         // OFFERED SERVICES
@@ -97,11 +95,9 @@ public class AppointmentForm extends VerticalLayout {
         // APPOINTMENT DATE AND TIME
         FormLayout appointmentTimeForm = new FormLayout();
         appointmentTimeForm.add(appointmentDate, appointmentTime);
-        appointmentDate.setRequired(true);
-        appointmentDate.setRequiredIndicatorVisible(true);
+        setRequiredComboBoxValues(appointmentDate);
+        setRequiredComboBoxValues(appointmentTime);
         appointmentDate.setEnabled(false);
-        appointmentTime.setRequired(true);
-        appointmentTime.setRequiredIndicatorVisible(true);
         appointmentTime.setEnabled(false);
         accordion.add("Appointment Date and Time", appointmentTimeForm);
 
@@ -114,8 +110,7 @@ public class AppointmentForm extends VerticalLayout {
                 new H4("Please Confirm Your Appointment Information"),
                 new H5(confirmGarage),
                 new H5(confirmPrice),
-                new H5(confirmDate),
-                new H5(confirmTime),
+                new H5(confirmDateTime),
                 confirmationCheckbox,
                 carOwnerComments);
         carOwnerComments.setWidth("50%");
@@ -129,12 +124,10 @@ public class AppointmentForm extends VerticalLayout {
             confirmGarage.setText("Selected Garage: " + garage.getValue().getCompanyName());
         });
         offeredServicesGrid.asMultiSelect().addValueChangeListener(e -> totalPrice());
-        appointmentDate.addValueChangeListener(e -> {
-            setAppointmentTime();
-            confirmDate.setText("Appointment Date: " + FormattingUtils.convertDate(appointmentDate.getValue()));
-        });
+        appointmentDate.addValueChangeListener(e -> setAppointmentTime());
         appointmentTime.addValueChangeListener(e ->
-                confirmTime.setText("Appointment Time: " + FormattingUtils.convertTime(appointmentTime.getValue())));
+                confirmDateTime.setText("Appointment Date & Time: " + FormattingUtils.convertDate(appointmentDate.getValue()) +
+                        "  " + FormattingUtils.convertTime(appointmentTime.getValue())));
         confirmationCheckbox.addValueChangeListener(e -> {
             if (confirmationCheckbox.getValue()) {
                 checkFormCompletion();
@@ -147,6 +140,14 @@ public class AppointmentForm extends VerticalLayout {
 
         // add fields to the form
         add(accordion, new HorizontalLayout(cancelButton, saveButton));
+    }
+
+    /**
+     * Sets the required and required indicated values for a combobox
+     */
+    private void setRequiredComboBoxValues(ComboBox comboBox){
+        comboBox.setRequired(true);
+        comboBox.setRequiredIndicatorVisible(true);
     }
 
     /**
@@ -244,7 +245,7 @@ public class AppointmentForm extends VerticalLayout {
     }
 
     /**
-     * Saves the appointment and starts async processes
+     * Saves the appointment and starts async background tasks to create appointment tasks and fill slots
      */
     public void completeAppointment() {
         //set appointment values
@@ -252,7 +253,6 @@ public class AppointmentForm extends VerticalLayout {
         appointment.setAppointmentTime(appointmentTime.getValue());
         appointment.setGarage(garage.getValue());
         appointment.setCarOwnerComments(carOwnerComments.getValue());
-        appointment.setEstimatedCompletionTime(appointmentTime.getValue().plusHours(estimatedDuration.toHours()));
         appointment.setEstimatedDuration(estimatedDuration);
         appointment.setEstimatedTotalPrice(estimatedTotalPrice);
 
