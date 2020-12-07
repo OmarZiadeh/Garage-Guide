@@ -20,16 +20,15 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
-@SuppressWarnings("rawtypes")
 public class CarOwnerAppointmentsView extends VerticalLayout {
     private final AppointmentService appointmentService;
-    private AppointmentDialog appointmentDialog;
     private final Grid<Appointment> appointmentsToday = new Grid<>(Appointment.class);
     private final Grid<Appointment> upcomingAppointments = new Grid<>(Appointment.class);
     private final Grid<Appointment> pastAppointments = new Grid<>(Appointment.class);
     private final H5 noAppointmentsToday = new H5("You have no appointments scheduled for today");
     private final H5 noUpcomingAppointments = new H5("You do not have any upcoming appointments scheduled");
     private final H5 noPastAppointments = new H5("You don't have any service history yet");
+    private AppointmentDialog appointmentDialog;
 
     public CarOwnerAppointmentsView(AppointmentService appointmentService,
                                     ServiceCatalogService serviceCatalogService,
@@ -93,8 +92,7 @@ public class CarOwnerAppointmentsView extends VerticalLayout {
                 noAppointmentsToday,
                 appointmentsToday
         );
-        todayLayout.setClassName("upcoming-appointments");
-        setLayoutAttributes(todayLayout, "50%");
+        setLayoutAttributes(todayLayout, "appointments-today", "50%");
 
         // create the layout for the upcoming appointments
         VerticalLayout upcomingLayout = new VerticalLayout(
@@ -102,8 +100,7 @@ public class CarOwnerAppointmentsView extends VerticalLayout {
                 noUpcomingAppointments,
                 upcomingAppointments
         );
-        upcomingLayout.setClassName("upcoming-appointments");
-        setLayoutAttributes(upcomingLayout, "30%");
+        setLayoutAttributes(upcomingLayout, "upcoming-appointments", "30%");
 
         // create the layout for the past appointments
         VerticalLayout pastLayout = new VerticalLayout(
@@ -111,8 +108,7 @@ public class CarOwnerAppointmentsView extends VerticalLayout {
                 noPastAppointments,
                 pastAppointments
         );
-        pastLayout.setClassName("past-appointments");
-        setLayoutAttributes(pastLayout, "20%");
+        setLayoutAttributes(pastLayout, "past-appointments", "20%");
 
         // combine the layouts into one horizontal layout
         HorizontalLayout combinedLayout = new HorizontalLayout(todayLayout, upcomingLayout, pastLayout);
@@ -126,46 +122,44 @@ public class CarOwnerAppointmentsView extends VerticalLayout {
         updateUpcomingGrid();
         updatePastGrid();
     }
+
     /**
      * refreshes the appointments today grid
      */
-    private void updateTodayGrid(){
-        if(appointmentService.findAllAppointmentsForToday().isEmpty()){
+    private void updateTodayGrid() {
+        if (appointmentService.findAllAppointmentsForToday().isEmpty()) {
             appointmentsToday.setVisible(false);
             noAppointmentsToday.setVisible(true);
-        }
-        else
+        } else
             appointmentsToday.setItems(appointmentService.findAllAppointmentsForToday());
     }
 
     /**
      * refreshes the upcoming appointments grid
      */
-    private void updateUpcomingGrid(){
-        if(appointmentService.findAllUpcomingAppointments().isEmpty()){
+    private void updateUpcomingGrid() {
+        if (appointmentService.findAllUpcomingAppointments().isEmpty()) {
             upcomingAppointments.setVisible(false);
             noUpcomingAppointments.setVisible(true);
-        }
-        else
+        } else
             upcomingAppointments.setItems(appointmentService.findAllUpcomingAppointments());
     }
 
     /**
      * refreshes the upcoming appointments grid
      */
-    private void updatePastGrid(){
-        if(appointmentService.findAllPastAppointments().isEmpty()){
+    private void updatePastGrid() {
+        if (appointmentService.findAllPastAppointments().isEmpty()) {
             pastAppointments.setVisible(false);
             noPastAppointments.setVisible(true);
-        }
-        else
+        } else
             pastAppointments.setItems(appointmentService.findAllPastAppointments());
     }
 
     /**
      * sets common grid attributes
      */
-    private void setGridAttributes(Grid grid, String className){
+    private void setGridAttributes(Grid<Appointment> grid, String className) {
         grid.setClassName(className);
         grid.removeAllColumns();
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
@@ -174,7 +168,8 @@ public class CarOwnerAppointmentsView extends VerticalLayout {
     /**
      * Sets common attributes for the layouts
      */
-    private void setLayoutAttributes(VerticalLayout verticalLayout, String width){
+    private void setLayoutAttributes(VerticalLayout verticalLayout, String className, String width) {
+        verticalLayout.setClassName(className);
         verticalLayout.setAlignItems(FlexComponent.Alignment.CENTER);
         verticalLayout.getStyle().set("border", "1px solid #9E9E9E");
         verticalLayout.setPadding(false);
@@ -199,7 +194,6 @@ public class CarOwnerAppointmentsView extends VerticalLayout {
      * Fired on cancelClick(). Shows a confirm dialog and then cancels the selected appointment & removes from the grid
      */
     private void cancelClick(Appointment appointment) {
-
         String message = "Are you sure you want to cancel this appointment?";
         ConfirmDialog confirmDeleteDialog = new ConfirmDialog(
                 "Cancel Appointment", message,
@@ -220,7 +214,6 @@ public class CarOwnerAppointmentsView extends VerticalLayout {
             appointmentService.deleteAppointmentTasks(appointment);
             appointmentService.deleteAppointment(appointment);
             String successMessage = "Your appointment has been cancelled.";
-
             Notification notification = new Notification(
                     successMessage,
                     4000,
@@ -247,6 +240,7 @@ public class CarOwnerAppointmentsView extends VerticalLayout {
 
     /**
      * Fired when the AppointmentForm has been exited.
+     *
      * @param event the event that fired this method
      */
     private void onSave(ComponentEvent<AppointmentDialog> event) {
@@ -255,7 +249,6 @@ public class CarOwnerAppointmentsView extends VerticalLayout {
         updateTodayGrid();
 
         String successMessage = "Your appointment has been booked. Thank you for using Garage Guide";
-
         Notification notification = new Notification(
                 successMessage,
                 4000,
