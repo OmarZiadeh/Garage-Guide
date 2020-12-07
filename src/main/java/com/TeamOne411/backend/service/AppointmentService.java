@@ -8,6 +8,7 @@ import com.TeamOne411.backend.repository.AppointmentTaskRepository;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -34,7 +35,32 @@ public class AppointmentService {
     }
 
     public List<Appointment> findAllAppointments() {
-        return (appointmentRepository.findAll());
+        return appointmentRepository.findAll();
+    }
+
+    /**
+     * Finds today's appointments
+     * @return List of appointments
+     */
+    public List<Appointment> findAllAppointmentsForToday(){
+        return appointmentRepository.findAllByAppointmentDateEqualsOrderByAppointmentTime(LocalDate.now());
+    }
+
+
+    /**
+     * Finds all upcoming appointments
+     * @return List of appointments
+     */
+    public List<Appointment> findAllUpcomingAppointments(){
+        return appointmentRepository.findAllByAppointmentDateGreaterThanOrderByAppointmentDate(LocalDate.now());
+    }
+
+    /**
+     * Finds all past appointments
+     * @return List of appointments
+     */
+    public List<Appointment> findAllPastAppointments(){
+        return appointmentRepository.findAllByAppointmentDateLessThanOrderByAppointmentDate(LocalDate.now());
     }
 
     public void saveAppointmentTask(AppointmentTask appointmentTask) {
