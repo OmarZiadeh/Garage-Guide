@@ -81,6 +81,16 @@ public class GarageCalendarService {
     }
 
     /**
+     * Returns a list of available appointment dates for a garage on or after "today"
+     * @param garage    the garage object to search by
+     * @return  The list of available appointment dates
+     */
+    public List<LocalDate> findStartDatesByGarage(Garage garage){
+        return timeSlotRepository.findStartDateByGarageAndStartDateGreaterThanEqualAndIsFilledFalse(garage,
+                LocalDate.now());
+    }
+
+    /**
      * Returns a list of closed dates for a garage
      *
      * @param garage the garage object to search by

@@ -8,6 +8,7 @@ import com.TeamOne411.backend.service.AppointmentService;
 import com.TeamOne411.backend.service.GarageCalendarService;
 import com.TeamOne411.backend.service.ServiceCatalogService;
 import com.TeamOne411.ui.utils.FormattingUtils;
+import com.TeamOne411.ui.utils.LocalDateConverter;
 import com.TeamOne411.ui.utils.LocalTimeConverter;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -17,7 +18,6 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H4;
@@ -51,13 +51,14 @@ public class AppointmentForm extends VerticalLayout {
     private final Button saveButton = new Button("Book Appointment");
     private final ComboBox<Garage> garage = new ComboBox<>("Select Garage");
     private final Grid<OfferedService> offeredServicesGrid = new Grid<>(OfferedService.class);
-    private final DatePicker appointmentDate = new DatePicker("Desired Appointment Date");
-    private final ComboBox<LocalTime> appointmentTime = new ComboBox<>("Select Available Time");
+    private final ComboBox<LocalDate> appointmentDate = new ComboBox<>("Select Appointment Date");
+    private final ComboBox<LocalTime> appointmentTime = new ComboBox<>("Select Appointment Time");
     private final Checkbox confirmationCheckbox = new Checkbox("Check Here If Everything Looks Good");
     private final Text confirmGarage = new Text("");
     private final Text confirmDate = new Text("");
     private final Text confirmTime = new Text("");
     private final LocalTimeConverter localTimeConverter = new LocalTimeConverter();
+    private final LocalDateConverter localDateConverter = new LocalDateConverter();
     private Duration estimatedDuration;
     private BigDecimal estimatedTotalPrice;
 
@@ -96,9 +97,9 @@ public class AppointmentForm extends VerticalLayout {
         // APPOINTMENT DATE AND TIME
         FormLayout appointmentTimeForm = new FormLayout();
         appointmentTimeForm.add(appointmentDate, appointmentTime);
-        appointmentDate.setMin(LocalDate.now());
         appointmentDate.setRequired(true);
         appointmentDate.setRequiredIndicatorVisible(true);
+        appointmentDate.setEnabled(false);
         appointmentTime.setRequired(true);
         appointmentTime.setRequiredIndicatorVisible(true);
         appointmentTime.setEnabled(false);
@@ -124,12 +125,13 @@ public class AppointmentForm extends VerticalLayout {
         // CLICK LISTENERS
         garage.addValueChangeListener(e -> {
             setOfferedServicesGrid();
+            setAppointmentDate();
             confirmGarage.setText("Selected Garage: " + garage.getValue().getCompanyName());
         });
         offeredServicesGrid.asMultiSelect().addValueChangeListener(e -> totalPrice());
         appointmentDate.addValueChangeListener(e -> {
             setAppointmentTime();
-            confirmDate.setText("Appointment Date: " + appointmentDate.getValue());
+            confirmDate.setText("Appointment Date: " + FormattingUtils.convertDate(appointmentDate.getValue()));
         });
         appointmentTime.addValueChangeListener(e ->
                 confirmTime.setText("Appointment Time: " + FormattingUtils.convertTime(appointmentTime.getValue())));
@@ -219,6 +221,15 @@ public class AppointmentForm extends VerticalLayout {
             notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
             notification.open();
         }
+    }
+
+    /**
+     * Sets the appointmentDate combobox once the user has selected a garage
+     */
+    private void setAppointmentDate() {
+        appointmentDate.setEnabled(true);
+        appointmentDate.setItems(garageCalendarService.findStartDatesByGarage(garage.getValue()));
+        appointmentDate.setItemLabelGenerator(localDateConverter::encode);
     }
 
     /**

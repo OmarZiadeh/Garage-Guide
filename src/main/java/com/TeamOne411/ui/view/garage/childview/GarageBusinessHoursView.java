@@ -99,7 +99,8 @@ public class GarageBusinessHoursView extends SplitLayout {
         excDatesGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         excDatesGrid.setHeightByRows(true);
         excDatesGrid.removeAllColumns();
-        excDatesGrid.addColumn(ClosedDate::getNotOpenDate).setHeader("Closed Date").setKey("notOpenDate");
+        excDatesGrid.addColumn(closedDate -> FormattingUtils.SHORT_DATE_FORMATTER.format(closedDate.getNotOpenDate()))
+                .setHeader("Closed Date").setKey("notOpenDate");
         excDatesGrid.addComponentColumn(this::exceptionUpdateButton)
                 .setHeader("Update").setTextAlign(ColumnTextAlign.CENTER);
         excDatesGrid.addComponentColumn(this::exceptionDeleteButton).setHeader("Delete")
@@ -223,8 +224,6 @@ public class GarageBusinessHoursView extends SplitLayout {
         saveExcDateButton.setEnabled(false);
         updateDatesClosedList();
     }
-
-
 
 
     /**

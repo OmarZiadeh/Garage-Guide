@@ -16,4 +16,8 @@ public interface TimeSlotRepository extends JpaRepository<TimeSlot, Long> {
                                                                                @Param("start_date") LocalDate localDate);
     TimeSlot findTimeSlotByGarageAndStartDateAndStartTimeAndIsFilledIsFalse(Garage garage, LocalDate localDate,
                                                                             LocalTime localTime);
+
+    @Query("SELECT DISTINCT startDate FROM TimeSlot WHERE garage = :garage and startDate >= :start_date and isFilled = false")
+    List<LocalDate> findStartDateByGarageAndStartDateGreaterThanEqualAndIsFilledFalse(@Param("garage") Garage garage,
+                                                                                      @Param("start_date") LocalDate localDate);
 }
