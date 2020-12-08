@@ -16,6 +16,7 @@ import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -50,15 +51,15 @@ public class CarOwnerAppointmentsView extends VerticalLayout {
         appointmentsToday.addColumn(appointment -> {
             Garage garage = appointment.getGarage();
             return garage.getCompanyName();
-        }).setSortable(false).setHeader("Garage").setKey("garage").setFlexGrow(6);
+        }).setSortable(false).setHeader("Garage").setKey("garage").setFlexGrow(2);
         appointmentsToday.addColumn(appointment -> FormattingUtils.HOUR_FORMATTER
                 .format(appointment.getAppointmentTime())).setHeader("Time").setKey("appointmentTime").setSortable(false);
         appointmentsToday.addColumn(Appointment::getStatus).setSortable(false).setHeader("Status").setKey("status");
-        appointmentsToday.addColumn(Appointment::getStatusComments).setHeader("Garage Comments")
-                .setKey("statusComments").setSortable(false).setFlexGrow(6);
         appointmentsToday.addColumn(appointment -> FormattingUtils.HOUR_FORMATTER
                 .format(appointment.getEstimatedCompletionTime())).setHeader("Estimated Completion")
                 .setKey("estimatedCompletionTime").setSortable(false);
+        appointmentsToday.addColumn(Appointment::getStatusComments).setHeader("Garage Comments")
+                .setKey("statusComments").setSortable(false).setFlexGrow(2);
         appointmentsToday.getColumns().forEach(col -> col.setAutoWidth(true));
 
         // setup the upcoming appointments grid
@@ -66,7 +67,7 @@ public class CarOwnerAppointmentsView extends VerticalLayout {
         upcomingAppointments.addColumn(appointment -> {
             Garage garage = appointment.getGarage();
             return garage.getCompanyName();
-        }).setSortable(false).setHeader("Garage").setKey("garage").setFlexGrow(6);
+        }).setSortable(false).setHeader("Garage").setKey("garage").setFlexGrow(2);
         upcomingAppointments.addColumn(appointment -> FormattingUtils.SHORT_DATE_FORMATTER
                 .format(appointment.getAppointmentDate())).setHeader("Date").setKey("appointmentDate").setSortable(false);
         upcomingAppointments.addColumn(appointment -> FormattingUtils.HOUR_FORMATTER
@@ -248,12 +249,13 @@ public class CarOwnerAppointmentsView extends VerticalLayout {
         updateUpcomingGrid();
         updateTodayGrid();
 
-        String successMessage = "Your appointment has been booked. Thank you for using Garage Guide";
+        String successMessage = "Your appointment has been booked. Thank you for using Garage Guide.";
         Notification notification = new Notification(
                 successMessage,
                 4000,
-                Notification.Position.TOP_END
+                Notification.Position.MIDDLE
         );
+        notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
         notification.open();
     }
 }

@@ -100,14 +100,13 @@ public class GarageBusinessHoursView extends SplitLayout {
         excDatesGrid.setHeightByRows(true);
         excDatesGrid.removeAllColumns();
         excDatesGrid.addColumn(closedDate -> FormattingUtils.SHORT_DATE_FORMATTER.format(closedDate.getNotOpenDate()))
-                .setHeader("Closed Date").setKey("notOpenDate");
-        excDatesGrid.addComponentColumn(this::exceptionUpdateButton)
-                .setHeader("Update").setTextAlign(ColumnTextAlign.CENTER);
+                .setHeader("Closed Date").setKey("notOpenDate").setTextAlign(ColumnTextAlign.CENTER);
         excDatesGrid.addComponentColumn(this::exceptionDeleteButton).setHeader("Delete")
                 .setTextAlign(ColumnTextAlign.CENTER);
 
         // set attributes for exception date picker and exception save button
         excDatePicker.setMin(LocalDate.now());
+        excDatePicker.setMax(LocalDate.now().plusYears(1));
         saveExcDateButton.setEnabled(false);
 
         // LISTENERS
@@ -157,7 +156,7 @@ public class GarageBusinessHoursView extends SplitLayout {
         childLayout.setOrientation(Orientation.HORIZONTAL);
         childLayout.addToPrimary(excDatesLayout);
         childLayout.addToSecondary(apptCalLayout);
-        childLayout.setSplitterPosition(60);
+        childLayout.setSplitterPosition(50);
 
         // add the bizHours and child splitLayout to the parent splitLayout
         addToPrimary(bizHoursLayout);
@@ -246,22 +245,6 @@ public class GarageBusinessHoursView extends SplitLayout {
     private Button createUpdateButton(BusinessHours businessHours) {
         Button updateButton = new Button(VaadinIcon.EDIT.create(), buttonClickEvent ->
                 showBusinessHoursDialog(businessHours));
-        updateButton.addThemeVariants(ButtonVariant.LUMO_SMALL);
-        return updateButton;
-    }
-
-    /**
-     * Creates the update icon button for each row in the grid
-     *
-     * @param closedDate the ClosedDate instance the icon button is associated with
-     * @return the icon button to be returned
-     */
-    private Button exceptionUpdateButton(ClosedDate closedDate) {
-        Button updateButton = new Button(VaadinIcon.EDIT.create(), buttonClickEvent -> {
-            excDatePicker.setValue(closedDate.getNotOpenDate());
-            saveExcDateButton.setText("Update Closed Date");
-            this.closedDate = closedDate;
-        });
         updateButton.addThemeVariants(ButtonVariant.LUMO_SMALL);
         return updateButton;
     }
