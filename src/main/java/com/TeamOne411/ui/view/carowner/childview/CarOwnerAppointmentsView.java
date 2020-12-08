@@ -25,9 +25,9 @@ public class CarOwnerAppointmentsView extends VerticalLayout {
     private final Grid<Appointment> appointmentsToday = new Grid<>(Appointment.class);
     private final Grid<Appointment> upcomingAppointments = new Grid<>(Appointment.class);
     private final Grid<Appointment> pastAppointments = new Grid<>(Appointment.class);
-    private final H5 noAppointmentsToday = new H5("You have no appointments scheduled for today");
+    private final H5 noAppointmentsToday = new H5("You do have an appointment scheduled for today");
     private final H5 noUpcomingAppointments = new H5("You do not have any upcoming appointments scheduled");
-    private final H5 noPastAppointments = new H5("You don't have any service history yet");
+    private final H5 noPastAppointments = new H5("You do not have any service history yet");
     private AppointmentDialog appointmentDialog;
 
     public CarOwnerAppointmentsView(AppointmentService appointmentService,
@@ -59,7 +59,7 @@ public class CarOwnerAppointmentsView extends VerticalLayout {
         appointmentsToday.addColumn(appointment -> FormattingUtils.HOUR_FORMATTER
                 .format(appointment.getEstimatedCompletionTime())).setHeader("Estimated Completion")
                 .setKey("estimatedCompletionTime").setSortable(false);
-        appointmentsToday.getColumns().forEach(appointmentsTodayColumn -> appointmentsTodayColumn.setAutoWidth(true));
+        appointmentsToday.getColumns().forEach(col -> col.setAutoWidth(true));
 
         // setup the upcoming appointments grid
         setGridAttributes(upcomingAppointments, "upcoming-grid");
@@ -73,7 +73,7 @@ public class CarOwnerAppointmentsView extends VerticalLayout {
                 .format(appointment.getAppointmentTime())).setHeader("Time").setKey("appointmentTime").setSortable(false);
         upcomingAppointments.addComponentColumn(this::cancelButton).setHeader("Cancel")
                 .setTextAlign(ColumnTextAlign.CENTER);
-        upcomingAppointments.getColumns().forEach(upcomingAppointmentsColumn -> upcomingAppointmentsColumn.setAutoWidth(true));
+        upcomingAppointments.getColumns().forEach(col -> col.setAutoWidth(true));
 
         // setup the past appointments grid
         setGridAttributes(pastAppointments, "past-grid");
@@ -83,7 +83,7 @@ public class CarOwnerAppointmentsView extends VerticalLayout {
         }).setSortable(false).setHeader("Garage").setKey("garage").setFlexGrow(6);
         pastAppointments.addColumn(appointment -> FormattingUtils.SHORT_DATE_FORMATTER
                 .format(appointment.getAppointmentDate())).setHeader("Date").setKey("appointmentDate").setSortable(false);
-        pastAppointments.getColumns().forEach(pastAppointmentsColumn -> pastAppointmentsColumn.setAutoWidth(true));
+        pastAppointments.getColumns().forEach(col -> col.setAutoWidth(true));
 
         // LAYOUTS
         // create the layout for appointments Today

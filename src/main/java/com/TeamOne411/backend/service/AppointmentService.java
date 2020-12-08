@@ -1,5 +1,6 @@
 package com.TeamOne411.backend.service;
 
+import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.schedule.Appointment;
 import com.TeamOne411.backend.entity.schedule.AppointmentTask;
 import com.TeamOne411.backend.entity.servicecatalog.OfferedService;
@@ -34,8 +35,22 @@ public class AppointmentService {
         appointmentRepository.delete(appointment);
     }
 
-    public List<Appointment> findAllAppointments() {
-        return appointmentRepository.findAll();
+    /**
+     * Finds future appointments by garage
+     * @param garage the garage to search by
+     * @return List of appointments
+     */
+    public List<Appointment> findAllUpcomingAppointmentsByGarage(Garage garage) {
+        return appointmentRepository.findAllByGarageAndAppointmentDateGreaterThanOrderByAppointmentDate(garage, LocalDate.now());
+    }
+
+    /**
+     * Finds Today's appointments for a garage
+     * @param garage the garage to search by
+     * @return List of appointments
+     */
+    public List<Appointment> findAllAppointmentsTodayByGarage(Garage garage) {
+        return appointmentRepository.findAllByGarageAndAppointmentDateEqualsOrderByAppointmentTime(garage, LocalDate.now());
     }
 
     /**
