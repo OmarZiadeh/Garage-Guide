@@ -4,6 +4,8 @@ import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.schedule.Appointment;
 import com.TeamOne411.backend.service.AppointmentService;
 import com.TeamOne411.ui.utils.FormattingUtils;
+import com.TeamOne411.ui.view.garage.form.GarageAppointmentDialog;
+import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -13,6 +15,7 @@ import com.vaadin.flow.component.gridpro.GridPro;
 import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.timepicker.TimePicker;
@@ -27,9 +30,9 @@ public class GarageAppointmentsView extends VerticalLayout {
     private final GridPro<Appointment> upcomingGrid = new GridPro<>(Appointment.class);
     private final H5 noAppointmentsToday = new H5("Your garage does not have any appointments scheduled for today");
     private final H5 noAppointmentsUpcoming = new H5("Your garage does not have any upcoming appointments scheduled");
+    private GarageAppointmentDialog garageAppointmentDialog;
 
-    public GarageAppointmentsView(AppointmentService appointmentService,
-                                  Garage garage) {
+    public GarageAppointmentsView(AppointmentService appointmentService, Garage garage) {
         this.appointmentService = appointmentService;
         this.garage = garage;
 
@@ -46,19 +49,17 @@ public class GarageAppointmentsView extends VerticalLayout {
         todayGrid.addComponentColumn(this::statusComboBox).setHeader("Status");
         todayGrid.addComponentColumn(this::estimatedCompletionTimePicker).setHeader("Estimated Completion");
         todayGrid.addEditColumn(Appointment::getStatusComments).text(Appointment::setStatusComments)
-                .setHeader("Garage Comments").setSortable(false).setFlexGrow(6);
-       // todayGrid.getColumns().forEach(col -> col.setAutoWidth(true));
+                .setHeader("Status Comments").setSortable(false).setFlexGrow(2);
 
         // add columns to upcomingGrid
         upcomingGrid.addColumn(Appointment::getStatus).setHeader("Status").setSortable(false);
         upcomingGrid.addColumn(Appointment::getEstimatedCompletionTime).setHeader("Estimated Completion").setSortable(false);
-        upcomingGrid.addColumn(Appointment::getStatusComments).setHeader("Garage Comments").setFlexGrow(6);
-      //  upcomingGrid.getColumns().forEach(col -> col.setAutoWidth(true));
+        upcomingGrid.addColumn(Appointment::getStatusComments).setHeader("Status Comments").setFlexGrow(2);
 
         // LISTENERS
         todayGrid.addItemPropertyChangedListener(e -> appointmentService.saveAppointment(e.getItem()));
 
-        //Create the layouts
+        // LAYOUTS
         VerticalLayout todayLayout = new VerticalLayout(
                 new H4("Today's Appointments"),
                 noAppointmentsToday,
@@ -95,7 +96,7 @@ public class GarageAppointmentsView extends VerticalLayout {
     /**
      * refreshes the future appointments grid
      */
-    private void updateUpcomingAppointmentsGrid(){
+    private void updateUpcomingAppointmentsGrid() {
         if (appointmentService.findAllUpcomingAppointmentsByGarage(garage).isEmpty()) {
             upcomingGrid.setVisible(false);
             noAppointmentsUpcoming.setVisible(true);
@@ -116,8 +117,8 @@ public class GarageAppointmentsView extends VerticalLayout {
         grid.addColumn(appointment -> FormattingUtils.HOUR_FORMATTER
                 .format(appointment.getAppointmentTime())).setHeader("Time").setKey("appointmentTime").setSortable(false);
         grid.addColumn(Appointment::getCarOwnerComments).setHeader("Owner Comments").setSortable(false)
-                .setKey("carOwnerComments").setFlexGrow(6);
-        grid.addComponentColumn(this::updateServicesButton).setHeader("View/Update Services")
+                .setKey("carOwnerComments").setFlexGrow(2);
+        grid.addComponentColumn(this::updateServicesButton).setHeader("Services")
                 .setTextAlign(ColumnTextAlign.CENTER);
 
         grid.setHeightByRows(true);
@@ -137,7 +138,7 @@ public class GarageAppointmentsView extends VerticalLayout {
     /**
      * Creates a timepicker for the estimated completion time field
      */
-    private TimePicker estimatedCompletionTimePicker(Appointment appointment){
+    private TimePicker estimatedCompletionTimePicker(Appointment appointment) {
         TimePicker timePicker = new TimePicker();
         timePicker.setLocale(Locale.US);
         timePicker.setStep(Duration.ofMinutes(30));
@@ -154,7 +155,7 @@ public class GarageAppointmentsView extends VerticalLayout {
     /**
      * Creates a datepicker for the status field selection
      */
-    private ComboBox<String> statusComboBox(Appointment appointment){
+    private ComboBox<String> statusComboBox(Appointment appointment) {
         ComboBox<String> status = new ComboBox<>();
         status.setItems("Not Started", "In Progress", "Completed");
         status.setValue(appointment.getStatus());
@@ -162,6 +163,9 @@ public class GarageAppointmentsView extends VerticalLayout {
         status.addValueChangeListener(e -> {
             appointment.setStatus(status.getValue());
             appointmentService.saveAppointment(appointment);
+            if(status.getValue().equals("Completed")){
+                showGarageAppointmentDialog(appointment);
+            }
         });
         return status;
     }
@@ -174,23 +178,21 @@ public class GarageAppointmentsView extends VerticalLayout {
      */
     private Button updateServicesButton(Appointment appointment) {
         Button updateButton = new Button(VaadinIcon.WRENCH.create(), buttonClickEvent ->
-                showEditAppointmentDialog(appointment));
+                showGarageAppointmentDialog(appointment));
         updateButton.addThemeVariants(ButtonVariant.LUMO_SMALL);
         return updateButton;
     }
 
     /**
-     * Creates and opens a new GarageBizHoursDialog instance for updating the Business Hours
+     * Creates and opens a new GarageApptDialog instance for viewing / editing the appointment services
      */
-    private void showEditAppointmentDialog(Appointment appointment) {
-       /* garageEditAppointmentDialog = new GarageEditAppointmentDialog();
-        garageEditAppointmentDialog.setWidth("25%");
-        garageEditAppointmentDialog.setHeight("auto");
-        garageEditAppointmentDialog.addListener(GarageBizHoursDialog.SaveSuccessEvent.class,
+    private void showGarageAppointmentDialog(Appointment appointment) {
+        garageAppointmentDialog = new GarageAppointmentDialog(appointmentService, appointment);
+        garageAppointmentDialog.setWidth("50%");
+        garageAppointmentDialog.setHeight("auto");
+        garageAppointmentDialog.addListener(GarageAppointmentDialog.SaveSuccessEvent.class,
                 this::onSave);
-        garageEditAppointmentDialog.open();
-
-        */
+        garageAppointmentDialog.open();
     }
 
     /**
@@ -198,12 +200,12 @@ public class GarageAppointmentsView extends VerticalLayout {
      *
      * @param event the event that fired this method
      */
-   /* private void onSave(ComponentEvent<AppointmentDialog> event) {
-        appointmentDialog.close();
-        updateUpcomingGrid();
-        updateTodayGrid();
+    private void onSave(ComponentEvent<GarageAppointmentDialog> event) {
+        garageAppointmentDialog.close();
+        updateAppointmentsTodayGrid();
+        updateUpcomingAppointmentsGrid();
 
-        String successMessage = "Your appointment has been booked. Thank you for using Garage Guide";
+        String successMessage = "The appointment services have been updated";
         Notification notification = new Notification(
                 successMessage,
                 4000,
@@ -211,5 +213,4 @@ public class GarageAppointmentsView extends VerticalLayout {
         );
         notification.open();
     }
-    */
 }

@@ -82,6 +82,10 @@ public class AppointmentService {
         appointmentTaskRepository.save(appointmentTask);
     }
 
+    public void deleteAppointmentTask(AppointmentTask appointmentTask){
+        appointmentTaskRepository.delete(appointmentTask);
+    }
+
     /**
      * Deletes all appointment tasks for a given appointment
      * @param appointment the appointment to search by
