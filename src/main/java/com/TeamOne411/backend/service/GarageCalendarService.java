@@ -58,7 +58,8 @@ public class GarageCalendarService {
     }
 
     /**
-     * Finds a time slot for a specified garage on a specified date at a specified time and is not already filled
+     * Finds a time slot for a specified garage on a specified date at a specified time and is not already filled.
+     * Used for setting time slots to isFilled = true following an appointment booking
      *
      * @param garage    the garage object to search by
      * @param localDate the date to search by
@@ -71,21 +72,30 @@ public class GarageCalendarService {
 
     /**
      * Returns a list of available appointment times for a garage on a certain date (time slots are not filled)
+     * and after time "now" if "today" is the date passed
+     * Used for appointment booking
      *
      * @param garage    the garage object to search by
      * @param localDate the date to search by
      * @return The list of available appointment times
      */
     public List<LocalTime> findStartTimesByGarageAndDate(Garage garage, LocalDate localDate) {
-        return timeSlotRepository.findStartTimesByGarageAndStartDateEqualsAndIsFilledIsFalse(garage, localDate);
+        LocalTime localTime;
+        if (localDate.equals(LocalDate.now())) {
+            localTime = LocalTime.now();
+        } else
+            localTime = LocalTime.MIDNIGHT;
+
+        return timeSlotRepository.findStartTimesByGarageAndStartDateEqualsAndStartTimeGreaterThanAndIsFilledIsFalse(garage, localDate, localTime);
     }
 
     /**
      * Returns a list of available appointment dates for a garage on or after "today"
-     * @param garage    the garage object to search by
-     * @return  The list of available appointment dates
+     *
+     * @param garage the garage object to search by
+     * @return The list of available appointment dates
      */
-    public List<LocalDate> findStartDatesByGarage(Garage garage){
+    public List<LocalDate> findStartDatesByGarage(Garage garage) {
         return timeSlotRepository.findStartDateByGarageAndStartDateGreaterThanEqualAndIsFilledFalse(garage,
                 LocalDate.now());
     }
@@ -114,7 +124,7 @@ public class GarageCalendarService {
     /**
      * Finds all garages if a garage calendar exists
      */
-    public List<Garage> findAllByGarageExists(){
+    public List<Garage> findAllByGarageExists() {
         return garageCalendarRepository.findAllByGarageExists();
     }
 

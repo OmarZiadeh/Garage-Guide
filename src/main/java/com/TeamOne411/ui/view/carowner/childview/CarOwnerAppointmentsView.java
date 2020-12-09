@@ -18,14 +18,14 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.splitlayout.SplitLayout;
 
 public class CarOwnerAppointmentsView extends VerticalLayout {
     private final AppointmentService appointmentService;
     private final Grid<Appointment> appointmentsToday = new Grid<>(Appointment.class);
     private final Grid<Appointment> upcomingAppointments = new Grid<>(Appointment.class);
-    private final H5 noAppointmentsToday = new H5("You do have an appointment scheduled for today");
+    private final H5 noAppointmentsToday = new H5("You do not have any appointments scheduled for today");
     private final H5 noUpcomingAppointments = new H5("You do not have any upcoming appointments scheduled");
     private AppointmentDialog appointmentDialog;
 
@@ -59,6 +59,7 @@ public class CarOwnerAppointmentsView extends VerticalLayout {
                 .setKey("statusComments").setSortable(false);
         appointmentsToday.getColumns().forEach(col -> col.setAutoWidth(true));
 
+
         // setup the upcoming appointments grid
         setGridAttributes(upcomingAppointments, "upcoming-grid");
         upcomingAppointments.addColumn(appointment -> {
@@ -76,7 +77,7 @@ public class CarOwnerAppointmentsView extends VerticalLayout {
         // LAYOUTS
         // create the layout for appointments Today
         VerticalLayout todayLayout = new VerticalLayout(
-                new H4("Your Appointment Today"),
+                new H4("Today"),
                 noAppointmentsToday,
                 appointmentsToday
         );
@@ -90,12 +91,14 @@ public class CarOwnerAppointmentsView extends VerticalLayout {
         );
         setLayoutAttributes(upcomingLayout, "upcoming-appointments", "40%");
 
-        // combine the layouts into one horizontal layout
-        HorizontalLayout combinedLayout = new HorizontalLayout(todayLayout, upcomingLayout);
-        combinedLayout.setSizeFull();
+        SplitLayout splitLayout = new SplitLayout();
+        splitLayout.setWidthFull();
+        splitLayout.addToPrimary(todayLayout);
+        splitLayout.addToSecondary(upcomingLayout);
+        splitLayout.setSplitterPosition(60);
 
         // add new appointment button and the combined layout to the class layout
-        add(newAppointment, combinedLayout);
+        add(newAppointment, splitLayout);
 
         // populate the grids
         updateTodayGrid();
@@ -201,7 +204,7 @@ public class CarOwnerAppointmentsView extends VerticalLayout {
                                        GarageCalendarService garageCalendarService) {
         appointmentDialog = new AppointmentDialog(appointmentService, serviceCatalogService,
                 garageCalendarService);
-        appointmentDialog.setWidth("50%");
+        appointmentDialog.setWidth("60%");
         appointmentDialog.setHeightFull();
         appointmentDialog.addListener(AppointmentDialog.SaveSuccessEvent.class,
                 this::onSave);

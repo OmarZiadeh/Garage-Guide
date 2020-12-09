@@ -6,6 +6,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 public class CarOwnerServiceHistoryView extends VerticalLayout {
 
     public CarOwnerServiceHistoryView() {
-        new H3("Coming soon ...");
+        add(new H3("Coming soon ..."));
     }
 }
