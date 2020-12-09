@@ -5,6 +5,7 @@ import com.TeamOne411.backend.entity.servicecatalog.OfferedService;
 import com.TeamOne411.backend.entity.servicecatalog.ServiceCategory;
 import com.TeamOne411.backend.repository.OfferedServiceRepository;
 import com.TeamOne411.backend.repository.ServiceCategoryRepository;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -66,6 +67,7 @@ public class ServiceCatalogService {
      *
      * @param garage The new garage that default categories and services should be assigned to
      */
+    @Async("threadPoolTaskExecutor")
     public void initializeDefaultServices(Garage garage) {
 
         // These are the default Categories that are enabled for a garage

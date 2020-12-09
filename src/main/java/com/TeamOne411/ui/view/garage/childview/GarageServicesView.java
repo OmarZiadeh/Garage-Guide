@@ -37,12 +37,6 @@ public class GarageServicesView extends VerticalLayout {
         this.serviceCatalogService = serviceCatalogService;
         this.garage = garage;
 
-        // Sets the initial categories and services for a garage the first time the first admin logs in
-        if(serviceCatalogService.findByServiceCategory_Garage(garage).isEmpty() &&
-                serviceCatalogService.findCategoriesByGarage(garage).isEmpty()){
-            serviceCatalogService.initializeDefaultServices(garage);
-        }
-
         // configure the service grid
         grid.addClassName("garage-service-grid");
         grid.setMaxHeight("50vh");

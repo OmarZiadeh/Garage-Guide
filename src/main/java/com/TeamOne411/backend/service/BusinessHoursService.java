@@ -2,8 +2,8 @@ package com.TeamOne411.backend.service;
 
 import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.schedule.BusinessHours;
-import com.TeamOne411.backend.entity.schedule.GarageCalendar;
 import com.TeamOne411.backend.repository.BusinessHoursRepository;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,11 +19,11 @@ public class BusinessHoursService {
         this.businessHoursRepository = businessHoursRepository;
     }
 
-    public void saveBusinessHours(BusinessHours businessHours){
+    public void saveBusinessHours(BusinessHours businessHours) {
         businessHoursRepository.save(businessHours);
     }
 
-    public void deleteBusinessHours(List<BusinessHours> businessHours){
+    public void deleteBusinessHours(List<BusinessHours> businessHours) {
         businessHoursRepository.deleteAll(businessHours);
     }
 
@@ -38,9 +38,10 @@ public class BusinessHoursService {
     /**
      * This method assigns a business hours placeholder for each day of the week
      *
-     * @param garage The garageSchedule the business hours should be associated with
+     * @param garage The garage the business hours should be associated with
      */
-    public void initializeBusinessHours(Garage garage){
+    @Async("threadPoolTaskExecutor")
+    public void initializeBusinessHours(Garage garage) {
         createBusinessDay(garage, "Monday", 1);
         createBusinessDay(garage, "Tuesday", 2);
         createBusinessDay(garage, "Wednesday", 3);
@@ -54,9 +55,9 @@ public class BusinessHoursService {
      * This method creates the business hours placeholder
      *
      * @param garage The garage the business hours should be associated with
-     * @param name The name for the day of the week
+     * @param name   The name for the day of the week
      */
-    public void createBusinessDay(Garage garage, String name, int number){
+    public void createBusinessDay(Garage garage, String name, int number) {
         BusinessHours businessHours = new BusinessHours();
         businessHours.setGarage(garage);
         businessHours.setDayOfTheWeek(name);

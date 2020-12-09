@@ -49,11 +49,6 @@ public class GarageBusinessHoursView extends SplitLayout {
         this.garage = garage;
         this.garageCalendarService = garageCalendarService;
 
-        // Sets the initial business hours for a garage the first time the first admin for the garage logs in
-        if (businessHoursService.findByGarage(garage).isEmpty()) {
-            businessHoursService.initializeBusinessHours(garage);
-        }
-
         // Checks if a garageCalendar exists already, sets the calendar if one does exist
         // otherwise creates a new garageCalendar instance if one doesn't exist
         if (garageCalendarService.findCalendarByGarage(garage) != null) {
