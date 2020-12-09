@@ -36,16 +36,16 @@ public class AppointmentService {
     }
 
     /**
-     * Finds future appointments by garage
+     * Finds upcoming appointments for a garage
      * @param garage the garage to search by
      * @return List of appointments
      */
     public List<Appointment> findAllUpcomingAppointmentsByGarage(Garage garage) {
-        return appointmentRepository.findAllByGarageAndAppointmentDateGreaterThanOrderByAppointmentDate(garage, LocalDate.now());
+        return appointmentRepository.findAllByGarageAndAppointmentDateGreaterThanOrderByAppointmentDateAscAppointmentTimeAsc(garage, LocalDate.now());
     }
 
     /**
-     * Finds Today's appointments for a garage
+     * Finds today's appointments for a garage
      * @param garage the garage to search by
      * @return List of appointments
      */
@@ -67,7 +67,7 @@ public class AppointmentService {
      * @return List of appointments
      */
     public List<Appointment> findAllUpcomingAppointments(){
-        return appointmentRepository.findAllByAppointmentDateGreaterThanOrderByAppointmentDate(LocalDate.now());
+        return appointmentRepository.findAllByAppointmentDateGreaterThanOrderByAppointmentDateAscAppointmentTimeAsc(LocalDate.now());
     }
 
     /**
