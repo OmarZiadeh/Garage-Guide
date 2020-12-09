@@ -1,10 +1,7 @@
 package com.TeamOne411.backend.service;
 
-import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.Vehicle;
 import com.TeamOne411.backend.entity.users.CarOwner;
-import com.TeamOne411.backend.entity.users.GarageEmployee;
-import com.TeamOne411.backend.repository.CarOwnerRepository;
 import com.TeamOne411.backend.repository.VehicleRepository;
 import org.springframework.stereotype.Service;
 
@@ -46,9 +43,11 @@ public class VehicleService {
         vehicleRepository.save(vehicle);
     }
 
-    public void registerNewVehicle(Vehicle vehicle) {
-    }
+//    public void registerNewVehicle(Vehicle vehicle) {
+//    }
+//
+//    public void updateVehicle(Vehicle vehicle) {
+//    }
 
-    public void updateVehicle(Vehicle vehicle) {
-    }
+
 }

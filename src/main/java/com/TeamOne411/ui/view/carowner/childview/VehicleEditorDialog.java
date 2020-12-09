@@ -5,6 +5,7 @@ import com.TeamOne411.backend.entity.users.CarOwner;
 import com.TeamOne411.backend.entity.users.GarageEmployee;
 import com.TeamOne411.backend.service.UserDetailsService;
 import com.TeamOne411.backend.service.VehicleService;
+import com.TeamOne411.backend.service.api.car.ApiVehicleService;
 import com.TeamOne411.backend.service.exceptions.EmailExistsException;
 import com.TeamOne411.backend.service.exceptions.PhoneNumberExistsException;
 import com.TeamOne411.backend.service.exceptions.UsernameExistsException;
@@ -23,18 +24,20 @@ import com.vaadin.flow.shared.Registration;
  */
 public class VehicleEditorDialog extends Dialog {
     private VehicleAddForm vehicleAddForm;
-    private UserDetailsService userDetailsService;
     private VehicleService vehicleService;
+    private ApiVehicleService apiVehicleService;
     private Vehicle vehicle;
     private CarOwner carOwner;
     private boolean isEditMode = false;
 
     /**
      * This constructor is for the dialog to create a new vehicle
-     * @param vehicle
+     * @param carOwner
      */
-    public void VehicleAddForm(Vehicle vehicle) {
-        this.vehicle = vehicle;
+    public VehicleEditorDialog(CarOwner carOwner, ApiVehicleService apiVehicleService, VehicleService vehicleService) {
+        this.apiVehicleService = apiVehicleService;
+        this.carOwner = carOwner;
+        this.vehicleService = vehicleService;
 
         initDialog("Register New Vehicle");
     }
@@ -43,9 +46,11 @@ public class VehicleEditorDialog extends Dialog {
      * This constructor is for the dialog to edit an existing vehicle record
      * @param vehicle
      */
-    public VehicleEditorDialog(Vehicle vehicle) {
+    public VehicleEditorDialog(Vehicle vehicle, ApiVehicleService apiVehicleService, VehicleService vehicleService) {
+        this.apiVehicleService = apiVehicleService;
         this.vehicle = vehicle;
         this.carOwner = vehicle.getCarOwner();
+        this.vehicleService = vehicleService;
         isEditMode = true;
 
         initDialog("Edit Vehicle Details");
@@ -57,13 +62,12 @@ public class VehicleEditorDialog extends Dialog {
      * @param title The title text to give to the dialog
      */
     private void initDialog(String title) {
-        vehicleAddForm = new VehicleAddForm(vehicleService);
+        vehicleAddForm = new VehicleAddForm(apiVehicleService);
         vehicleAddForm.setIsEditMode(isEditMode);
-        vehicleAddForm.addListener(GarageEmployeeRegisterForm.BackEvent.class, this::onCancelClick);
-        vehicleAddForm.addListener(GarageAdminRegisterForm.NextEvent.class, this::onComplete);
+        vehicleAddForm.addListener(VehicleAddForm.BackEvent.class, this::onCancelClick);
+        vehicleAddForm.addListener(VehicleAddForm.NextEvent.class, this::onComplete);
         vehicleAddForm.setBackButtonText("Cancel");
-        vehicleAddForm.setNextButtonText(isEditMode ? "Save Changes" : "Complete Registration");
-        vehicleAddForm.setIsAdminToggleEnabled(true);
+        vehicleAddForm.setNextButtonText(isEditMode ? "Save Changes" : "Add Vehicle");
 
         // only way to exit is to hit cancel or complete the form
         setCloseOnEsc(false);
@@ -106,22 +110,14 @@ public class VehicleEditorDialog extends Dialog {
             vehicle.setCarOwner(carOwner);
 
             if (!isEditMode) {
-                try {
-                    vehicleService.registerNewVehicle(vehicle);
-                    fireEvent(new AddEmployeeSuccessEvent(this));
-                } catch (EmailExistsException emailEx) {
-                    // todo display error
-                    // todo delete garage just created
-                } catch (UsernameExistsException usernameEx) {
-                    // todo display error
-                    // todo delete garage just created
-                // redundant but necessary catch clause
-                } catch (PhoneNumberExistsException e) {
-                    e.printStackTrace();
-                }
+
+                //possible try catch clause here to catch duplicate VIN
+                vehicleService.save(vehicle);
+                fireEvent(new AddVehicleSuccessEvent(this));
+
             } else {
-                vehicleService.updateVehicle(vehicle);
-                fireEvent(new EditEmployeeSuccessEvent(this));
+                vehicleService.save(vehicle);
+                fireEvent(new EditVehicleSuccessEvent(this));
             }
 
         } else {
@@ -132,8 +128,8 @@ public class VehicleEditorDialog extends Dialog {
     /**
      * Event to emit when a new employee is successfully added.
      */
-    public static class AddEmployeeSuccessEvent extends ComponentEvent<VehicleEditorDialog> {
-        AddEmployeeSuccessEvent(VehicleEditorDialog source) {
+    public static class AddVehicleSuccessEvent extends ComponentEvent<VehicleEditorDialog> {
+        AddVehicleSuccessEvent(VehicleEditorDialog source) {
             super(source, false);
         }
     }
@@ -141,8 +137,8 @@ public class VehicleEditorDialog extends Dialog {
     /**
      * Event to emit when an existing employee is successfully edited.
      */
-    public static class EditEmployeeSuccessEvent extends ComponentEvent<VehicleEditorDialog> {
-        EditEmployeeSuccessEvent(VehicleEditorDialog source) {
+    public static class EditVehicleSuccessEvent extends ComponentEvent<VehicleEditorDialog> {
+        EditVehicleSuccessEvent(VehicleEditorDialog source) {
             super(source, false);
         }
     }

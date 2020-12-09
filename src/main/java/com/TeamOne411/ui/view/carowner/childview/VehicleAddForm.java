@@ -34,7 +34,6 @@ public class VehicleAddForm extends VerticalLayout {
     private ComboBox<String> make = new ComboBox<String>("Make");
     private ComboBox<String> model = new ComboBox<String>("Model");
     private ComboBox<String> year = new ComboBox<String>("Year");
-    private TextField color = new TextField("Color");
     private TextField vin = new TextField("VIN");
     private Button backButton = new Button("Back To My Information", new Icon(VaadinIcon.ARROW_LEFT));
     private Button nextButton = new Button("Confirm Details", new Icon(VaadinIcon.ARROW_RIGHT));
@@ -43,6 +42,7 @@ public class VehicleAddForm extends VerticalLayout {
     Binder<Vehicle> binder = new BeanValidationBinder<>(Vehicle.class);
     private Vehicle vehicle = new Vehicle();
     private ApiVehicleService apiVehicleService;
+    private boolean isEditMode = false;
 
     public VehicleAddForm(ApiVehicleService apiVehicleService) {
         this.apiVehicleService = apiVehicleService;
@@ -56,10 +56,29 @@ public class VehicleAddForm extends VerticalLayout {
 
         binder.bindInstanceFields(this);
 
+        make.setEnabled(false);
+        model.setEnabled(false);
 
         fillYearComboBox();
-        fillMakeComboBox();
-        fillModelComboBox();
+
+
+        //when year is chosen, fill make
+        year.addValueChangeListener(e -> {
+            if (year.getValue() != null) {
+                make.setEnabled(true);
+                fillMakeComboBox();
+            }
+        });
+
+        //when make is chosen, fill model
+        make.addValueChangeListener(e -> {
+            if (make.getValue() != null) {
+                model.setEnabled(true);
+                fillModelComboBox(make.getValue());
+            }
+        });
+
+
 
         // set button click listeners
         backButton.addClickListener(e -> fireEvent(new BackEvent(this)));
@@ -70,11 +89,9 @@ public class VehicleAddForm extends VerticalLayout {
 
         add(
                 new H3("Tell us about your car"),
-                new H5("You're almost done"),
+                year,
                 make,
                 model,
-                year,
-                color,
                 vin,
                 new HorizontalLayout(backButton, nextButton)
         );
@@ -94,9 +111,9 @@ public class VehicleAddForm extends VerticalLayout {
         }
     }
 
-    public void fillModelComboBox(){
+    public void fillModelComboBox(String make){
         try {
-            this.make.setItems(apiVehicleService.getAllMakes());
+            this.model.setItems(apiVehicleService.getModelsForMake(make));
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -135,16 +152,44 @@ public class VehicleAddForm extends VerticalLayout {
      */
     public void prefillForm(Vehicle vehicle) {
         this.vehicle = vehicle;
-        binder.readBean(this.vehicle);
+        //binder.readBean(this.vehicle);
 
-        if (vehicle != null) {
-            make.setEnabled(false);
-            model.setEnabled(false);
-            year.setEnabled(false);
-            vin.setValue("xxxxxxxxx");
-            vin.setEnabled(false);
-        }
+        fillYearComboBox();
+        year.setValue(vehicle.getYear());
+
+        fillMakeComboBox();
+        make.setValue(vehicle.getMake());
+
+        fillModelComboBox(vehicle.getMake());
+        model.setValue(vehicle.getModel());
+
+        vin.setValue(vehicle.getVin());
     }
+
+    /**
+     * Setter for the isEditMode field.
+     * @param isEditMode
+     */
+    public void setIsEditMode(boolean isEditMode) {
+        this.isEditMode = isEditMode;
+    }
+
+    /**
+     * Setter for the text of the back button
+     * @param text text to set for the button
+     */
+    public void setBackButtonText(String text) {
+        backButton.setText(text);
+    }
+
+    /**
+     * Setter for the text of the next button.
+     * @param text text to set for the button
+     */
+    public void setNextButtonText(String text) {
+        nextButton.setText(text);
+    }
+
 
 
     // Button event definitions begin
