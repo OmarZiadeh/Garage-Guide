@@ -1,13 +1,11 @@
 
-//temporary commenting of class to commit car owner home view
-/*
 package com.TeamOne411.ui.view.carowner.childview;
 
 
 import com.TeamOne411.backend.entity.Vehicle;
 import com.TeamOne411.backend.entity.users.CarOwner;
 import com.TeamOne411.backend.service.VehicleService;
-import com.TeamOne411.backend.service.UserDetailsService;
+import com.TeamOne411.backend.service.api.car.ApiVehicleService;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
@@ -18,33 +16,36 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 import java.util.Optional;
 
-*/
 /**
  * This class is a Vertical layout that shows a list of Vehicles and gives the ability to add/edit/delete them.
- *//*
+ */
 
 public class CarOwnerVehiclesView extends VerticalLayout {
 
     private Grid<Vehicle> grid = new Grid<>(Vehicle.class);
     private VehicleService vehicleService;
     private CarOwner loggedInCarOwner;
+    private VehicleEditorDialog vehicleEditorDialog;
+    private ApiVehicleService apiVehicleService;
 
     public CarOwnerVehiclesView(
             VehicleService vehicleService,
+            ApiVehicleService apiVehicleService,
             CarOwner loggedInCarOwner
     ) {
         this.vehicleService = vehicleService;
         this.loggedInCarOwner = loggedInCarOwner;
+        this.apiVehicleService = apiVehicleService;
 
         // configure the Vehicle grid
         grid.addClassName("vehicle-grid");
         grid.setHeightByRows(true);
         grid.setMaxHeight("25vh");
-        grid.setColumns("make", "model", "year", "color");
+        grid.setColumns("year", "make", "model");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
 
-        Button registerVehicleButton = new Button("Add New Vehicle");
-        addVehicleButton.addClickListener(e -> vehicleAddDialog());
+        Button addVehicleButton = new Button("Add New Vehicle");
+        addVehicleButton.addClickListener(e -> showNewVehicleDialog());
 
         Button editVehicleButton = new Button("Edit Vehicle");
         editVehicleButton.addClickListener(e -> showEditVehicleDialog());
@@ -60,62 +61,61 @@ public class CarOwnerVehiclesView extends VerticalLayout {
         });
 
         add(
-            new HorizontalLayout(registerVehicleButton, editVehicleButton, deleteVehicleButton),
+            new HorizontalLayout(addVehicleButton, editVehicleButton, deleteVehicleButton),
             grid
         );
 
         updateVehicleList();
     }
 
-    */
 /**
      * Calls the VehicleService to refresh the list of Vehicles. Call this anytime the Vehicles may have been edited.
-     *//*
+     */
 
     private void updateVehicleList() {
         grid.setItems(vehicleService.findByCarOwner(loggedInCarOwner));
     }
 
-    */
+
 /**
      * Creates and opens a new VehicleEditorDialog instance not in edit mode (to register new Vehicle)
-     *//*
+     */
 
     private void showNewVehicleDialog() {
-        VehicleEditorDialog = new VehicleEditorDialog(userDetailsService, employer);
+        vehicleEditorDialog = new VehicleEditorDialog(loggedInCarOwner, apiVehicleService, vehicleService);
 
-        VehicleEditorDialog.setWidth("250px");
-        VehicleEditorDialog.setWidth("750px");
+        vehicleEditorDialog.setWidth("250px");
+        vehicleEditorDialog.setWidth("750px");
 
-        VehicleEditorDialog.addListener(VehicleEditorDialog.AddVehicleSuccessEvent.class, this::onVehicleRegisteredSuccess);
+        vehicleEditorDialog.addListener(VehicleEditorDialog.AddVehicleSuccessEvent.class, this::onVehicleRegisteredSuccess);
 
-        VehicleEditorDialog.open();
+        vehicleEditorDialog.open();
     }
 
-    */
+
 /**
      * Gets the selected Vehicle from the grid, passes it to a new VehicleEditorDialog instance and opens it in Edit Mode.
-     *//*
+     */
 
     private void showEditVehicleDialog() {
         Optional<Vehicle> selectedVehicle = grid.getSelectedItems().stream().findFirst();
 
         if (selectedVehicle.isPresent()) {
-            VehicleEditorDialog = new VehicleEditorDialog(userDetailsService, selectedVehicle.get());
+            vehicleEditorDialog = new VehicleEditorDialog(selectedVehicle.get(), apiVehicleService, vehicleService);
 
-            VehicleEditorDialog.setWidth("250px");
-            VehicleEditorDialog.setWidth("750px");
+            vehicleEditorDialog.setWidth("250px");
+            vehicleEditorDialog.setWidth("750px");
 
-            VehicleEditorDialog.addListener(VehicleEditorDialog.EditVehicleSuccessEvent.class, this::onVehicleEditedSuccess);
+            vehicleEditorDialog.addListener(VehicleEditorDialog.EditVehicleSuccessEvent.class, this::onVehicleEditedSuccess);
 
-            VehicleEditorDialog.open();
+            vehicleEditorDialog.open();
         }
     }
 
-    */
+
 /**
      * Fired on deleteVehicleButton click. Shows a confirm dialog and then deletes the selected Vehicle.
-     *//*
+     */
 
     private void deleteVehicleClick() {
         Optional<Vehicle> selectedVehicle = grid.getSelectedItems().stream().findFirst();
@@ -136,54 +136,49 @@ public class CarOwnerVehiclesView extends VerticalLayout {
         }
     }
 
-    */
 /**
      * Fired when delete confirm dialog is confirmed by user. Deletes  Vehicle.
-     * @param Vehicle The Vehicle to delete.
-     *//*
+     * @param vehicle The Vehicle to delete.
+     */
 
-    private void onDeleteConfirm(Vehicle Vehicle) {
-        if (Vehicle != null) {
-            VehicleService.delete(Vehicle);
-            VehicleUpdates("Deleted Vehicle " + Vehicle.getFullName());
+    private void onDeleteConfirm(Vehicle vehicle) {
+        if (vehicle != null) {
+            vehicleService.delete(vehicle);
+            VehicleUpdates("Deleted Vehicle " + vehicle.getName());
         }
     }
 
-    */
+
 /**
      * Fired when a new Vehicle is successfully registered using the Vehicle editor dialog.
      * @param event the event that fired this method
-     *//*
+     */
 
     private void onVehicleRegisteredSuccess(ComponentEvent<VehicleEditorDialog> event) {
         Vehicle newVehicle = event.getSource().getVehicle();
-        VehicleEditorDialog.close();
+        vehicleEditorDialog.close();
 
         if (newVehicle != null) {
-            VehicleUpdates("Successfully added new Vehicle " + newVehicle.getFullName());
+            VehicleUpdates("Successfully added new Vehicle " + newVehicle.getName());
         }
     }
-
-    */
 /**
      * Fired when an existing Vehicle is successfully edited using the Vehicle editor dialog.
      * @param event the event that fired this method
-     *//*
+     */
 
     private void onVehicleEditedSuccess(ComponentEvent<VehicleEditorDialog> event) {
         Vehicle editedVehicle = event.getSource().getVehicle();
-        VehicleEditorDialog.close();
+        vehicleEditorDialog.close();
 
         if (editedVehicle != null) {
-            VehicleUpdates("Successfully edited Vehicle " + editedVehicle.getFullName());
+            VehicleUpdates("Successfully edited Vehicle " + editedVehicle.getName());
         }
     }
-
-    */
 /**
      * This method includes some common functionality when any change to Vehicles occurs
      * @param successMessage the message text to display to the user in a notification
-     *//*
+     */
 
     private void VehicleUpdates(String successMessage) {
         updateVehicleList();
@@ -197,4 +192,3 @@ public class CarOwnerVehiclesView extends VerticalLayout {
         notification.open();
     }
 }
-*/

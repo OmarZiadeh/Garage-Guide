@@ -3,8 +3,11 @@ package com.TeamOne411.backend.service.api.car;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,13 +26,16 @@ public class ApiVehicleService {
 
         return cars.stream().map(c->c.getMakeName()).collect(Collectors.toList());
     }
-    public List<String> getAllModels() throws URISyntaxException {
+    public List<String> getModelsForMake(String make) throws URISyntaxException {
 
-        URI fullUri = new URI(baseUri + "vehicles/GetMakesForVehicleType/car?format=json");
+        String encodedMake = make.replace(" ", "_");
+
+        URI fullUri = new URI(baseUri + "vehicles/GetModelsForMake/" + encodedMake + "?format=json");
         ApiVehicleResponse carsResponse = restTemplate.getForObject(fullUri, ApiVehicleResponse.class);
 
         List<ApiVehicle> cars = carsResponse.getResults();
 
         return cars.stream().map(c->c.getModelName()).collect(Collectors.toList());
+
     }
 }
