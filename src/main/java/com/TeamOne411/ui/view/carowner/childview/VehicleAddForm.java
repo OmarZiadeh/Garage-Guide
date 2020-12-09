@@ -1,7 +1,6 @@
 package com.TeamOne411.ui.view.carowner.childview;
 
 import com.TeamOne411.backend.entity.Vehicle;
-import com.TeamOne411.backend.entity.users.GarageEmployee;
 import com.TeamOne411.backend.service.api.car.ApiVehicleService;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -11,7 +10,6 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.H3;
-import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -24,8 +22,8 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.shared.Registration;
 
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 public class VehicleAddForm extends VerticalLayout {
@@ -120,9 +118,9 @@ public class VehicleAddForm extends VerticalLayout {
     }
 
     public void fillYearComboBox(){
-        int year = Calendar.getInstance().get(Calendar.YEAR);
+        int year = LocalDate.now().getYear();
         List<String> years = new ArrayList<>();
-        for (int i = 1980; i < year; i++){
+        for (int i = 1980; i <= year; i++){
             years.add(Integer.toString(i));
         }
 
