@@ -6,6 +6,7 @@ import com.TeamOne411.backend.entity.Vehicle;
 import com.TeamOne411.backend.entity.users.CarOwner;
 import com.TeamOne411.backend.service.VehicleService;
 import com.TeamOne411.backend.service.api.car.ApiVehicleService;
+import com.TeamOne411.ui.view.carowner.form.VehicleEditorDialog;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
