@@ -23,10 +23,6 @@ public class BusinessHoursService {
         businessHoursRepository.save(businessHours);
     }
 
-    public void deleteBusinessHours(List<BusinessHours> businessHours) {
-        businessHoursRepository.deleteAll(businessHours);
-    }
-
     public List<BusinessHours> findByGarage(Garage garage) {
         return (businessHoursRepository.findByGarage(garage));
     }
@@ -36,12 +32,14 @@ public class BusinessHoursService {
     }
 
     /**
-     * This method assigns a business hours placeholder for each day of the week
+     * This method assigns a business hours placeholder for each day of the week to a garage
      *
      * @param garage The garage the business hours should be associated with
      */
     @Async("threadPoolTaskExecutor")
     public void initializeBusinessHours(Garage garage) {
+        System.out.println("Default business hours thread started.");
+
         createBusinessDay(garage, "Monday", 1);
         createBusinessDay(garage, "Tuesday", 2);
         createBusinessDay(garage, "Wednesday", 3);
@@ -49,6 +47,8 @@ public class BusinessHoursService {
         createBusinessDay(garage, "Friday", 5);
         createBusinessDay(garage, "Saturday", 6);
         createBusinessDay(garage, "Sunday", 7);
+
+        System.out.println("Default business hours thread completed.");
     }
 
     /**

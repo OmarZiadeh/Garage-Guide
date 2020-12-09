@@ -69,6 +69,7 @@ public class ServiceCatalogService {
      */
     @Async("threadPoolTaskExecutor")
     public void initializeDefaultServices(Garage garage) {
+        System.out.println("Default services thread started.");
 
         // These are the default Categories that are enabled for a garage
         ServiceCategory catRoutineMaintenance = createDefaultServiceCategory("Routine Maintenance", garage);
@@ -96,6 +97,8 @@ public class ServiceCatalogService {
 
         // Other/Not Sure - no services to include, but does need to a descriptor for car owner clarity
         createDefaultOfferedService("Other/Not Sure", catOther);
+
+        System.out.println("Default services thread completed.");
     }
 
     /**
