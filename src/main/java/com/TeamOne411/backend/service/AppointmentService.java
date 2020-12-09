@@ -4,6 +4,7 @@ import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.schedule.Appointment;
 import com.TeamOne411.backend.entity.schedule.AppointmentTask;
 import com.TeamOne411.backend.entity.servicecatalog.OfferedService;
+import com.TeamOne411.backend.entity.users.CarOwner;
 import com.TeamOne411.backend.repository.AppointmentRepository;
 import com.TeamOne411.backend.repository.AppointmentTaskRepository;
 import org.springframework.scheduling.annotation.Async;
@@ -54,20 +55,20 @@ public class AppointmentService {
     }
 
     /**
-     * Finds today's appointments
+     * Finds today's appointments for a car owner
      * @return List of appointments
      */
-    public List<Appointment> findAllAppointmentsForToday(){
-        return appointmentRepository.findAllByAppointmentDateEqualsOrderByAppointmentTime(LocalDate.now());
+    public List<Appointment> findAllAppointmentsForToday(CarOwner carOwner){
+        return appointmentRepository.findAllByAppointmentDateEqualsAndVehicle_CarOwnerOrderByAppointmentTime(LocalDate.now(), carOwner);
     }
 
 
     /**
-     * Finds all upcoming appointments
+     * Finds all upcoming appointments for a car owner
      * @return List of appointments
      */
-    public List<Appointment> findAllUpcomingAppointments(){
-        return appointmentRepository.findAllByAppointmentDateGreaterThanOrderByAppointmentDateAscAppointmentTimeAsc(LocalDate.now());
+    public List<Appointment> findAllUpcomingAppointments(CarOwner carOwner){
+        return appointmentRepository.findAllByAppointmentDateGreaterThanAndVehicle_CarOwnerOrderByAppointmentDateAscAppointmentTimeAsc(LocalDate.now(),carOwner);
     }
 
     /**

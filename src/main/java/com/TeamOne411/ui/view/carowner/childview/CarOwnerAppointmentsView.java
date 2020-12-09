@@ -1,6 +1,7 @@
 package com.TeamOne411.ui.view.carowner.childview;
 
 import com.TeamOne411.backend.entity.Garage;
+import com.TeamOne411.backend.entity.Vehicle;
 import com.TeamOne411.backend.entity.schedule.Appointment;
 import com.TeamOne411.backend.entity.users.CarOwner;
 import com.TeamOne411.backend.service.*;
@@ -33,6 +34,7 @@ public class CarOwnerAppointmentsView extends VerticalLayout {
     private final H5 noAppointmentsToday = new H5("You do not have any appointments scheduled for today");
     private final H5 noUpcomingAppointments = new H5("You do not have any upcoming appointments scheduled");
     private AppointmentDialog appointmentDialog;
+    private final CarOwner carOwner;
 
     public CarOwnerAppointmentsView(AppointmentService appointmentService,
                                     ServiceCatalogService serviceCatalogService,
@@ -40,6 +42,7 @@ public class CarOwnerAppointmentsView extends VerticalLayout {
                                     VehicleService vehicleService,
                                     CarOwner carOwner) {
         this.appointmentService = appointmentService;
+        this.carOwner = carOwner;
 
         // new appointment button setup and click listener
         Button newAppointment = new Button("Schedule New Appointment");
@@ -53,6 +56,8 @@ public class CarOwnerAppointmentsView extends VerticalLayout {
         // GRID SETUP
         // setup the appointments for today grid
         setGridAttributes(appointmentsToday, "today-grid");
+        appointmentsToday.addColumn(appointment -> getVehicleInfo(appointment.getVehicle())).setSortable(false)
+                .setHeader("Vehicle").setKey("vehicle");
         appointmentsToday.addColumn(appointment -> {
             Garage garage = appointment.getGarage();
             return garage.getCompanyName();
@@ -70,6 +75,8 @@ public class CarOwnerAppointmentsView extends VerticalLayout {
 
         // setup the upcoming appointments grid
         setGridAttributes(upcomingAppointments, "upcoming-grid");
+        upcomingAppointments.addColumn(appointment -> getVehicleInfo(appointment.getVehicle())).setSortable(false)
+                .setHeader("Vehicle").setKey("vehicle");
         upcomingAppointments.addColumn(appointment -> {
             Garage garage = appointment.getGarage();
             return garage.getCompanyName();
@@ -114,14 +121,23 @@ public class CarOwnerAppointmentsView extends VerticalLayout {
     }
 
     /**
+     * Concatenates the vehicle year, make and model for display in the grid
+     * @param vehicle the vehicle to get info on
+     * @return the concatenated string
+     */
+    private String getVehicleInfo(Vehicle vehicle) {
+        return vehicle.getYear() + " " + vehicle.getMake() + " " + vehicle.getModel();
+    }
+
+    /**
      * refreshes the appointments today grid
      */
     private void updateTodayGrid() {
-        if (appointmentService.findAllAppointmentsForToday().isEmpty()) {
+        if (appointmentService.findAllAppointmentsForToday(carOwner).isEmpty()) {
             appointmentsToday.setVisible(false);
             noAppointmentsToday.setVisible(true);
         } else {
-            appointmentsToday.setItems(appointmentService.findAllAppointmentsForToday());
+            appointmentsToday.setItems(appointmentService.findAllAppointmentsForToday(carOwner));
             appointmentsToday.setVisible(true);
             noAppointmentsToday.setVisible(false);
         }
@@ -131,11 +147,11 @@ public class CarOwnerAppointmentsView extends VerticalLayout {
      * refreshes the upcoming appointments grid
      */
     private void updateUpcomingGrid() {
-        if (appointmentService.findAllUpcomingAppointments().isEmpty()) {
+        if (appointmentService.findAllUpcomingAppointments(carOwner).isEmpty()) {
             upcomingAppointments.setVisible(false);
             noUpcomingAppointments.setVisible(true);
         } else {
-            upcomingAppointments.setItems(appointmentService.findAllUpcomingAppointments());
+            upcomingAppointments.setItems(appointmentService.findAllUpcomingAppointments(carOwner));
             upcomingAppointments.setVisible(true);
             noUpcomingAppointments.setVisible(false);
         }
