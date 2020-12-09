@@ -28,7 +28,7 @@ public class Vehicle extends AbstractEntity {
 
     @NotNull
     @NotEmpty(message = "VIN can't be empty.")
-    @Pattern(regexp = "^\\d{1}\\D{4}\\d{2}\\D{4}\\d{6}$", message = "Invalid VIN, must be 17 digits with correct format")
+    @Pattern(regexp = "^[A-HJ-NPR-Za-hj-npr-z\\d]{8}[\\dX][A-HJ-NPR-Za-hj-npr-z\\d]{2}\\d{6}$", message = "Invalid VIN, must be 17 digits with correct format")
     private String vin = "";
 
     @NotNull
@@ -39,6 +39,10 @@ public class Vehicle extends AbstractEntity {
 
     public CarOwner getCarOwner() {
         return carOwner;
+    }
+
+    public void setCarOwner(CarOwner carOwner){
+        this.carOwner = carOwner;
     }
 
     public String getModel() {
@@ -71,6 +75,11 @@ public class Vehicle extends AbstractEntity {
 
     public void setVin(String vin) {
         this.vin = vin;
+    }
+
+    public String getName(){
+        String name = getYear() + " " + getModel() + " " + getMake();
+        return name;
     }
 
 }

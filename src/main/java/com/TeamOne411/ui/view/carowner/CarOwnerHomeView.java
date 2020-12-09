@@ -4,9 +4,11 @@ import com.TeamOne411.backend.entity.users.CarOwner;
 import com.TeamOne411.backend.entity.users.GGUserDetails;
 import com.TeamOne411.backend.service.UserDetailsService;
 import com.TeamOne411.backend.service.VehicleService;
+import com.TeamOne411.backend.service.api.car.ApiVehicle;
+import com.TeamOne411.backend.service.api.car.ApiVehicleService;
 import com.TeamOne411.ui.MainLayout;
 import com.TeamOne411.ui.view.carowner.childview.CarOwnerAppointmentsView;
-//import com.TeamOne411.ui.view.carowner.childview.CarOwnerVehiclesView;
+import com.TeamOne411.ui.view.carowner.childview.CarOwnerVehiclesView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
@@ -29,10 +31,12 @@ import java.util.Map;
 public class CarOwnerHomeView extends VerticalLayout {
     private GGUserDetails userDetails;
     private CarOwner loggedInCarOwner;
+    private ApiVehicleService apiVehicleService;
 
-    public CarOwnerHomeView(UserDetailsService userDetailsService, VehicleService vehicleService) {
+    public CarOwnerHomeView(UserDetailsService userDetailsService, VehicleService vehicleService, ApiVehicleService apiVehicleService) {
         userDetails = userDetailsService.getLoggedInUserDetails();
         loggedInCarOwner = (CarOwner) userDetails.getUser();
+        this.apiVehicleService = apiVehicleService;
         add(new H2("Welcome back " + loggedInCarOwner.getFirstName()));
 
         Tabs tabs = new Tabs();
@@ -52,16 +56,15 @@ public class CarOwnerHomeView extends VerticalLayout {
 
         /*
         Second Tab - Vehicles
-         *//*
+         */
         Tab vehiclesTab = new Tab("Vehicles");
-        CarOwnerVehiclesView vehicleView = new CarOwnerVehiclesView(vehicleService, loggedInCarOwner);
+        CarOwnerVehiclesView vehicleView = new CarOwnerVehiclesView(vehicleService, apiVehicleService, loggedInCarOwner);
         Div vehiclesPage = new Div(vehicleView);
         vehiclesTab.add(vehiclesPage);
         tabs.add(vehiclesTab);
         pages.add(vehiclesPage);
-        tabsToPages.put(vehiclesTab, vehiclesPage);*/
-
-
+        tabsToPages.put(vehiclesTab, vehiclesPage);
+        vehiclesPage.setVisible(false);
 
 
         // todo add more tabs here
