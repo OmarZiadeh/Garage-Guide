@@ -1,12 +1,15 @@
 package com.TeamOne411.ui.view.carowner.form;
 
 import com.TeamOne411.backend.entity.Garage;
+import com.TeamOne411.backend.entity.Vehicle;
 import com.TeamOne411.backend.entity.schedule.Appointment;
 import com.TeamOne411.backend.entity.servicecatalog.OfferedService;
 import com.TeamOne411.backend.entity.servicecatalog.ServiceCategory;
+import com.TeamOne411.backend.entity.users.CarOwner;
 import com.TeamOne411.backend.service.AppointmentService;
 import com.TeamOne411.backend.service.GarageCalendarService;
 import com.TeamOne411.backend.service.ServiceCatalogService;
+import com.TeamOne411.backend.service.VehicleService;
 import com.TeamOne411.ui.utils.FormattingUtils;
 import com.TeamOne411.ui.utils.LocalDateConverter;
 import com.TeamOne411.ui.utils.LocalTimeConverter;
@@ -28,7 +31,6 @@ import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.shared.Registration;
 
 
@@ -40,7 +42,10 @@ import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.Set;
 
-
+/**
+ * This is the form for booking appointments
+ */
+@SuppressWarnings("rawtypes")
 public class AppointmentForm extends VerticalLayout {
     private final ServiceCatalogService serviceCatalogService;
     private final GarageCalendarService garageCalendarService;
@@ -50,6 +55,7 @@ public class AppointmentForm extends VerticalLayout {
     private final TextArea carOwnerComments = new TextArea("Is there anything else you'd like us to know?");
     private final Button saveButton = new Button("Book Appointment");
     private final ComboBox<Garage> garage = new ComboBox<>("Select Garage");
+    private final ComboBox<Vehicle> vehicle = new ComboBox<>("Select Vehicle");
     private final Grid<OfferedService> offeredServicesGrid = new Grid<>(OfferedService.class);
     private final ComboBox<LocalDate> appointmentDate = new ComboBox<>("Select Appointment Date");
     private final ComboBox<LocalTime> appointmentTime = new ComboBox<>("Select Appointment Time");
@@ -62,7 +68,7 @@ public class AppointmentForm extends VerticalLayout {
     private BigDecimal estimatedTotalPrice;
 
     public AppointmentForm(ServiceCatalogService serviceCatalogService, GarageCalendarService garageCalendarService,
-                           AppointmentService appointmentService) {
+                           AppointmentService appointmentService, VehicleService vehicleService, CarOwner carOwner) {
         this.serviceCatalogService = serviceCatalogService;
         this.garageCalendarService = garageCalendarService;
         this.appointmentService = appointmentService;
@@ -79,11 +85,12 @@ public class AppointmentForm extends VerticalLayout {
 
         // VEHICLE AND GARAGE INFO
         FormLayout garageForm = new FormLayout();
-        TextField vehicle = new TextField("Vehicle");
-        vehicle.setPlaceholder("Placeholder");
         garageForm.add(vehicle, garage);
-        garage.setItemLabelGenerator(Garage::getCompanyName);
+        vehicle.setItems(vehicleService.findByCarOwner(carOwner));
+        vehicle.setItemLabelGenerator(this::concatVehicleInfo);
         garage.setItems(garageCalendarService.findAllByGarageExists());
+        garage.setItemLabelGenerator(Garage::getCompanyName);
+        setRequiredComboBoxValues(vehicle);
         setRequiredComboBoxValues(garage);
         accordion.add("Vehicle and Garage Information", garageForm);
 
@@ -143,9 +150,18 @@ public class AppointmentForm extends VerticalLayout {
     }
 
     /**
+     * This method concatenates the vehicle attributes and returns them as one string for the vehicle ComboBox to display
+     *
+     * @return the string containing year, make and model
+     */
+    private String concatVehicleInfo(Vehicle vehicle) {
+        return vehicle.getYear() + " " + vehicle.getMake() + " " + vehicle.getModel();
+    }
+
+    /**
      * Sets the required and required indicated values for a combobox
      */
-    private void setRequiredComboBoxValues(ComboBox comboBox){
+    private void setRequiredComboBoxValues(ComboBox comboBox) {
         comboBox.setRequired(true);
         comboBox.setRequiredIndicatorVisible(true);
     }
@@ -168,6 +184,7 @@ public class AppointmentForm extends VerticalLayout {
         offeredServicesGrid.addColumn(offeredService -> decimalFormat.format(offeredService.getPrice()))
                 .setHeader("Price").setComparator(Comparator.comparing(OfferedService::getPrice))
                 .setKey("price").setSortable(false);
+        offeredServicesGrid.getColumns().forEach(col -> col.setAutoWidth(true));
     }
 
     /**
@@ -200,13 +217,15 @@ public class AppointmentForm extends VerticalLayout {
      * User receives a notification if the form is not complete
      */
     private void checkFormCompletion() {
-        if (garage.getValue() != null && appointmentDate.getValue() != null && appointmentTime.getValue() != null
-                && !offeredServicesGrid.asMultiSelect().isEmpty()) {
+        if (vehicle.getValue() != null && garage.getValue() != null && appointmentDate.getValue() != null
+                && appointmentTime.getValue() != null && !offeredServicesGrid.asMultiSelect().isEmpty()) {
             saveButton.setEnabled(true);
         } else {
             String message = "";
             if (garage.getValue() == null)
                 message = "a garage";
+            else if (vehicle.getValue() == null)
+                message = "a vehicle";
             else if (appointmentDate.getValue() == null)
                 message = "an appointment Date and Time";
             else if (appointmentTime.getValue() == null)
@@ -252,6 +271,7 @@ public class AppointmentForm extends VerticalLayout {
         appointment.setAppointmentDate(appointmentDate.getValue());
         appointment.setAppointmentTime(appointmentTime.getValue());
         appointment.setGarage(garage.getValue());
+        appointment.setVehicle(vehicle.getValue());
         appointment.setCarOwnerComments(carOwnerComments.getValue());
         appointment.setEstimatedDuration(estimatedDuration);
         appointment.setEstimatedTotalPrice(estimatedTotalPrice);

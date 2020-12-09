@@ -1,6 +1,7 @@
 package com.TeamOne411.ui.view.carowner.form;
 
 
+import com.TeamOne411.backend.entity.users.CarOwner;
 import com.TeamOne411.backend.service.*;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -10,14 +11,17 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.shared.Registration;
 
+/**
+ * This dialog controls the opening and closing of the appointment form
+ */
 @SuppressWarnings("rawtypes")
 public class AppointmentDialog extends Dialog {
     private final AppointmentForm appointmentForm;
 
     public AppointmentDialog(AppointmentService appointmentService, ServiceCatalogService serviceCatalogService,
-                             GarageCalendarService garageCalendarService) {
+                             GarageCalendarService garageCalendarService, VehicleService vehicleService, CarOwner carOwner) {
 
-        appointmentForm = new AppointmentForm(serviceCatalogService, garageCalendarService, appointmentService);
+        appointmentForm = new AppointmentForm(serviceCatalogService, garageCalendarService, appointmentService, vehicleService, carOwner);
         appointmentForm.addListener(AppointmentForm.CancelEvent.class, this::onCancelClick);
         appointmentForm.addListener(AppointmentForm.SaveEvent.class, this::onSaveClick);
 

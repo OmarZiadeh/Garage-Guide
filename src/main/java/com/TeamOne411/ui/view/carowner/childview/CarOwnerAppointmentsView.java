@@ -2,6 +2,7 @@ package com.TeamOne411.ui.view.carowner.childview;
 
 import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.schedule.Appointment;
+import com.TeamOne411.backend.entity.users.CarOwner;
 import com.TeamOne411.backend.service.*;
 import com.TeamOne411.ui.utils.FormattingUtils;
 import com.TeamOne411.ui.view.carowner.form.AppointmentDialog;
@@ -21,6 +22,10 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 
+
+/**
+ * This class displays the booked appointments for the logged in car owner.
+ */
 public class CarOwnerAppointmentsView extends VerticalLayout {
     private final AppointmentService appointmentService;
     private final Grid<Appointment> appointmentsToday = new Grid<>(Appointment.class);
@@ -31,12 +36,15 @@ public class CarOwnerAppointmentsView extends VerticalLayout {
 
     public CarOwnerAppointmentsView(AppointmentService appointmentService,
                                     ServiceCatalogService serviceCatalogService,
-                                    GarageCalendarService garageCalendarService) {
+                                    GarageCalendarService garageCalendarService,
+                                    VehicleService vehicleService,
+                                    CarOwner carOwner) {
         this.appointmentService = appointmentService;
 
         // new appointment button setup and click listener
         Button newAppointment = new Button("Schedule New Appointment");
-        newAppointment.addClickListener(e -> showAppointmentDialog(serviceCatalogService, garageCalendarService));
+        newAppointment.addClickListener(e -> showAppointmentDialog(serviceCatalogService, garageCalendarService,
+                vehicleService, carOwner));
 
         // H5 message setup
         noAppointmentsToday.setVisible(false);
@@ -112,8 +120,11 @@ public class CarOwnerAppointmentsView extends VerticalLayout {
         if (appointmentService.findAllAppointmentsForToday().isEmpty()) {
             appointmentsToday.setVisible(false);
             noAppointmentsToday.setVisible(true);
-        } else
+        } else {
             appointmentsToday.setItems(appointmentService.findAllAppointmentsForToday());
+            appointmentsToday.setVisible(true);
+            noAppointmentsToday.setVisible(false);
+        }
     }
 
     /**
@@ -123,8 +134,11 @@ public class CarOwnerAppointmentsView extends VerticalLayout {
         if (appointmentService.findAllUpcomingAppointments().isEmpty()) {
             upcomingAppointments.setVisible(false);
             noUpcomingAppointments.setVisible(true);
-        } else
+        } else {
             upcomingAppointments.setItems(appointmentService.findAllUpcomingAppointments());
+            upcomingAppointments.setVisible(true);
+            noUpcomingAppointments.setVisible(false);
+        }
     }
 
     /**
@@ -135,7 +149,6 @@ public class CarOwnerAppointmentsView extends VerticalLayout {
         grid.removeAllColumns();
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.setHeightByRows(true);
-
     }
 
     /**
@@ -201,10 +214,12 @@ public class CarOwnerAppointmentsView extends VerticalLayout {
      * Opens the appointment dialog
      */
     private void showAppointmentDialog(ServiceCatalogService serviceCatalogService,
-                                       GarageCalendarService garageCalendarService) {
+                                       GarageCalendarService garageCalendarService,
+                                       VehicleService vehicleService,
+                                       CarOwner carOwner) {
         appointmentDialog = new AppointmentDialog(appointmentService, serviceCatalogService,
-                garageCalendarService);
-        appointmentDialog.setWidth("60%");
+                garageCalendarService, vehicleService, carOwner);
+        appointmentDialog.setWidth("50%");
         appointmentDialog.setHeightFull();
         appointmentDialog.addListener(AppointmentDialog.SaveSuccessEvent.class,
                 this::onSave);

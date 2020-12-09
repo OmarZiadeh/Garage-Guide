@@ -2,6 +2,7 @@ package com.TeamOne411.backend.entity.schedule;
 
 import com.TeamOne411.backend.entity.AbstractEntity;
 import com.TeamOne411.backend.entity.Garage;
+import com.TeamOne411.backend.entity.Vehicle;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -11,7 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 /**
- * This entity defines an appointment that has been scheduled with the garage
+ * This entity defines an appointment that has been scheduled with a garage
  */
 @Entity
 public class Appointment extends AbstractEntity {
@@ -19,6 +20,11 @@ public class Appointment extends AbstractEntity {
     @ManyToOne
     @JoinColumn(name = "garage_id")
     private Garage garage;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "vehicle_id")
+    private Vehicle vehicle;
 
     @NotNull
     @Column(name = "appointment_date", columnDefinition = "DATE")
@@ -43,8 +49,6 @@ public class Appointment extends AbstractEntity {
     private String statusComments;
 
     private String carOwnerComments;
-
-    //TODO Add attribute & relationship to Vehicle
 
     public String getCarOwnerComments() {
         return carOwnerComments;
@@ -116,5 +120,13 @@ public class Appointment extends AbstractEntity {
 
     public void setEstimatedTotalPrice(BigDecimal estimatedTotalPrice) {
         this.estimatedTotalPrice = estimatedTotalPrice;
+    }
+
+    public Vehicle getVehicle() {
+        return vehicle;
+    }
+
+    public void setVehicle(Vehicle vehicle) {
+        this.vehicle = vehicle;
     }
 }

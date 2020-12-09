@@ -52,7 +52,7 @@ public class CarOwnerHomeView extends VerticalLayout {
          */
         Tab appointmentsTab = new Tab("Appointments");
         CarOwnerAppointmentsView appointmentsView = new CarOwnerAppointmentsView(appointmentService,
-                serviceCatalogService, garageCalendarService);
+                serviceCatalogService, garageCalendarService, vehicleService, loggedInCarOwner);
         Div appointmentsPage = new Div(appointmentsView);
         appointmentsTab.add(appointmentsPage);
         tabs.add(appointmentsTab);
