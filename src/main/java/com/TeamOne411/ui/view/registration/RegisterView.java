@@ -29,10 +29,14 @@ public class RegisterView extends VerticalLayout {
     private RegistrationPath path;
     private GarageService garageService;
     private UserDetailsService userDetailsService;
+    private ServiceCatalogService serviceCatalogService;
+    private BusinessHoursService businessHoursService;
 
     public RegisterView(
             GarageService garageService,
-            UserDetailsService userDetailsService
+            UserDetailsService userDetailsService,
+            ServiceCatalogService serviceCatalogService,
+            BusinessHoursService businessHoursService
     ) {
         // field assignments
         this.garageService = garageService;
@@ -42,6 +46,9 @@ public class RegisterView extends VerticalLayout {
 
         this.carOwnerRegisterForm = new CarOwnerRegisterForm(userDetailsService);
         this.carOwnerConfirmView = new CarOwnerConfirmationView();
+
+        this.serviceCatalogService = serviceCatalogService;
+        this.businessHoursService = businessHoursService;
 
         // initial view setup
         addClassName("register-view");
@@ -136,8 +143,7 @@ public class RegisterView extends VerticalLayout {
 
         if (state == RegistrationState.GARAGE_CONFIRMATION) {
             garageConfirmView.setEntitiesForConfirmation(garageAdminRegisterForm.getValidGarageEmployee(), garageCreateForm.getValidGarage());
-        }
-        else if (state == RegistrationState.CAR_OWNER_CONFIRMATION) {
+        } else if (state == RegistrationState.CAR_OWNER_CONFIRMATION) {
             carOwnerConfirmView.setEntitiesForConfirmation(carOwnerRegisterForm.getValidCarOwner());
         }
     }
@@ -165,7 +171,7 @@ public class RegisterView extends VerticalLayout {
                     // todo display error
                 } catch (UsernameExistsException usernameEx) {
                     // todo display error
-                } catch (PhoneNumberExistsException phoneNumberEx){
+                } catch (PhoneNumberExistsException phoneNumberEx) {
                     // todo display error
                 }
             } else {
@@ -179,8 +185,13 @@ public class RegisterView extends VerticalLayout {
 
             // they should be valid if they aren't null
             if (garageEmployee != null && garage != null) {
-                // save the garage first because the employee has dependency
+                // save the garage first because the employee, services and business hours have dependencies
                 garageService.save(garage);
+                // create the default services for the garage
+                serviceCatalogService.initializeDefaultServices(garage);
+                // create the default business hours for the garage
+                businessHoursService.initializeBusinessHours(garage);
+
                 garageEmployee.setGarage(garage);
 
                 try {
@@ -192,7 +203,7 @@ public class RegisterView extends VerticalLayout {
                 } catch (UsernameExistsException usernameEx) {
                     // todo display error
                     // todo delete garage just created
-                // redundant but necessary catch clause
+                    // redundant but necessary catch clause
                 } catch (PhoneNumberExistsException e) {
                     e.printStackTrace();
                 }

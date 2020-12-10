@@ -9,7 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 /**
  This entity is an appointment time slot for the Garage. It indicates if the slot is filled by an appointment or not
@@ -27,7 +27,7 @@ public class TimeSlot extends AbstractEntity {
 
     @NotNull
     @Column(name = "start_time", columnDefinition = "TIME")
-    private LocalDate startTime;
+    private LocalTime startTime;
 
     @NotNull
     private Boolean isFilled = Boolean.FALSE;
@@ -56,11 +56,11 @@ public class TimeSlot extends AbstractEntity {
         isFilled = filled;
     }
 
-    public LocalDate getStartTime() {
+    public LocalTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(LocalDate startTime) {
+    public void setStartTime(LocalTime startTime) {
         this.startTime = startTime;
     }
 }

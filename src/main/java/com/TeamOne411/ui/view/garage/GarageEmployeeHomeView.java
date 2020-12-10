@@ -8,7 +8,7 @@ import com.TeamOne411.ui.MainLayout;
 import com.TeamOne411.ui.view.garage.childview.GarageAppointmentsView;
 import com.TeamOne411.ui.view.garage.childview.GarageBusinessHoursView;
 import com.TeamOne411.ui.view.garage.childview.GarageEmployeesView;
-import com.TeamOne411.ui.view.garage.childview.GarageServicesView;
+import com.TeamOne411.ui.view.garage.childview.GarageOfferedServicesView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
@@ -35,7 +35,9 @@ public class GarageEmployeeHomeView extends VerticalLayout {
 
     public GarageEmployeeHomeView(UserDetailsService userDetailsService, GarageEmployeeService garageEmployeeService,
                                   ServiceCatalogService serviceCatalogService,
-                                  BusinessHoursService businessHoursService) {
+                                  BusinessHoursService businessHoursService,
+                                  GarageCalendarService garageCalendarService,
+                                  AppointmentService appointmentService) {
         userDetails = userDetailsService.getLoggedInUserDetails();
         loggedInEmployee = (GarageEmployee) userDetails.getUser();
         myGarage = loggedInEmployee.getGarage();
@@ -49,7 +51,7 @@ public class GarageEmployeeHomeView extends VerticalLayout {
         First Tab - Appointments
          */
         Tab appointmentsTab = new Tab("Appointments");
-        GarageAppointmentsView appointmentsView = new GarageAppointmentsView();
+        GarageAppointmentsView appointmentsView = new GarageAppointmentsView(appointmentService, myGarage);
         Div appointmentsPage = new Div(appointmentsView);
         appointmentsTab.add(appointmentsPage);
         tabs.add(appointmentsTab);
@@ -73,7 +75,7 @@ public class GarageEmployeeHomeView extends VerticalLayout {
             Third Tab - Garage Offered Services
              */
             Tab servicesTab = new Tab("Service Catalog");
-            GarageServicesView servicesView = new GarageServicesView(serviceCatalogService, myGarage);
+            GarageOfferedServicesView servicesView = new GarageOfferedServicesView(serviceCatalogService, myGarage);
             Div servicesPage = new Div(servicesView);
             servicesTab.add(servicesPage);
             tabs.add(servicesTab);
@@ -85,9 +87,8 @@ public class GarageEmployeeHomeView extends VerticalLayout {
             Fourth Tab - Business Hours (aka Schedule)
              */
             Tab businessHoursTab = new Tab("Business Hours");
-            GarageBusinessHoursView businessHoursView = new GarageBusinessHoursView(
-                            businessHoursService,
-                            myGarage);
+            GarageBusinessHoursView businessHoursView = new GarageBusinessHoursView(businessHoursService,
+                    garageCalendarService, myGarage);
             Div businessHoursPage = new Div(businessHoursView);
             businessHoursTab.add(businessHoursPage);
             tabs.add(businessHoursTab);
@@ -95,8 +96,6 @@ public class GarageEmployeeHomeView extends VerticalLayout {
             businessHoursPage.setVisible(false);
             tabsToPages.put(businessHoursTab, businessHoursPage);
         }
-
-        // todo add more tabs here
 
         // hook up the listener for tab change
         tabs.addSelectedChangeListener(event -> {

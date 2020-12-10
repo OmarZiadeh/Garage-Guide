@@ -4,12 +4,18 @@ package com.TeamOne411.ui.view.carowner.childview;
 
 import com.TeamOne411.backend.entity.Vehicle;
 import com.TeamOne411.backend.entity.users.CarOwner;
+import com.TeamOne411.backend.service.AppointmentService;
 import com.TeamOne411.backend.service.VehicleService;
 import com.TeamOne411.backend.service.api.car.ApiVehicleService;
+import com.TeamOne411.ui.view.carowner.form.VehicleEditorDialog;
+import com.TeamOne411.ui.view.carowner.form.VehicleHistoryDialog;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
+import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -22,26 +28,30 @@ import java.util.Optional;
 
 public class CarOwnerVehiclesView extends VerticalLayout {
 
-    private Grid<Vehicle> grid = new Grid<>(Vehicle.class);
-    private VehicleService vehicleService;
-    private CarOwner loggedInCarOwner;
+    private final Grid<Vehicle> grid = new Grid<>(Vehicle.class);
+    private final VehicleService vehicleService;
+    private final CarOwner loggedInCarOwner;
+    private final ApiVehicleService apiVehicleService;
+    private final AppointmentService appointmentService;
     private VehicleEditorDialog vehicleEditorDialog;
-    private ApiVehicleService apiVehicleService;
 
     public CarOwnerVehiclesView(
             VehicleService vehicleService,
             ApiVehicleService apiVehicleService,
-            CarOwner loggedInCarOwner
+            CarOwner loggedInCarOwner,
+            AppointmentService appointmentService
     ) {
         this.vehicleService = vehicleService;
         this.loggedInCarOwner = loggedInCarOwner;
         this.apiVehicleService = apiVehicleService;
+        this.appointmentService = appointmentService;
 
         // configure the Vehicle grid
         grid.addClassName("vehicle-grid");
         grid.setHeightByRows(true);
         grid.setMaxHeight("25vh");
-        grid.setColumns("year", "make", "model");
+        grid.setColumns("year", "make", "model", "vin");
+        grid.addComponentColumn(this::viewHistory).setHeader("Service History").setTextAlign(ColumnTextAlign.CENTER).setFlexGrow(0);
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
 
         Button addVehicleButton = new Button("Add New Vehicle");
@@ -61,14 +71,14 @@ public class CarOwnerVehiclesView extends VerticalLayout {
         });
 
         add(
-            new HorizontalLayout(addVehicleButton, editVehicleButton, deleteVehicleButton),
-            grid
+                new HorizontalLayout(addVehicleButton, editVehicleButton, deleteVehicleButton),
+                grid
         );
 
         updateVehicleList();
     }
 
-/**
+    /**
      * Calls the VehicleService to refresh the list of Vehicles. Call this anytime the Vehicles may have been edited.
      */
 
@@ -77,7 +87,7 @@ public class CarOwnerVehiclesView extends VerticalLayout {
     }
 
 
-/**
+    /**
      * Creates and opens a new VehicleEditorDialog instance not in edit mode (to register new Vehicle)
      */
 
@@ -93,7 +103,7 @@ public class CarOwnerVehiclesView extends VerticalLayout {
     }
 
 
-/**
+    /**
      * Gets the selected Vehicle from the grid, passes it to a new VehicleEditorDialog instance and opens it in Edit Mode.
      */
 
@@ -113,7 +123,7 @@ public class CarOwnerVehiclesView extends VerticalLayout {
     }
 
 
-/**
+    /**
      * Fired on deleteVehicleButton click. Shows a confirm dialog and then deletes the selected Vehicle.
      */
 
@@ -136,8 +146,9 @@ public class CarOwnerVehiclesView extends VerticalLayout {
         }
     }
 
-/**
+    /**
      * Fired when delete confirm dialog is confirmed by user. Deletes  Vehicle.
+     *
      * @param vehicle The Vehicle to delete.
      */
 
@@ -149,8 +160,9 @@ public class CarOwnerVehiclesView extends VerticalLayout {
     }
 
 
-/**
+    /**
      * Fired when a new Vehicle is successfully registered using the Vehicle editor dialog.
+     *
      * @param event the event that fired this method
      */
 
@@ -162,8 +174,10 @@ public class CarOwnerVehiclesView extends VerticalLayout {
             VehicleUpdates("Successfully added new Vehicle " + newVehicle.getName());
         }
     }
-/**
+
+    /**
      * Fired when an existing Vehicle is successfully edited using the Vehicle editor dialog.
+     *
      * @param event the event that fired this method
      */
 
@@ -175,8 +189,10 @@ public class CarOwnerVehiclesView extends VerticalLayout {
             VehicleUpdates("Successfully edited Vehicle " + editedVehicle.getName());
         }
     }
-/**
+
+    /**
      * This method includes some common functionality when any change to Vehicles occurs
+     *
      * @param successMessage the message text to display to the user in a notification
      */
 
@@ -190,5 +206,28 @@ public class CarOwnerVehiclesView extends VerticalLayout {
         );
 
         notification.open();
+    }
+
+    /**
+     * Creates the view history icon button for each row in the grid
+     *
+     * @param vehicle the vehicle instance the icon button is associated with
+     * @return the icon button to be returned
+     */
+    private Button viewHistory(Vehicle vehicle) {
+        Button updateButton = new Button(VaadinIcon.CAR.create(), buttonClickEvent ->
+                showVehicleHistoryDialog(vehicle));
+        updateButton.addThemeVariants(ButtonVariant.LUMO_SMALL);
+        return updateButton;
+    }
+
+    /**
+     * Creates and opens a new VehicleHistoryDialog instance for viewing the service history for a vehicle
+     */
+    private void showVehicleHistoryDialog(Vehicle vehicle) {
+        VehicleHistoryDialog vehicleHistoryDialog = new VehicleHistoryDialog(vehicle, appointmentService);
+        vehicleHistoryDialog.setWidth("75%");
+        vehicleHistoryDialog.setHeight("auto");
+        vehicleHistoryDialog.open();
     }
 }

@@ -3,6 +3,7 @@ package com.TeamOne411.backend.service;
 import com.TeamOne411.backend.entity.Garage;
 import com.TeamOne411.backend.entity.schedule.BusinessHours;
 import com.TeamOne411.backend.repository.BusinessHoursRepository;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,24 +19,27 @@ public class BusinessHoursService {
         this.businessHoursRepository = businessHoursRepository;
     }
 
-    public void saveBusinessHours(BusinessHours businessHours){
+    public void saveBusinessHours(BusinessHours businessHours) {
         businessHoursRepository.save(businessHours);
-    }
-
-    public void deleteBusinessHours(List<BusinessHours> businessHours){
-        businessHoursRepository.deleteAll(businessHours);
     }
 
     public List<BusinessHours> findByGarage(Garage garage) {
         return (businessHoursRepository.findByGarage(garage));
     }
 
+    public BusinessHours findByDayNumberAndGarage(int dayNumber, Garage garage) {
+        return businessHoursRepository.findByDayNumberAndGarage(dayNumber, garage);
+    }
+
     /**
-     * This method assigns a business hours placeholder for each day of the week
+     * This method assigns a business hours placeholder for each day of the week to a garage
      *
-     * @param garage The garageSchedule the business hours should be associated with
+     * @param garage The garage the business hours should be associated with
      */
-    public void initializeBusinessHours(Garage garage){
+    @Async("threadPoolTaskExecutor")
+    public void initializeBusinessHours(Garage garage) {
+        System.out.println("Default business hours thread started.");
+
         createBusinessDay(garage, "Monday", 1);
         createBusinessDay(garage, "Tuesday", 2);
         createBusinessDay(garage, "Wednesday", 3);
@@ -43,15 +47,17 @@ public class BusinessHoursService {
         createBusinessDay(garage, "Friday", 5);
         createBusinessDay(garage, "Saturday", 6);
         createBusinessDay(garage, "Sunday", 7);
+
+        System.out.println("Default business hours thread completed.");
     }
 
     /**
      * This method creates the business hours placeholder
      *
      * @param garage The garage the business hours should be associated with
-     * @param name The name for the day of the week
+     * @param name   The name for the day of the week
      */
-    public void createBusinessDay(Garage garage, String name, int number){
+    public void createBusinessDay(Garage garage, String name, int number) {
         BusinessHours businessHours = new BusinessHours();
         businessHours.setGarage(garage);
         businessHours.setDayOfTheWeek(name);

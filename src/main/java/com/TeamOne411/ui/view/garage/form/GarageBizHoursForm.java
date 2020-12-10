@@ -4,7 +4,7 @@ import com.TeamOne411.backend.entity.schedule.BusinessHours;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
@@ -16,16 +16,16 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.shared.Registration;
 
 import java.time.Duration;
+import java.util.Locale;
 
 public class GarageBizHoursForm extends VerticalLayout {
-    Binder<BusinessHours> binder = new BeanValidationBinder<>(BusinessHours.class);
+    @SuppressWarnings("FieldCanBeLocal")
     private final TextField dayOfTheWeek = new TextField("Day");
     private final RadioButtonGroup<String> isOpen = new RadioButtonGroup<>();
     private final TimePicker openTime = new TimePicker("Opening Time");
     private final TimePicker closeTime = new TimePicker("Closing Time");
+    Binder<BusinessHours> binder = new BeanValidationBinder<>(BusinessHours.class);
     private BusinessHours businessHours = new BusinessHours();
-    private final Button saveButton = new Button("Save");
-    private final Button cancelButton = new Button("Cancel");
 
     public GarageBizHoursForm() {
 
@@ -38,32 +38,48 @@ public class GarageBizHoursForm extends VerticalLayout {
         // bind instance fields to the form fields
         binder.bindInstanceFields(this);
 
+        // set field attributes
         dayOfTheWeek.setReadOnly(true);
-
+        openTime.setLocale(Locale.US);
         openTime.setStep(Duration.ofMinutes(30));
+        closeTime.setLocale(Locale.US);
         closeTime.setStep(Duration.ofMinutes(30));
-
         isOpen.setRequired(true);
         isOpen.setItems("Open", "Closed");
-        //TODO Need to fine a way to preset the radio button value. The one below does not work.
-        //isOpen.setValue(businessHours.getOpen() ? "Open" : "Closed");
-        isOpen.addValueChangeListener(e ->
-                {
-                    businessHours.setOpen(isOpen.getValue().equals("Open"));
-                    if(isOpen.getValue().equals("Open")){
-                        openTime.setRequired(true);
-                        closeTime.setRequired(true);
-                        openTime.setEnabled(true);
-                        closeTime.setEnabled(true);
-                    } else {
-                        openTime.setValue(null);
-                        closeTime.setValue(null);
-                        openTime.setEnabled(false);
-                        closeTime.setEnabled(false);
-                    }
-                });
+        Button saveButton = new Button("Save");
+        saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        Button cancelButton = new Button("Cancel");
+        cancelButton.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
 
-        // set button click listeners
+        // LISTENERS
+        isOpen.addValueChangeListener(e ->
+        {
+            if (isOpen.getValue().equals("Open")) {
+                openTime.setRequired(true);
+                closeTime.setRequired(true);
+                openTime.setEnabled(true);
+                closeTime.setEnabled(true);
+                businessHours.setOpen(isOpen.getValue().equals("Open"));
+            } else {
+                openTime.setRequired(false);
+                closeTime.setRequired(false);
+                openTime.setEnabled(false);
+                closeTime.setEnabled(false);
+                openTime.setValue(null);
+                closeTime.setValue(null);
+                businessHours.setOpen(isOpen.getValue().equals("Closed"));
+            }
+        });
+        openTime.addValueChangeListener(e -> {
+            if (openTime.getValue() != null) {
+                closeTime.setMinTime(openTime.getValue().plusMinutes(30));
+            }
+        });
+        closeTime.addValueChangeListener(e -> {
+            if (closeTime.getValue() != null) {
+                openTime.setMaxTime(closeTime.getValue().minusMinutes(30));
+            }
+        });
         saveButton.addClickListener(e -> fireEvent(new GarageBizHoursForm.SaveEvent(this)));
         cancelButton.addClickListener(e -> fireEvent(new GarageBizHoursForm.CancelEvent(this)));
 
@@ -82,6 +98,7 @@ public class GarageBizHoursForm extends VerticalLayout {
     public void prefillForm(BusinessHours businessHours) {
         this.businessHours = businessHours;
         binder.readBean(businessHours);
+        isOpen.setValue(businessHours.getOpen() ? "Open" : "Closed");
     }
 
     /**

@@ -2,9 +2,7 @@ package com.TeamOne411.ui.view.carowner;
 
 import com.TeamOne411.backend.entity.users.CarOwner;
 import com.TeamOne411.backend.entity.users.GGUserDetails;
-import com.TeamOne411.backend.service.UserDetailsService;
-import com.TeamOne411.backend.service.VehicleService;
-import com.TeamOne411.backend.service.api.car.ApiVehicle;
+import com.TeamOne411.backend.service.*;
 import com.TeamOne411.backend.service.api.car.ApiVehicleService;
 import com.TeamOne411.ui.MainLayout;
 import com.TeamOne411.ui.view.carowner.childview.CarOwnerAppointmentsView;
@@ -33,7 +31,12 @@ public class CarOwnerHomeView extends VerticalLayout {
     private CarOwner loggedInCarOwner;
     private ApiVehicleService apiVehicleService;
 
-    public CarOwnerHomeView(UserDetailsService userDetailsService, VehicleService vehicleService, ApiVehicleService apiVehicleService) {
+    public CarOwnerHomeView(UserDetailsService userDetailsService,
+                            VehicleService vehicleService,
+                            ApiVehicleService apiVehicleService,
+                            AppointmentService appointmentService,
+                            ServiceCatalogService serviceCatalogService,
+                            GarageCalendarService garageCalendarService) {
         userDetails = userDetailsService.getLoggedInUserDetails();
         loggedInCarOwner = (CarOwner) userDetails.getUser();
         this.apiVehicleService = apiVehicleService;
@@ -47,7 +50,8 @@ public class CarOwnerHomeView extends VerticalLayout {
         First Tab - Appointments
          */
         Tab appointmentsTab = new Tab("Appointments");
-        CarOwnerAppointmentsView appointmentsView = new CarOwnerAppointmentsView();
+        CarOwnerAppointmentsView appointmentsView = new CarOwnerAppointmentsView(appointmentService,
+                serviceCatalogService, garageCalendarService, vehicleService, loggedInCarOwner);
         Div appointmentsPage = new Div(appointmentsView);
         appointmentsTab.add(appointmentsPage);
         tabs.add(appointmentsTab);
@@ -58,16 +62,14 @@ public class CarOwnerHomeView extends VerticalLayout {
         Second Tab - Vehicles
          */
         Tab vehiclesTab = new Tab("Vehicles");
-        CarOwnerVehiclesView vehicleView = new CarOwnerVehiclesView(vehicleService, apiVehicleService, loggedInCarOwner);
+        CarOwnerVehiclesView vehicleView = new CarOwnerVehiclesView(vehicleService, apiVehicleService,
+                loggedInCarOwner, appointmentService);
         Div vehiclesPage = new Div(vehicleView);
         vehiclesTab.add(vehiclesPage);
         tabs.add(vehiclesTab);
         pages.add(vehiclesPage);
         tabsToPages.put(vehiclesTab, vehiclesPage);
         vehiclesPage.setVisible(false);
-
-
-        // todo add more tabs here
 
         // hook up the listener for tab change
         tabs.addSelectedChangeListener(event -> {

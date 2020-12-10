@@ -5,6 +5,7 @@ import com.TeamOne411.backend.entity.servicecatalog.OfferedService;
 import com.TeamOne411.backend.entity.servicecatalog.ServiceCategory;
 import com.TeamOne411.backend.repository.OfferedServiceRepository;
 import com.TeamOne411.backend.repository.ServiceCategoryRepository;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -30,7 +31,7 @@ public class ServiceCatalogService {
     }
 
     public List<OfferedService> findByServiceCategory_Garage(Garage garage) {
-        return offeredServiceRepository.findByServiceCategory_Garage(garage);
+        return offeredServiceRepository.findByServiceCategory_GarageOrderByServiceCategory(garage);
     }
 
     public List<OfferedService> findByServiceCategory(ServiceCategory serviceCategory) {
@@ -66,7 +67,9 @@ public class ServiceCatalogService {
      *
      * @param garage The new garage that default categories and services should be assigned to
      */
+    @Async("threadPoolTaskExecutor")
     public void initializeDefaultServices(Garage garage) {
+        System.out.println("Default services thread started.");
 
         // These are the default Categories that are enabled for a garage
         ServiceCategory catRoutineMaintenance = createDefaultServiceCategory("Routine Maintenance", garage);
@@ -94,6 +97,8 @@ public class ServiceCatalogService {
 
         // Other/Not Sure - no services to include, but does need to a descriptor for car owner clarity
         createDefaultOfferedService("Other/Not Sure", catOther);
+
+        System.out.println("Default services thread completed.");
     }
 
     /**
