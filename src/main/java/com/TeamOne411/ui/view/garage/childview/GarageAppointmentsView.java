@@ -1,10 +1,13 @@
 package com.TeamOne411.ui.view.garage.childview;
 
 import com.TeamOne411.backend.entity.Garage;
+import com.TeamOne411.backend.entity.Vehicle;
 import com.TeamOne411.backend.entity.schedule.Appointment;
+import com.TeamOne411.backend.entity.users.CarOwner;
 import com.TeamOne411.backend.service.AppointmentService;
 import com.TeamOne411.ui.utils.FormattingUtils;
-import com.TeamOne411.ui.view.garage.form.GarageAppointmentDialog;
+import com.TeamOne411.ui.view.carowner.form.VehicleHistoryDialog;
+import com.TeamOne411.ui.view.garage.form.GarageEditApptServicesDialog;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -30,7 +33,7 @@ public class GarageAppointmentsView extends VerticalLayout {
     private final GridPro<Appointment> upcomingGrid = new GridPro<>(Appointment.class);
     private final H5 noAppointmentsToday = new H5("Your garage does not have any appointments scheduled for today");
     private final H5 noAppointmentsUpcoming = new H5("Your garage does not have any upcoming appointments scheduled");
-    private GarageAppointmentDialog garageAppointmentDialog;
+    private GarageEditApptServicesDialog garageEditApptServicesDialog;
 
     public GarageAppointmentsView(AppointmentService appointmentService, Garage garage) {
         this.appointmentService = appointmentService;
@@ -44,17 +47,16 @@ public class GarageAppointmentsView extends VerticalLayout {
         setGridAttributes(todayGrid, "today-grid");
         setGridAttributes(upcomingGrid, "upcoming-grid");
 
-        // TODO add columns for car owner info
         // add columns to todayGrid
         todayGrid.addComponentColumn(this::statusComboBox).setHeader("Status");
         todayGrid.addComponentColumn(this::estimatedCompletionTimePicker).setHeader("Estimated Completion");
         todayGrid.addEditColumn(Appointment::getStatusComments).text(Appointment::setStatusComments)
-                .setHeader("Status Comments").setSortable(false).setFlexGrow(2);
+                .setHeader("Status Comments").setSortable(false).setResizable(true);
 
         // add columns to upcomingGrid
         upcomingGrid.addColumn(Appointment::getStatus).setHeader("Status").setSortable(false);
         upcomingGrid.addColumn(Appointment::getEstimatedCompletionTime).setHeader("Estimated Completion").setSortable(false);
-        upcomingGrid.addColumn(Appointment::getStatusComments).setHeader("Status Comments").setFlexGrow(2);
+        upcomingGrid.addColumn(Appointment::getStatusComments).setHeader("Status Comments").setResizable(true);
 
         // LISTENERS
         todayGrid.addItemPropertyChangedListener(e -> appointmentService.saveAppointment(e.getItem()));
@@ -94,7 +96,7 @@ public class GarageAppointmentsView extends VerticalLayout {
     }
 
     /**
-     * refreshes the future appointments grid
+     * refreshes the upcoming appointments grid
      */
     private void updateUpcomingAppointmentsGrid() {
         if (appointmentService.findAllUpcomingAppointmentsByGarage(garage).isEmpty()) {
@@ -113,15 +115,41 @@ public class GarageAppointmentsView extends VerticalLayout {
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
 
         grid.addColumn(appointment -> FormattingUtils.SHORT_DATE_FORMATTER
-                .format(appointment.getAppointmentDate())).setHeader("Date").setKey("appointmentDate").setSortable(false);
+                .format(appointment.getAppointmentDate())).setHeader("Date").setKey("appointmentDate")
+                .setSortable(false).setResizable(true).setFlexGrow(1);
         grid.addColumn(appointment -> FormattingUtils.HOUR_FORMATTER
-                .format(appointment.getAppointmentTime())).setHeader("Time").setKey("appointmentTime").setSortable(false);
+                .format(appointment.getAppointmentTime())).setHeader("Time").setKey("appointmentTime")
+                .setSortable(false).setResizable(true).setFlexGrow(0);
+        grid.addColumn(appointment -> getCarOwnerInfo(appointment.getVehicle())).setHeader("CarOwner")
+                .setKey("carOwner").setSortable(false).setResizable(true);
+        grid.addColumn(appointment -> getVehicleInfo(appointment.getVehicle())).setHeader("Vehicle").setKey("vehicle")
+                .setSortable(false).setResizable(true);
+        grid.addComponentColumn(this::viewHistory).setHeader("History").setTextAlign(ColumnTextAlign.CENTER).setFlexGrow(0);
         grid.addColumn(Appointment::getCarOwnerComments).setHeader("Owner Comments").setSortable(false)
-                .setKey("carOwnerComments").setFlexGrow(2);
+                .setKey("carOwnerComments").setResizable(true);
         grid.addComponentColumn(this::updateServicesButton).setHeader("Services")
-                .setTextAlign(ColumnTextAlign.CENTER);
+                .setTextAlign(ColumnTextAlign.CENTER).setFlexGrow(0);
 
         grid.setHeightByRows(true);
+    }
+
+    /**
+     * Concatenates the vehicle year, make and model for display in the grid
+     * @param vehicle the vehicle to get info on
+     * @return the concatenated string
+     */
+    private String getVehicleInfo(Vehicle vehicle) {
+        return vehicle.getYear() + " " + vehicle.getMake() + " " + vehicle.getModel();
+    }
+
+    /**
+     * Concatenates the full name and phone number for the car owner
+     * @param vehicle the vehicle the car owner is associated with
+     * @return the concatenated string
+     */
+    private String getCarOwnerInfo(Vehicle vehicle) {
+        CarOwner carOwner = vehicle.getCarOwner();
+        return carOwner.getFullName() + " " + carOwner.getPhoneNumber();
     }
 
     /**
@@ -171,7 +199,7 @@ public class GarageAppointmentsView extends VerticalLayout {
     }
 
     /**
-     * Creates the view icon button for each row in the grid
+     * Creates the services icon button for each row in the grid
      *
      * @param appointment the appointment instance the icon button is associated with
      * @return the icon button to be returned
@@ -184,15 +212,15 @@ public class GarageAppointmentsView extends VerticalLayout {
     }
 
     /**
-     * Creates and opens a new GarageApptDialog instance for viewing / editing the appointment services
+     * Creates and opens a new GarageAppointmentDialog instance for viewing / editing the appointment services
      */
     private void showGarageAppointmentDialog(Appointment appointment) {
-        garageAppointmentDialog = new GarageAppointmentDialog(appointmentService, appointment);
-        garageAppointmentDialog.setWidth("50%");
-        garageAppointmentDialog.setHeight("auto");
-        garageAppointmentDialog.addListener(GarageAppointmentDialog.SaveSuccessEvent.class,
+        garageEditApptServicesDialog = new GarageEditApptServicesDialog(appointmentService, appointment);
+        garageEditApptServicesDialog.setWidth("50%");
+        garageEditApptServicesDialog.setHeight("auto");
+        garageEditApptServicesDialog.addListener(GarageEditApptServicesDialog.SaveSuccessEvent.class,
                 this::onSave);
-        garageAppointmentDialog.open();
+        garageEditApptServicesDialog.open();
     }
 
     /**
@@ -200,8 +228,8 @@ public class GarageAppointmentsView extends VerticalLayout {
      *
      * @param event the event that fired this method
      */
-    private void onSave(ComponentEvent<GarageAppointmentDialog> event) {
-        garageAppointmentDialog.close();
+    private void onSave(ComponentEvent<GarageEditApptServicesDialog> event) {
+        garageEditApptServicesDialog.close();
         updateAppointmentsTodayGrid();
         updateUpcomingAppointmentsGrid();
 
@@ -212,5 +240,28 @@ public class GarageAppointmentsView extends VerticalLayout {
                 Notification.Position.TOP_END
         );
         notification.open();
+    }
+
+    /**
+     * Creates the viewHistory icon button for each row in the grid
+     *
+     * @param appointment the appointment instance the icon button is associated with
+     * @return the icon button to be returned
+     */
+    private Button viewHistory(Appointment appointment) {
+        Button updateButton = new Button(VaadinIcon.CAR.create(), buttonClickEvent ->
+                showVehicleHistoryDialog(appointment.getVehicle()));
+        updateButton.addThemeVariants(ButtonVariant.LUMO_SMALL);
+        return updateButton;
+    }
+
+    /**
+     * Creates and opens a new VehicleHistoryDialog instance for viewing the service history for a vehicle
+     */
+    private void showVehicleHistoryDialog(Vehicle vehicle) {
+        VehicleHistoryDialog vehicleHistoryDialog = new VehicleHistoryDialog(vehicle, appointmentService);
+        vehicleHistoryDialog.setWidth("75%");
+        vehicleHistoryDialog.setHeight("auto");
+        vehicleHistoryDialog.open();
     }
 }

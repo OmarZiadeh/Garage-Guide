@@ -1,6 +1,7 @@
 package com.TeamOne411.backend.service;
 
 import com.TeamOne411.backend.entity.Garage;
+import com.TeamOne411.backend.entity.Vehicle;
 import com.TeamOne411.backend.entity.schedule.Appointment;
 import com.TeamOne411.backend.entity.schedule.AppointmentTask;
 import com.TeamOne411.backend.entity.servicecatalog.OfferedService;
@@ -38,6 +39,7 @@ public class AppointmentService {
 
     /**
      * Finds upcoming appointments for a garage
+     *
      * @param garage the garage to search by
      * @return List of appointments
      */
@@ -47,6 +49,7 @@ public class AppointmentService {
 
     /**
      * Finds today's appointments for a garage
+     *
      * @param garage the garage to search by
      * @return List of appointments
      */
@@ -56,50 +59,55 @@ public class AppointmentService {
 
     /**
      * Finds today's appointments for a car owner
+     *
      * @return List of appointments
      */
-    public List<Appointment> findAllAppointmentsForToday(CarOwner carOwner){
+    public List<Appointment> findAllAppointmentsForToday(CarOwner carOwner) {
         return appointmentRepository.findAllByAppointmentDateEqualsAndVehicle_CarOwnerOrderByAppointmentTime(LocalDate.now(), carOwner);
     }
 
 
     /**
      * Finds all upcoming appointments for a car owner
+     *
      * @return List of appointments
      */
-    public List<Appointment> findAllUpcomingAppointments(CarOwner carOwner){
-        return appointmentRepository.findAllByAppointmentDateGreaterThanAndVehicle_CarOwnerOrderByAppointmentDateAscAppointmentTimeAsc(LocalDate.now(),carOwner);
+    public List<Appointment> findAllUpcomingAppointments(CarOwner carOwner) {
+        return appointmentRepository.findAllByAppointmentDateGreaterThanAndVehicle_CarOwnerOrderByAppointmentDateAscAppointmentTimeAsc(LocalDate.now(), carOwner);
     }
 
     /**
-     * Finds all past appointments
+     * Finds all past appointmentsTasks for a vehicle
+     *
      * @return List of appointments
      */
-    public List<Appointment> findAllPastAppointments(){
-        return appointmentRepository.findAllByAppointmentDateLessThanOrderByAppointmentDate(LocalDate.now());
+    public List<AppointmentTask> findAllAppointmentTasksByVehicle(Vehicle vehicle) {
+        return appointmentTaskRepository.findAllAppointmentTasksByAppointment_VehicleAndAppointment_StatusOrderByAppointmentAsc(vehicle, "Completed");
     }
 
     public void saveAppointmentTask(AppointmentTask appointmentTask) {
         appointmentTaskRepository.save(appointmentTask);
     }
 
-    public void deleteAppointmentTask(AppointmentTask appointmentTask){
+    public void deleteAppointmentTask(AppointmentTask appointmentTask) {
         appointmentTaskRepository.delete(appointmentTask);
     }
 
     /**
      * Deletes all appointment tasks for a given appointment
+     *
      * @param appointment the appointment to search by
      */
     public void deleteAppointmentTasks(Appointment appointment) {
         List<AppointmentTask> appointmentTasks = findAllAppointmentTasksByAppointment(appointment);
-        for(AppointmentTask appointmentTask : appointmentTasks){
+        for (AppointmentTask appointmentTask : appointmentTasks) {
             appointmentTaskRepository.delete(appointmentTask);
         }
     }
 
     /**
      * Finds all appointment tasks for a given appointment
+     *
      * @param appointment the appointment to search by
      * @return the list of appointment tasks
      */

@@ -7,6 +7,7 @@ import com.TeamOne411.backend.entity.users.CarOwner;
 import com.TeamOne411.backend.service.*;
 import com.TeamOne411.ui.utils.FormattingUtils;
 import com.TeamOne411.ui.view.carowner.form.AppointmentDialog;
+import com.TeamOne411.ui.view.carowner.form.VehicleHistoryDialog;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -33,8 +34,8 @@ public class CarOwnerAppointmentsView extends VerticalLayout {
     private final Grid<Appointment> upcomingAppointments = new Grid<>(Appointment.class);
     private final H5 noAppointmentsToday = new H5("You do not have any appointments scheduled for today");
     private final H5 noUpcomingAppointments = new H5("You do not have any upcoming appointments scheduled");
-    private AppointmentDialog appointmentDialog;
     private final CarOwner carOwner;
+    private AppointmentDialog appointmentDialog;
 
     public CarOwnerAppointmentsView(AppointmentService appointmentService,
                                     ServiceCatalogService serviceCatalogService,
@@ -70,6 +71,8 @@ public class CarOwnerAppointmentsView extends VerticalLayout {
                 .setKey("estimatedCompletionTime").setSortable(false);
         appointmentsToday.addColumn(Appointment::getStatusComments).setHeader("Garage Comments")
                 .setKey("statusComments").setSortable(false);
+        appointmentsToday.addComponentColumn(this::viewHistory).setHeader("Services Completed")
+                .setTextAlign(ColumnTextAlign.CENTER).setFlexGrow(0);
         appointmentsToday.getColumns().forEach(col -> col.setAutoWidth(true));
 
 
@@ -122,6 +125,7 @@ public class CarOwnerAppointmentsView extends VerticalLayout {
 
     /**
      * Concatenates the vehicle year, make and model for display in the grid
+     *
      * @param vehicle the vehicle to get info on
      * @return the concatenated string
      */
@@ -260,5 +264,29 @@ public class CarOwnerAppointmentsView extends VerticalLayout {
         );
         notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
         notification.open();
+    }
+
+    /**
+     * Creates the view history icon button for each row in the grid
+     *
+     * @param appointment the appointment instance the icon button is associated with
+     * @return the icon button to be returned
+     */
+    private Button viewHistory(Appointment appointment) {
+        Button updateButton = new Button(VaadinIcon.CAR.create(), buttonClickEvent ->
+                showVehicleHistoryDialog(appointment.getVehicle()));
+        updateButton.addThemeVariants(ButtonVariant.LUMO_SMALL);
+        updateButton.setEnabled(appointment.getStatus().equals("Completed"));
+        return updateButton;
+    }
+
+    /**
+     * Creates and opens a new VehicleHistoryDialog instance for viewing the service history for a vehicle
+     */
+    private void showVehicleHistoryDialog(Vehicle vehicle) {
+        VehicleHistoryDialog vehicleHistoryDialog = new VehicleHistoryDialog(vehicle, appointmentService);
+        vehicleHistoryDialog.setWidth("75%");
+        vehicleHistoryDialog.setHeight("auto");
+        vehicleHistoryDialog.open();
     }
 }

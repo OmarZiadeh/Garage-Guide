@@ -6,7 +6,6 @@ import com.TeamOne411.backend.service.*;
 import com.TeamOne411.backend.service.api.car.ApiVehicleService;
 import com.TeamOne411.ui.MainLayout;
 import com.TeamOne411.ui.view.carowner.childview.CarOwnerAppointmentsView;
-import com.TeamOne411.ui.view.carowner.childview.CarOwnerServiceHistoryView;
 import com.TeamOne411.ui.view.carowner.childview.CarOwnerVehiclesView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
@@ -63,25 +62,14 @@ public class CarOwnerHomeView extends VerticalLayout {
         Second Tab - Vehicles
          */
         Tab vehiclesTab = new Tab("Vehicles");
-        CarOwnerVehiclesView vehicleView = new CarOwnerVehiclesView(vehicleService, apiVehicleService, loggedInCarOwner);
+        CarOwnerVehiclesView vehicleView = new CarOwnerVehiclesView(vehicleService, apiVehicleService,
+                loggedInCarOwner, appointmentService);
         Div vehiclesPage = new Div(vehicleView);
         vehiclesTab.add(vehiclesPage);
         tabs.add(vehiclesTab);
         pages.add(vehiclesPage);
         tabsToPages.put(vehiclesTab, vehiclesPage);
         vehiclesPage.setVisible(false);
-
-        /*
-        Third Tab - Service History
-         */
-        Tab serviceHistoryTab = new Tab("Service History");
-        CarOwnerServiceHistoryView serviceHistoryView = new CarOwnerServiceHistoryView();
-        Div serviceHistoryPage = new Div(serviceHistoryView);
-        serviceHistoryTab.add(serviceHistoryPage);
-        tabs.add(serviceHistoryTab);
-        pages.add(serviceHistoryPage);
-        tabsToPages.put(serviceHistoryTab, serviceHistoryPage);
-        serviceHistoryPage.setVisible(false);
 
         // hook up the listener for tab change
         tabs.addSelectedChangeListener(event -> {

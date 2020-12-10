@@ -51,8 +51,7 @@ public class GarageEmployeeHomeView extends VerticalLayout {
         First Tab - Appointments
          */
         Tab appointmentsTab = new Tab("Appointments");
-        GarageAppointmentsView appointmentsView = new GarageAppointmentsView(appointmentService,
-                myGarage);
+        GarageAppointmentsView appointmentsView = new GarageAppointmentsView(appointmentService, myGarage);
         Div appointmentsPage = new Div(appointmentsView);
         appointmentsTab.add(appointmentsPage);
         tabs.add(appointmentsTab);
@@ -88,10 +87,8 @@ public class GarageEmployeeHomeView extends VerticalLayout {
             Fourth Tab - Business Hours (aka Schedule)
              */
             Tab businessHoursTab = new Tab("Business Hours");
-            GarageBusinessHoursView businessHoursView = new GarageBusinessHoursView(
-                    businessHoursService,
-                    garageCalendarService,
-                    myGarage);
+            GarageBusinessHoursView businessHoursView = new GarageBusinessHoursView(businessHoursService,
+                    garageCalendarService, myGarage);
             Div businessHoursPage = new Div(businessHoursView);
             businessHoursTab.add(businessHoursPage);
             tabs.add(businessHoursTab);

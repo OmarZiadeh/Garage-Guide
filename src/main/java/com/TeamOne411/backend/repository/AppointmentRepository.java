@@ -11,7 +11,6 @@ import java.util.List;
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
     List<Appointment> findAllByAppointmentDateGreaterThanAndVehicle_CarOwnerOrderByAppointmentDateAscAppointmentTimeAsc(LocalDate localDate, CarOwner carOwner);
     List<Appointment> findAllByAppointmentDateEqualsAndVehicle_CarOwnerOrderByAppointmentTime(LocalDate localDate, CarOwner carOwner);
-    List<Appointment> findAllByAppointmentDateLessThanOrderByAppointmentDate(LocalDate localDate);
     List<Appointment> findAllByGarageAndAppointmentDateGreaterThanOrderByAppointmentDateAscAppointmentTimeAsc(Garage garage, LocalDate localDate);
     List<Appointment> findAllByGarageAndAppointmentDateEqualsOrderByAppointmentTime(Garage garage, LocalDate localDate);
 }
