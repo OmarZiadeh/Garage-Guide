@@ -12,10 +12,10 @@ import com.vaadin.flow.shared.Registration;
 
 
 @SuppressWarnings("rawtypes")
-public class GarageAppointmentDialog extends Dialog {
+public class GarageEditApptServicesDialog extends Dialog {
     private final GarageEditApptServicesForm garageEditApptServicesForm;
 
-    public GarageAppointmentDialog(AppointmentService appointmentService, Appointment appointment) {
+    public GarageEditApptServicesDialog(AppointmentService appointmentService, Appointment appointment) {
 
         garageEditApptServicesForm = new GarageEditApptServicesForm(appointment, appointmentService);
         garageEditApptServicesForm.addListener(GarageEditApptServicesForm.CancelEvent.class, this::onCancelClick);
@@ -52,7 +52,7 @@ public class GarageAppointmentDialog extends Dialog {
     private void onSaveClick(ComponentEvent event) {
         garageEditApptServicesForm.calculateEstimatedTotalPrice();
 
-        fireEvent(new GarageAppointmentDialog.SaveSuccessEvent(this));
+        fireEvent(new GarageEditApptServicesDialog.SaveSuccessEvent(this));
     }
 
     @Override
@@ -64,8 +64,8 @@ public class GarageAppointmentDialog extends Dialog {
     /**
      * Event to emit when appointment services have been updated.
      */
-    public static class SaveSuccessEvent extends ComponentEvent<GarageAppointmentDialog> {
-        SaveSuccessEvent(GarageAppointmentDialog source) {
+    public static class SaveSuccessEvent extends ComponentEvent<GarageEditApptServicesDialog> {
+        SaveSuccessEvent(GarageEditApptServicesDialog source) {
             super(source, false);
         }
     }

@@ -41,9 +41,9 @@ public class GarageEditApptServicesForm extends VerticalLayout {
         appointmentTaskGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
 
         appointmentTaskGrid.addColumn(appointmentTask -> appointmentTask.getOfferedService().getServiceName())
-                .setHeader("Service");
+                .setHeader("Service").setResizable(true);
         appointmentTaskGrid.addEditColumn(AppointmentTask::getGarageComments).text(AppointmentTask::setGarageComments)
-                .setHeader("Comments");
+                .setHeader("Comments").setResizable(true);
         appointmentTaskGrid.addComponentColumn(this::createDeleteButton).setHeader("Delete")
                 .setTextAlign(ColumnTextAlign.CENTER);
 
