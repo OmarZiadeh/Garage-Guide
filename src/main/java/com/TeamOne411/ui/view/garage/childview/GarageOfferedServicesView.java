@@ -14,9 +14,9 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 
 import java.text.DecimalFormat;
-import java.time.Duration;
 import java.util.Comparator;
 import java.util.Optional;
 
@@ -25,11 +25,9 @@ import java.util.Optional;
  * controls to add new, edit or delete them.
  */
 public class GarageOfferedServicesView extends VerticalLayout {
-    ServiceCatalogService serviceCatalogService;
-
     private final Grid<OfferedService> grid = new Grid<>(OfferedService.class);
     private final Garage garage;
-    private Duration duration;
+    ServiceCatalogService serviceCatalogService;
     private GarageServiceEditorDialog garageServiceEditorDialog;
     private GarageCategoryEditorDialog garageCategoryEditorDialog;
 
@@ -57,11 +55,9 @@ public class GarageOfferedServicesView extends VerticalLayout {
                 .setKey("price");
 
         // Format Duration
-        // TODO fix duration formatting
-        grid.addColumn(offeredService -> {
-            duration = offeredService.getDuration();
-            return duration.toMinutes();
-        }).setHeader("Duration in Minutes").setSortable(true).setKey("duration");
+        grid.addColumn(offeredService -> DurationFormatUtils
+                .formatDurationWords(offeredService.getDuration().toMillis(), true, true))
+                .setHeader("Time Required").setSortable(true).setKey("duration");
 
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
 
@@ -159,6 +155,7 @@ public class GarageOfferedServicesView extends VerticalLayout {
 
     /**
      * Fired when delete confirm dialog is confirmed by user. Deletes offeredService.
+     *
      * @param offeredService to delete.
      */
     private void onDeleteConfirm(OfferedService offeredService) {
@@ -170,6 +167,7 @@ public class GarageOfferedServicesView extends VerticalLayout {
 
     /**
      * Fired when a new service is successfully added
+     *
      * @param event the event that fired this method
      */
     private void onServiceAddedSuccess(ComponentEvent<GarageServiceEditorDialog> event) {
@@ -179,6 +177,7 @@ public class GarageOfferedServicesView extends VerticalLayout {
 
     /**
      * Fired when an existing service is successfully edited using the service editor dialog.
+     *
      * @param event the event that fired this method
      */
     private void onServiceEditedSuccess(ComponentEvent<GarageServiceEditorDialog> event) {
@@ -188,6 +187,7 @@ public class GarageOfferedServicesView extends VerticalLayout {
 
     /**
      * Fired when the edit categories form has been exited. Refreshes the service list grid.
+     *
      * @param event the event that fired this method
      */
     private void onEditCategoriesExit(ComponentEvent<GarageCategoryEditorDialog> event) {
@@ -197,6 +197,7 @@ public class GarageOfferedServicesView extends VerticalLayout {
 
     /**
      * This method includes some common functionality when any change to an offered service occurs
+     *
      * @param successMessage the message text to display to the user in a notification
      */
     private void offeredServiceUpdates(String successMessage) {

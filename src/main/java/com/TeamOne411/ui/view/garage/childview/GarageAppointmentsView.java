@@ -26,6 +26,9 @@ import com.vaadin.flow.component.timepicker.TimePicker;
 import java.time.Duration;
 import java.util.Locale;
 
+/**
+ * This view is a vertical layout which shows the appointments for a garage
+ */
 public class GarageAppointmentsView extends VerticalLayout {
     private final AppointmentService appointmentService;
     private final Garage garage;

@@ -12,6 +12,9 @@ import com.vaadin.flow.shared.Registration;
 
 
 @SuppressWarnings("rawtypes")
+/**
+ * This dialog controls the opening and closing of the Garage edit appointment services form
+ */
 public class GarageEditApptServicesDialog extends Dialog {
     private final GarageEditApptServicesForm garageEditApptServicesForm;
 
