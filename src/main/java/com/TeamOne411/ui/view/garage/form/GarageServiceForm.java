@@ -27,7 +27,7 @@ public class GarageServiceForm extends VerticalLayout {
     Binder<OfferedService> binder = new BeanValidationBinder<>(OfferedService.class);
     private final TextField serviceName = new TextField("Service name");
     private final TextField price = new TextField("Price");
-    private final ComboBox<Duration> duration = new ComboBox<>("Duration");
+    private final ComboBox<Duration> duration = new ComboBox<>("Time Required");
     private final ComboBox<ServiceCategory> serviceCategory = new ComboBox<>("Category");
     private final Button saveButton = new Button("Save");
     private final Button cancelButton = new Button("Cancel");
@@ -63,7 +63,7 @@ public class GarageServiceForm extends VerticalLayout {
         serviceCategory.setWidth("100%");
 
         // format Duration
-        // TODO fix duration formatting and add 30 minutes increments up to 10 hours
+        // TODO fix duration formatting
         duration.setItems((Duration.ofMinutes(0)), Duration.ofMinutes(30), Duration.ofMinutes(60),
                 Duration.ofMinutes(90), Duration.ofMinutes(120),
                 Duration.ofMinutes(150), Duration.ofMinutes(180));

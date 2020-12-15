@@ -10,6 +10,9 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+/**
+ * This is the entity class for the garage's offered services
+ */
 @Entity
 public class OfferedService extends AbstractEntity {
 

@@ -18,6 +18,9 @@ import com.vaadin.flow.shared.Registration;
 import java.time.Duration;
 import java.util.Locale;
 
+/**
+ * This form allows updates to the business hours for a garage
+ */
 public class GarageBizHoursForm extends VerticalLayout {
     @SuppressWarnings("FieldCanBeLocal")
     private final TextField dayOfTheWeek = new TextField("Day");

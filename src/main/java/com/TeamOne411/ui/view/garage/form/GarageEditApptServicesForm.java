@@ -20,7 +20,9 @@ import com.vaadin.flow.shared.Registration;
 import java.math.BigDecimal;
 import java.util.List;
 
-
+/**
+ * This form allows a garage to edit the services that were provided for an appointment
+ */
 public class GarageEditApptServicesForm extends VerticalLayout {
     private final Appointment appointment;
     private final AppointmentService appointmentService;

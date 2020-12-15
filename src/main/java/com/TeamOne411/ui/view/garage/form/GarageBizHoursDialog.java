@@ -11,6 +11,9 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.shared.Registration;
 
 @SuppressWarnings("rawtypes")
+/**
+ * This dialog class manages opening and closing of the GarageBizHoursForm
+ */
 public class GarageBizHoursDialog extends Dialog {
     private final GarageBizHoursForm garageBizHoursForm;
     private final BusinessHoursService businessHoursService;

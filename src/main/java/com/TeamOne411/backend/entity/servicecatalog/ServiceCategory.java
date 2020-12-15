@@ -9,6 +9,9 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+/**
+ * This is the entity class for the garage's offered service categories
+ */
 @Entity
 public class ServiceCategory extends AbstractEntity {
 
